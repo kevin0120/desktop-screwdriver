@@ -1,0 +1,13 @@
+{
+  "AuthrizeExp": 360000,
+  "OP_IP": "192.168.20.145",
+  "OP_PORT": 9101,
+  "OP_ENABLE": true,
+  "SERVER_ENABLE": false,
+  "SERVER_IP": "192.168.20.100",
+  "SERVER_VERSION": "v1.0.0",
+  "SERVER_CURVE": false,
+  "SERVER_PORT": 8082,
+  "SERVER_PATH": "/leetx/result",
+  "SERVER_URL": "http://{}:8082/leetx/result"
+}

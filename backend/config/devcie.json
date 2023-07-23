@@ -1,0 +1,139 @@
+{
+  "apiVer": 2,
+  "version": "V1.5.704T",
+  "udp_port": 5556,
+  "ftp_port": 5557,
+  "request_port": 8080,
+  "nc_ip": "211.254.254.250",
+  "components": {
+    "config": {
+      "pro_changed": "0x300106",
+      "save_config": "0x300104",
+      "restore_config": "0x202012",
+      "ctrl_mode": "0x300120",
+      "torque_compensation": "0x200126"
+    },
+    "motions": {
+      "ac_run": "0x300101",
+      "backward": "0x300102",
+      "alarm_clear": "0x300103",
+      "keep_running": "0x300105",
+      "ac_stop": "0x300107",
+      "home_search": "300108"
+    },
+    "pdata": {
+      "cache_len": 100000,
+      "max_len": 10000,
+      "len": 8000,
+      "his_alarm_cnt": 100000,
+      "his_pd_cnt": 100000,
+      "his_curve_cnt": 100000,
+      "log_cnt": 100000,
+      "log_op_cnt": 100000
+    },
+    "sensor_range": {
+      "ccw_speed": {
+        "min": "0.001",
+        "max": "10000"
+      },
+      "speed": {
+        "min": "0.001",
+        "max": "10000"
+      },
+      "sersor_limits": {
+        "min": "0.001",
+        "max": "10000"
+      },
+      "position_limits": {
+        "min": "0.001",
+        "max": "10000"
+      }
+    },
+    "result": {
+      "ret_pos": "0x300805",
+      "ret_sensor": "0x300806"
+    },
+    "device_bus": {
+      "io_in": "0x30001",
+      "io_out": "0x30002",
+      "fieldbus_in": "0x30003",
+      "fieldbus_out": "0x30004",
+      "fieldbus_cfg": "0x30005",
+      "io_cfg": "0x30006",
+      "fieldbus_cfg_set": "0x30007",
+      "io_cfg_set": "0x30008"
+    }
+  },
+  "map_status_keys": {
+    "0x300005": "sensor",
+    "0x300006": "pos",
+    "0x300007": "speed",
+    "0x300102": "reversed",
+    "0x30020A": "pset",
+    "0x300262": "job",
+    "0x300201": "nc_state",
+    "0x300202": "power_on",
+    "0x300205": "busy",
+    "0x300204": "ready",
+    "0x300803": "rok",
+    "0x300804": "isok",
+    "0x300209": "alarmed",
+    "0x300801": "tid",
+    "0x30020B": "alarm_code",
+    "0x300805": "ret_pos",
+    "0x300806": "ret_sensor",
+    "0x300831": "ret_sn",
+    "0x300821": "ret_cnt",
+    "0x300822": "ret_batches",
+    "0x300807": "ret_pos_min",
+    "0x300808": "ret_pos_max",
+    "0x300809": "ret_sensor_min",
+    "0x30080A": "ret_sensor_max",
+    "0x200303": "io_ival",
+    "0x200304": "io_oval",
+    "0x500021": "speed_max",
+    "0x500022": "sensor_max",
+    "0x300120": "enablesrc",
+    "0x300121": "psetsrc",
+    "0x300122": "toolsrc",
+    "0x300331": "jogstr",
+    "0x300105": "keeprun",
+    "0x300101": "ac_run",
+    "0x200352": "exsensorval",
+    "0x300825": "eopos",
+    "0x100133": "anybustype",
+    "0x300820": "fail_code",
+    "0x300827": "points_cnt",
+    "0x300127": "job_pset_mode",
+    "0x300162": "job_enable",
+    "0x300126": "job_src",
+    "0x200322": "trqsensorcalib_normaltorque",
+    "0x200323": "trqsensorcalib_sensitivity",
+    "0x500020": "spindle_tranlationratio",
+    "0x300851": "G_Inflexion_Angle",
+    "0x300852": "G_Inflexion_Force",
+    "0x20030E": "daq_temp",
+    "0x100115": "scanner_endsymbl",
+    "0x100006": "dev_name",
+    "0x100005": "dev_id",
+    "0x100028": "tool_sn",
+    "0x100007": "controller_sn"
+  },
+  "line_sensors_key": {
+    "torque": {
+      "gain": "0x200323",
+      "offset": "0x200324",
+      "mode": "0x20032A"
+    }
+  },
+  "sanic_paras": {
+    "ip": "0.0.0.0",
+    "port": 9001,
+    "tool": "riveting"
+  },
+  "profile": {
+    "path": "./../profile",
+    "curfileSdo": "0x30010A",
+    "curjobfileSdo": "0x300161"
+  }
+}
