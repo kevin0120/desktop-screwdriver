@@ -23,7 +23,8 @@ let screenWidth = 800;
 
 
 function createchildWindow(mainWindow) {
-
+    // 获取主显示器的屏幕大小
+    screenWidth = screen.getPrimaryDisplay();
     const childWindow = new BrowserWindow({
         icon: path.join(__dirname, 'resources/leetx.jpg'),
         width: 600,
@@ -35,10 +36,11 @@ function createchildWindow(mainWindow) {
     // 创建子窗口菜单模
     const childMenuTemplate = Menu.buildFromTemplate([
         {
-            label: '管理',
+            label: '设备管理',
             submenu: [
                 {
                     label: '刷新',
+                    accelerator: 'CmdOrCtrl+F5',
                     click: () => childWindow.webContents.reload(),
                 }
             ]
@@ -115,41 +117,74 @@ function createWindow() {
             submenu: [
                 {
                     click: () => mainWindow.webContents.send('update-counter', 1),
-                    label: '更新用户',
+                    label: '更新用户及权限',
                 },
                 {
                     click: () => mainWindow.webContents.send('update-counter', -1),
-                    label: '更新工艺',
+                    label: '更新工艺配置',
                 },
                 {
                     click: () => mainWindow.webContents.send('update-counter', -1),
-                    label: '更新配置',
+                    label: '更新IO配置',
+                },
+                {
+                    click: () => mainWindow.webContents.send('update-counter', 1),
+                    label: '更新总线配置',
+                },
+                {
+                    click: () => mainWindow.webContents.send('update-counter', -1),
+                    label: '更新系统配置',
+                },
+                { type: 'separator' }, // 添加横线
+                {
+                    click: () => mainWindow.webContents.send('update-counter', -1),
+                    label: '更新全部配置',
                 }
             ]
+        },
+        {
+            type: 'separator'
         },
         {
             label: "远程>>>本地",
             submenu: [
                 {
                     click: () => mainWindow.webContents.send('update-counter', 1),
-                    label: '同步用户',
+                    label: '同步用户及权限',
                 },
                 {
                     click: () => mainWindow.webContents.send('update-counter', -1),
-                    label: '同步工艺',
+                    label: '同步工艺配置',
                 },
                 {
                     click: () => mainWindow.webContents.send('update-counter', -1),
-                    label: '同步配置',
+                    label: '同步IO配置',
+                },
+                {
+                    click: () => mainWindow.webContents.send('update-counter', 1),
+                    label: '同步总线配置',
+                },
+                {
+                    click: () => mainWindow.webContents.send('update-counter', -1),
+                    label: '同步系统配置',
+                },
+                { type: 'separator' }, // 添加横线
+                {
+                    click: () => mainWindow.webContents.send('update-counter', -1),
+                    label: '同步全部配置',
                 }
             ]
         },
         {
-            label: "管理",
+            type: 'separator'
+        },
+        {
+            label: "设备管理",
             submenu: [
                 {
                     click: () => mainWindow.webContents.reload(),
                     label: '刷新',
+                    accelerator: 'CmdOrCtrl+F5',
                 },
                 {
                     click: () => {
@@ -169,6 +204,30 @@ function createWindow() {
 
                     },
                     label: '关闭远程设备',
+                }
+            ]
+        },
+        {
+            type: 'separator'
+        },
+        {
+            label: "拧紧结果和曲线",
+            submenu: [
+                {
+                    // click: () => mainWindow.webContents.reload(),
+                    label: '在线导入最新100条结果曲线',
+                },
+                {
+                    // click: () => {
+                    //     if (!childWindow.isDestroyed()) {
+                    //         childWindow.close();
+                    //     }
+                    //
+                    // },
+                    label: '本地导入结果曲线',
+                },
+                {
+                    label: '删除本地结果曲线',
                 }
             ]
         },
