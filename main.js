@@ -4,6 +4,7 @@ const {app, BrowserWindow, ipcMain, dialog, Menu, screen} = require('electron')
 if (require('electron-squirrel-startup')) app.quit();
 const path = require('path')
 const fs = require('fs')
+const ProgressBar = require('electron-progressbar');
 
 const killProcessesByName = require("./backend/manager");
 const configs = require("./shared/config");
@@ -72,13 +73,9 @@ function createchildWindow(mainWindow) {
             return
         }
         childWindow.setSize(mainWindow.getBounds().width, mainWindow.getBounds().height, true)
-        // console.log('窗口移动了');
     });
 
     childWindow.setPosition(mainWindow.getBounds().width + mainWindow.getBounds().x - 15, mainWindow.getBounds().y)
-    // app.setName("Hello Vue")
-    // 模式 3：主进程到渲染器进程
-
     // 当页面加载完成后，执行刷新操作
     mainWindow.webContents.on('did-finish-load', () => {
         mainWindow.setTitle('                                                          离线本地设备');
@@ -108,10 +105,63 @@ function createchildWindow(mainWindow) {
     return childWindow
 }
 
+let mainWindow
+
+function showDialog() {
+    const options = {
+        type: 'info',
+        title: 'Confirmation',
+        message: 'Are you sure you want to proceed?',
+        buttons: ['Cancel', 'OK']
+    };
+
+    dialog.showMessageBox(mainWindow, options).then((response) => {
+        let ind;
+        let bar;
+        if (response.response === 1) {
+            bar = createProgressBar();
+            bar.value = 0
+            ind = setInterval(() => {
+                bar.value = bar.value + 5;
+                if (bar.value >= 100) {
+                    clearInterval(ind)
+                    bar.close()
+                }
+            }, 100)
+            // 用户点击了确定按钮，执行后续操作
+            // 在这里添加您想要执行的代码
+        } else {
+            // 用户点击了取消按钮，忽略操作
+        }
+    });
+}
+
+function createProgressBar() {
+    const progressBar = new ProgressBar({
+        text: '加载中...',
+        detail: '请稍候',
+        indeterminate: false, // 设置为确定进度模式
+        browserWindow: {
+            parent: mainWindow,
+            webPreferences: {
+                nodeIntegration: true // 如果需要在进度条使用 Node.js API，则设置为 true
+            }
+        },
+        style: {
+            text: {}, // 文本样式
+            detail: {}, // 详细信息样式
+            bar: {}, // 进度条样
+            value: {} // 进度值样式
+        }
+    });
+    return progressBar
+}
+
+
 function createWindow() {
 
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         icon: path.join(__dirname, 'resources/icon.png'),
         width: 600,
         height: 1280,
@@ -128,11 +178,11 @@ function createWindow() {
             label: "本地>>>远程",
             submenu: [
                 {
-                    click: () => mainWindow.webContents.send('update-counter', 1),
+                    click: () => showDialog(),
                     label: '更新用户及权限',
                 },
                 {
-                    click: () => mainWindow.webContents.send('update-counter', -1),
+                    click: () => showDialog(),
                     label: '更新工艺配置',
                 },
                 {
@@ -147,7 +197,7 @@ function createWindow() {
                     click: () => mainWindow.webContents.send('update-counter', -1),
                     label: '更新系统配置',
                 },
-                { type: 'separator' }, // 添加横线
+                {type: 'separator'}, // 添加横线
                 {
                     click: () => mainWindow.webContents.send('update-counter', -1),
                     label: '更新全部配置',
@@ -161,11 +211,11 @@ function createWindow() {
             label: "远程>>>本地",
             submenu: [
                 {
-                    click: () => mainWindow.webContents.send('update-counter', 1),
+                    click: showDialog,
                     label: '同步用户及权限',
                 },
                 {
-                    click: () => mainWindow.webContents.send('update-counter', -1),
+                    click: showDialog,
                     label: '同步工艺配置',
                 },
                 {
@@ -180,7 +230,7 @@ function createWindow() {
                     click: () => mainWindow.webContents.send('update-counter', -1),
                     label: '同步系统配置',
                 },
-                { type: 'separator' }, // 添加横线
+                {type: 'separator'}, // 添加横线
                 {
                     click: () => mainWindow.webContents.send('update-counter', -1),
                     label: '同步全部配置',
@@ -194,16 +244,10 @@ function createWindow() {
             label: "拧紧结果和曲线",
             submenu: [
                 {
-                    // click: () => mainWindow.webContents.reload(),
+                    click: () => showDialog(),
                     label: '在线导入最新100条结果曲线',
                 },
                 {
-                    // click: () => {
-                    //     if (!childWindow.isDestroyed()) {
-                    //         childWindow.close();
-                    //     }
-                    //
-                    // },
                     label: '本地导入结果曲线',
                 },
                 {
