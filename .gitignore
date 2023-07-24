@@ -3,5 +3,5 @@ dist
 out/
 log/
 release
-backend/data
-backend/log
+backend/screwdriverapi/data
+backend/screwdriverapi/log
