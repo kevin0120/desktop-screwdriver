@@ -47,18 +47,30 @@ function createchildWindow(mainWindow) {
         }
     ])
 
+    childWindow.setPosition(mainWindow.getBounds().width + mainWindow.getBounds().x - 15, mainWindow.getBounds().y)
+    childWindow.setSize(mainWindow.getBounds().width, mainWindow.getBounds().height, true)
+
     childWindow.setMenu(childMenuTemplate)
     // 加载第个页面
     childWindow.loadURL(project.connectChild);
 
     childWindow.setTitle('                                                          在线远程设备');
 
+    mainWindow.removeAllListeners('move');
+    mainWindow.removeAllListeners('resize');
     // 监听窗口移动事件
     mainWindow.on('move', () => {
         if (childWindow.isDestroyed()) {
             return
         }
         childWindow.setPosition(mainWindow.getBounds().width + mainWindow.getBounds().x - 15, mainWindow.getBounds().y)
+        // console.log('窗口移动了');
+    });
+    // 监听窗口移动事件
+    mainWindow.on('resize', () => {
+        if (childWindow.isDestroyed()) {
+            return
+        }
         childWindow.setSize(mainWindow.getBounds().width, mainWindow.getBounds().height, true)
         // console.log('窗口移动了');
     });
@@ -179,6 +191,30 @@ function createWindow() {
             type: 'separator'
         },
         {
+            label: "拧紧结果和曲线",
+            submenu: [
+                {
+                    // click: () => mainWindow.webContents.reload(),
+                    label: '在线导入最新100条结果曲线',
+                },
+                {
+                    // click: () => {
+                    //     if (!childWindow.isDestroyed()) {
+                    //         childWindow.close();
+                    //     }
+                    //
+                    // },
+                    label: '本地导入结果曲线',
+                },
+                {
+                    label: '删除本地结果曲线',
+                }
+            ]
+        },
+        {
+            type: 'separator'
+        },
+        {
             label: "设备管理",
             submenu: [
                 {
@@ -204,30 +240,6 @@ function createWindow() {
 
                     },
                     label: '关闭远程设备',
-                }
-            ]
-        },
-        {
-            type: 'separator'
-        },
-        {
-            label: "拧紧结果和曲线",
-            submenu: [
-                {
-                    // click: () => mainWindow.webContents.reload(),
-                    label: '在线导入最新100条结果曲线',
-                },
-                {
-                    // click: () => {
-                    //     if (!childWindow.isDestroyed()) {
-                    //         childWindow.close();
-                    //     }
-                    //
-                    // },
-                    label: '本地导入结果曲线',
-                },
-                {
-                    label: '删除本地结果曲线',
                 }
             ]
         },
