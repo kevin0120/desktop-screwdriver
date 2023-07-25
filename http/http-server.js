@@ -1,12 +1,12 @@
-
 const express = require('express');
 const expressWs = require('express-ws');
 const WebSocket = require('ws');
 const path = require('path')
 const {createProxyMiddleware} = require('http-proxy-middleware');
+const {app} = require('electron')
 
 function createServer() {
-    const app = express();
+    const appSever = express();
     // expressWs(app)
 
     const wss = new WebSocket.Server({noServer: true});
@@ -16,7 +16,7 @@ function createServer() {
         });
         ws.send('something');
     });
-    app.on('upgrade', function upgrade(request, socket, head) {
+    appSever.on('upgrade', function upgrade(request, socket, head) {
         apiProxy(request, socket, head, function done(err) {
             if (err) {
                 console.log(err);
@@ -29,39 +29,41 @@ function createServer() {
             });
         });
     });
-
+    console.log(__dirname)
+    // console.log(app.getAppPath())
     // 静态资源服务器
-    app.use(express.static(path.resolve(__dirname, 'web')));
+    appSever.use(express.static(path.resolve( app.getAppPath(), 'resources/web')));
 
     // 处理所有路由请求
-    app.use((req, res, next) => {
+    appSever.use((req, res, next) => {
         const {url} = req;
         // 如果请求的URL不是以"/api"和"/websocket"开头，则进行转发
         if (!url.startsWith('/api') && !url.startsWith('/websocket') && !url.startsWith('/js') && !url.startsWith('/css')) {
             // 在这里执行转发操作，例如将请求发到另一个服务器
             // 这里只是一个示例，你需要根据实际情进行修改
-            res.sendFile(path.resolve(__dirname, 'web', 'index.html'));
+            res.sendFile(path.resolve( app.getAppPath(), 'resources/web', 'index.html'));
         } else {
             next()
         }
     });
 
     // 设置代理转发
-    app.use('/api', createProxyMiddleware({
+    appSever.use('/api', createProxyMiddleware({
         target: 'http://127.0.0.1:9001/v2',
         changeOrigin: true,
         pathRewrite: {"^/api": ''}
     }));
 
     // 设置代理转发
-    app.use(createProxyMiddleware('/websocket', {
+    appSever.use(createProxyMiddleware('/websocket', {
         target: 'ws://127.0.0.1:9001/',
         changeOrigin: true,
         ws: true,
         pathRewrite: {"^/websocket": ''}
     }));
-    return app;
+    return appSever;
 }
+
 const server = createServer();
 server.listen(30003, () => {
     // createWebSocketServer(server);

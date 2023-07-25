@@ -1,15 +1,16 @@
-// Modules to control application life and create native browser window
+// Modules to control application life and create native browser windows
 const {app, BrowserWindow, ipcMain, dialog, Menu, screen} = require('electron')
 // run this as early in the main process as possible
 if (require('electron-squirrel-startup')) app.quit();
-const path = require('path')
-const fs = require('fs')
-const ProgressBar = require('electron-progressbar');
 
-const killProcessesByName = require("./backend/manager");
+const createsettingWindow = require("./src/windows/settingWindow");
+
+const createcontrolWindow = require("./src/windows/controlWindow");
+
+const {killProcessesByName, initBackend} = require("./src/manager");
 const configs = require("./shared/config");
-const {fork, spawn} = require('child_process')
-const httpServer = fork('./http/http-server.js')
+
+const httpServer = require('./http/http-server.js')
 let project = {}
 if (!process.env.Project_Entrance) {
     project = configs.projects[configs.project]
@@ -19,340 +20,55 @@ if (!process.env.Project_Entrance) {
     project = {}
 }
 
-
-let screenWidth = 800;
-
-
-function createchildWindow(mainWindow) {
-    // 获取主显示器的屏幕大小
-    screenWidth = screen.getPrimaryDisplay();
-    const childWindow = new BrowserWindow({
-        icon: path.join(__dirname, 'resources/leetx.jpg'),
-        width: 600,
-        height: 1280,
-        parent: mainWindow,
-        modal: false,
-        show: false
-    });
-    // 创建子窗口菜单模
-    const childMenuTemplate = Menu.buildFromTemplate([
-        {
-            label: '设备管理',
-            submenu: [
-                {
-                    label: '刷新',
-                    accelerator: 'CmdOrCtrl+F5',
-                    click: () => childWindow.webContents.reload(),
-                }
-            ]
-        }
-    ])
-
-    childWindow.setPosition(mainWindow.getBounds().width + mainWindow.getBounds().x - 15, mainWindow.getBounds().y)
-    childWindow.setSize(mainWindow.getBounds().width, mainWindow.getBounds().height, true)
-
-    childWindow.setMenu(childMenuTemplate)
-    // 加载第个页面
-    childWindow.loadURL(project.connectChild);
-
-    childWindow.setTitle('                                                          在线远程设备');
-
-    mainWindow.removeAllListeners('move');
-    mainWindow.removeAllListeners('resize');
-    // 监听窗口移动事件
-    mainWindow.on('move', () => {
-        if (childWindow.isDestroyed()) {
-            return
-        }
-        childWindow.setPosition(mainWindow.getBounds().width + mainWindow.getBounds().x - 15, mainWindow.getBounds().y)
-        // console.log('窗口移动了');
-    });
-    // 监听窗口移动事件
-    mainWindow.on('resize', () => {
-        if (childWindow.isDestroyed()) {
-            return
-        }
-        childWindow.setSize(mainWindow.getBounds().width, mainWindow.getBounds().height, true)
-    });
-
-    childWindow.setPosition(mainWindow.getBounds().width + mainWindow.getBounds().x - 15, mainWindow.getBounds().y)
-    // 当页面加载完成后，执行刷新操作
-    mainWindow.webContents.on('did-finish-load', () => {
-        mainWindow.setTitle('                                                          离线本地设备');
-        mainWindow.webContents.reload();
-        mainWindow.webContents.removeAllListeners('did-finish-load');
-        if (!childWindow.isDestroyed()) {
-            childWindow.show();
-            childWindow.webContents.reload();
-        }
-
-    });
-
-    // 当页面加载完成后，执行刷新操作
-    childWindow.webContents.on('did-finish-load', () => {
-        childWindow.setTitle('                                                          在线远程设备');
-    });
-    // 当页面加载完成后，执行刷新操作
-    mainWindow.webContents.on('did-fail-load', () => {
-        mainWindow.webContents.reload();
-    });
-    // 当页面加载完成后，执行刷新操作
-    childWindow.webContents.on('did-fail-load', () => {
-        childWindow.loadURL("http://127.0.0.1:30003/404");
-    });
-
-
-    return childWindow
-}
-
-let mainWindow
-
-function showDialog() {
-    const options = {
-        type: 'info',
-        title: 'Confirmation',
-        message: 'Are you sure you want to proceed?',
-        buttons: ['Cancel', 'OK']
-    };
-
-    dialog.showMessageBox(mainWindow, options).then((response) => {
-        let ind;
-        let bar;
-        if (response.response === 1) {
-            bar = createProgressBar();
-            bar.value = 0
-            ind = setInterval(() => {
-                bar.value = bar.value + 5;
-                if (bar.value >= 100) {
-                    clearInterval(ind)
-                    bar.close()
-                }
-            }, 100)
-            // 用户点击了确定按钮，执行后续操作
-            // 在这里添加您想要执行的代码
-        } else {
-            // 用户点击了取消按钮，忽略操作
-        }
-    });
-}
-
-function createProgressBar() {
-    const progressBar = new ProgressBar({
-        text: '加载中...',
-        detail: '请稍候',
-        indeterminate: false, // 设置为确定进度模式
-        browserWindow: {
-            parent: mainWindow,
-            webPreferences: {
-                nodeIntegration: true // 如果需要在进度条使用 Node.js API，则设置为 true
-            }
-        },
-        style: {
-            text: {}, // 文本样式
-            detail: {}, // 详细信息样式
-            bar: {}, // 进度条样
-            value: {} // 进度值样式
-        }
-    });
-    return progressBar
-}
-
-
-function createWindow() {
-
-    // Create the browser window.
-    mainWindow = new BrowserWindow({
-        icon: path.join(__dirname, 'resources/icon.png'),
-        width: 600,
-        height: 1280,
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            preload: path.join(__dirname, 'preload.js')
-        }
-    })
-    mainWindow.setPosition(screenWidth.size.width / 2 - mainWindow.getBounds().width, mainWindow.getBounds().y)
-    let childWindow = createchildWindow(mainWindow);
-    const parentMenuTemplate = Menu.buildFromTemplate([
-        {
-            label: "本地>>>远程",
-            submenu: [
-                {
-                    click: () => showDialog(),
-                    label: '更新用户及权限',
-                },
-                {
-                    click: () => showDialog(),
-                    label: '更新工艺配置',
-                },
-                {
-                    click: () => mainWindow.webContents.send('update-counter', -1),
-                    label: '更新IO配置',
-                },
-                {
-                    click: () => mainWindow.webContents.send('update-counter', 1),
-                    label: '更新总线配置',
-                },
-                {
-                    click: () => mainWindow.webContents.send('update-counter', -1),
-                    label: '更新系统配置',
-                },
-                {type: 'separator'}, // 添加横线
-                {
-                    click: () => mainWindow.webContents.send('update-counter', -1),
-                    label: '更新全部配置',
-                }
-            ]
-        },
-        {
-            type: 'separator'
-        },
-        {
-            label: "远程>>>本地",
-            submenu: [
-                {
-                    click: showDialog,
-                    label: '同步用户及权限',
-                },
-                {
-                    click: showDialog,
-                    label: '同步工艺配置',
-                },
-                {
-                    click: () => mainWindow.webContents.send('update-counter', -1),
-                    label: '同步IO配置',
-                },
-                {
-                    click: () => mainWindow.webContents.send('update-counter', 1),
-                    label: '同步总线配置',
-                },
-                {
-                    click: () => mainWindow.webContents.send('update-counter', -1),
-                    label: '同步系统配置',
-                },
-                {type: 'separator'}, // 添加横线
-                {
-                    click: () => mainWindow.webContents.send('update-counter', -1),
-                    label: '同步全部配置',
-                }
-            ]
-        },
-        {
-            type: 'separator'
-        },
-        {
-            label: "拧紧结果和曲线",
-            submenu: [
-                {
-                    click: () => showDialog(),
-                    label: '在线导入最新100条结果曲线',
-                },
-                {
-                    label: '本地导入结果曲线',
-                },
-                {
-                    label: '删除本地结果曲线',
-                }
-            ]
-        },
-        {
-            type: 'separator'
-        },
-        {
-            label: "设备管理",
-            submenu: [
-                {
-                    click: () => mainWindow.webContents.reload(),
-                    label: '刷新',
-                    accelerator: 'CmdOrCtrl+F5',
-                },
-                {
-                    click: () => {
-                        if (childWindow.isDestroyed()) {
-                            childWindow = createchildWindow(mainWindow);
-                            childWindow.show();
-                        }
-
-                    },
-                    label: '打开远程设备',
-                },
-                {
-                    click: () => {
-                        if (!childWindow.isDestroyed()) {
-                            childWindow.close();
-                        }
-
-                    },
-                    label: '关闭远程设备',
-                }
-            ]
-        },
-    ])
-    mainWindow.setMenu(parentMenuTemplate)
-    if (project.openDevTools) {
-        mainWindow.webContents.openDevTools()
-    }
-    mainWindow.setFullScreen(project.setFullScreen);
-    // Open the DevTools.
-    mainWindow.loadURL(project.connect);
-    mainWindow.setTitle('                                                          离线本地设备');
-}
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 
-function handleSetTitle(event, title) {
-    const webContents = event.sender
-    const win = BrowserWindow.fromWebContents(webContents)
-    // console.log(win,title)
-    win.setTitle(title)
-}
+// function handleSetTitle(event, title) {
+//     const webContents = event.sender
+//     const win = BrowserWindow.fromWebContents(webContents)
+//     // console.log(win,title)
+//     win.setTitle(title)
+// }
+//
+// async function handleFileOpen() {
+//     const {canceled, filePaths} = await dialog.showOpenDialog()
+//     if (canceled) {
+//
+//     } else {
+//         return filePaths[0]
+//     }
+// }
+let mainWindow
 
-async function handleFileOpen() {
-    const {canceled, filePaths} = await dialog.showOpenDialog()
-    if (canceled) {
-
-    } else {
-        return filePaths[0]
-    }
-}
-
-let childProcess
 app.on('ready', function () {
     // 启动三方程序
     //当前应用的目录
-    try {
-        const appPath = app.isPackaged ? path.dirname(app.getPath('exe')) : app.getAppPath();
-        if (!fs.existsSync(path.resolve(appPath, 'backend'))) {
-            fs.mkdirSync(path.resolve(appPath, 'backend'));
-        }
-        if (!fs.existsSync(path.resolve(appPath, 'backend/screwdriverapi'))) {
-            fs.mkdirSync(path.resolve(appPath, 'backend/screwdriverapi'));
-        }
-        if (!fs.existsSync(path.resolve(appPath, 'backend/screwdriverapi/config'))) {
-            fs.mkdirSync(path.resolve(appPath, 'backend/screwdriverapi/config'));
-            fs.cpSync(path.resolve(__dirname, 'backend/screwdriverapi/config'), path.resolve(appPath, 'backend/screwdriverapi/config'), {recursive: true})
-        }
+    initBackend()
 
-        process.chdir(path.resolve(appPath, 'backend/screwdriverapi'));
-        childProcess = spawn(path.resolve(__dirname, 'backend/screwdriverapi', 'screwdriverapi.exe'));
-    } catch (e) {
-        console.error(e.message);
-        app.quit()
-    }
-    // 获取主显示器的屏幕大小
-    screenWidth = screen.getPrimaryDisplay();
 
+    // // 模式 1：渲染器进程到主进程（单向）
+    // ipcMain.on('set-title', handleSetTitle)
+    // // 模式 2：渲染器进程到主进程（双向）
+    // ipcMain.handle('dialog:openFile', handleFileOpen)
+    // // 模式 3：主进程到渲染器进程
+    // ipcMain.on('counter-value', (_event, value) => {
+    //     console.log(value) // will print value to Node console
+    // })
     // 模式 1：渲染器进程到主进程（单向）
-    ipcMain.on('set-title', handleSetTitle)
-    // 模式 2：渲染器进程到主进程（双向）
-    ipcMain.handle('dialog:openFile', handleFileOpen)
-    // 模式 3：主进程到渲染器进程
-    ipcMain.on('counter-value', (_event, value) => {
-        console.log(value) // will print value to Node console
+    ipcMain.on('openController', (event, ip) => {
+        if (mainWindow == null || (mainWindow && mainWindow.isDestroyed())) {
+            mainWindow = createsettingWindow(ip)
+        }
+
     })
-    createWindow()
+    // 模式 3：主进程到渲染器进程
+    ipcMain.on('closeController', (ip) => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.close();
+        }
+    })
+    createcontrolWindow()
 });
 
 app.on('before-quit', function () {
@@ -360,14 +76,14 @@ app.on('before-quit', function () {
 })
 
 app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
+    // On macOS it's common to re-create a windows in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) createsettingWindow()
 })
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on('window-all-closed', function () {
+app.on('windows-all-closed', function () {
 
     httpServer.kill();
     if (process.platform !== 'darwin') app.quit()

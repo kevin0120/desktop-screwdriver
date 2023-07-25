@@ -31,6 +31,8 @@ const { contextBridge, ipcRenderer } = require('electron')
 window.electronAPI = {
     setTitle: (title) => ipcRenderer.send('set-title', title),
     openFile: () => ipcRenderer.invoke('dialog:openFile'),
-    handleCounter: (callback) => ipcRenderer.on('update-counter', callback)
+    handleCounter: (callback) => ipcRenderer.on('update-counter', callback),
 
+    openController: (ip) => ipcRenderer.send('openController', ip),
+    closeController: () => ipcRenderer.send('closeController'),
 }
