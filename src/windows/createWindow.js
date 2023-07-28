@@ -1,7 +1,6 @@
 const {app, BrowserWindow, dialog, Menu, screen} = require('electron')
 const path = require('path')
-const configs = require("../../shared/config");
-
+const {configs,setdefaultToken} = require("../../shared/config");
 const ProgressBar = require('electron-progressbar');
 let project = {}
 if (!process.env.Project_Entrance) {
@@ -24,8 +23,8 @@ function isAlive(window) {
 
 }
 
-
 function createchildWindow(mainWindow) {
+    setdefaultToken(project.connectChild)
     // 获取主显示器的屏幕大小
     screenWidth = screen.getPrimaryDisplay();
     childWindow = new BrowserWindow({
@@ -44,7 +43,7 @@ function createchildWindow(mainWindow) {
                 {
                     label: '刷新',
                     accelerator: 'CmdOrCtrl+F5',
-                    click: () => childWindow.webContents.reload(),
+                    click: () => childWindow.loadURL(project.connectChild),
                 }
             ]
         }
@@ -56,9 +55,9 @@ function createchildWindow(mainWindow) {
     childWindow.setMenu(childMenuTemplate)
     // 加载第个页面
     childWindow.loadURL(project.connectChild);
-
+    childWindow.webContents.openDevTools()
     childWindow.setTitle('                                                          在线远程设备');
-
+    mainWindow.webContents.openDevTools()
     mainWindow.removeAllListeners('move');
     mainWindow.removeAllListeners('resize');
     // 监听窗口移动事件

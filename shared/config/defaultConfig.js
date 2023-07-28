@@ -6,6 +6,7 @@ module.exports.defaultConfigs = {
             name:'pure',
             // connect:'./web/index.html',
             connect:'http://127.0.0.1:30003/',
+            // connectChild:'http://192.168.20.145/',
             connectChild:'http://192.168.20.145/',
             setFullScreen:false,
             openDevTools:false,

@@ -1,4 +1,7 @@
 const {defaultConfigs} = require('./defaultConfig');
+const {defaultToken,setdefaultToken} = require('./defaultToken');
+
+
 const {getAppDirectory} = require('../logger');
 
 const path = require('path');
@@ -26,4 +29,9 @@ if (Object.keys(settings.getAll()).length === 0) {
 }
 
 const configs = settings.getAll();
-module.exports = configs;
+module.exports = {
+    configs,
+    defaultToken,
+    setdefaultToken
+}
+;

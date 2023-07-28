@@ -1,11 +1,11 @@
 // Modules to control application life and create native browser windows
-const {app, BrowserWindow, ipcMain, dialog, Menu, screen} = require('electron')
+const {app, BrowserWindow} = require('electron')
 // run this as early in the main process as possible
 if (require('electron-squirrel-startup')) app.quit();
 const createmainWindow = require("./src/windows/createWindow");
 
 const {killProcessesByName, initBackend} = require("./src/manager");
-const configs = require("./shared/config");
+const {configs, setdefaultToken} = require("./shared/config");
 
 const httpServer = require('./http/http-server.js')
 let project = {}
@@ -20,9 +20,12 @@ if (!process.env.Project_Entrance) {
 let mainWindow
 
 app.on('ready', function () {
-    // 启动三方程序
-    //当前应用的目录
-    initBackend()
+    // 获取默认会话
+
+    setdefaultToken("http://127.0.0.1")
+    // // 启动三方程序
+    // //当前应用的目录
+    // initBackend()
 
     // // 模式 1：渲染器进程到主进程（单向）
     // ipcMain.on('openController', (event, ip) => {
