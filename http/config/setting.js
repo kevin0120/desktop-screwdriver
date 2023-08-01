@@ -1,0 +1,132 @@
+const {defaultBYDConfigs} = require("../../shared/config/defaultControllers");
+
+
+function settingHandleHttp(app) {
+    app.get('/api/dev/cfg/base/info', (req, res) => {
+        res.send({
+            status: 0,
+            description: "",
+            data: defaultBYDConfigs.dev.cfg_base_info
+        });
+    });
+    app.get('/api/dev/ver', (req, res) => {
+        res.send({
+            status: 0,
+            description: "",
+            data: defaultBYDConfigs.dev.ver
+        });
+    });
+
+    app.post('/api/dev/cfg/base/info/set', (req, res) => {
+        defaultBYDConfigs.dev.cfg_base_info.device_id = req.body.device_id
+        defaultBYDConfigs.dev.cfg_base_info.device_name = req.body.device_name
+        res.send({
+            status: 0,
+            description: ""
+        });
+    });
+
+
+    app.get('/api/dev/cfg/ctrl/src', (req, res) => {
+        res.send({
+            status: 0,
+            description: "",
+            data: defaultBYDConfigs.dev.cfg_ctrl_src
+        });
+    });
+
+    app.post('/api/dev/cfg/ctrl/src/set', (req, res) => {
+        defaultBYDConfigs.dev.cfg_ctrl_src = req.body
+        res.send({
+            status: 0,
+            description: "",
+        });
+    });
+
+
+    app.get('/api/bus/io/cfg/upload', (req, res) => {
+        res.send({
+            status: 0,
+            description: "",
+            data: defaultBYDConfigs.bus.io_cfg_upload
+        });
+    });
+    app.post('/api/bus/io/cfg/download', (req, res) => {
+        defaultBYDConfigs.bus.io_cfg_upload = req.body
+        res.send({
+            status: 0,
+            description: "",
+        });
+    });
+
+
+    app.get('/api/bus/fieldbus/cfg/upload', (req, res) => {
+        res.send({
+            status: 0,
+            description: "",
+            data: defaultBYDConfigs.bus.fieldbus_cfg_upload
+        });
+    });
+    app.post('/api/bus/fieldbus/cfg/download', (req, res) => {
+        defaultBYDConfigs.bus.fieldbus_cfg_upload = req.body
+        res.send({
+            status: 0,
+            description: "",
+        });
+    });
+
+
+    app.get('/api/dev/cfg/net/op', (req, res) => {
+        res.send({
+            status: 0,
+            description: "",
+            data: defaultBYDConfigs.dev.cfg_net_op
+        });
+    });
+    app.post('/api/dev/cfg/net/op/set', (req, res) => {
+        defaultBYDConfigs.dev.cfg_net_op = req.body
+        res.send({
+            status: 0,
+            description: "",
+
+        });
+    });
+
+
+    app.get('/api/dev/cfg/serial/rs232', (req, res) => {
+        res.send({
+            status: 0,
+            description: "",
+            data: defaultBYDConfigs.dev.cfg_serial_rs232
+        });
+    });
+
+    app.post('/api/dev/cfg/serial/set', (req, res) => {
+        defaultBYDConfigs.dev.cfg_serial_rs232 = req.body
+        res.send({
+            status: 0,
+            description: "",
+
+        });
+    });
+
+
+    app.get('/api/bus/sn/cfg/upload', (req, res) => {
+        res.send({
+            status: 0,
+            description: "",
+            data: defaultBYDConfigs.bus.sn_ctrl_upload
+        });
+    });
+    app.post('/api/bus/sn/cfg/download', (req, res) => {
+        defaultBYDConfigs.bus.sn_ctrl_upload = req.body
+        res.send({
+            status: 0,
+            description: "",
+
+        });
+    });
+}
+
+
+module.exports.settingHandleHttp = settingHandleHttp

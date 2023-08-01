@@ -4,9 +4,6 @@ const WebSocket = require('ws');
 const path = require('path')
 const {createProxyMiddleware} = require('http-proxy-middleware');
 const {app} = require('electron')
-const {settingHandleHttp} = require('./config/setting')
-
-
 
 function createServer() {
     const appSever = express();
@@ -49,13 +46,13 @@ function createServer() {
             next()
         }
     });
-    appSever.use(express.json());
-    // // 设置代理转发
-    // appSever.use('/api', createProxyMiddleware({
-    //     target: 'http://127.0.0.1:9001/v2',
-    //     changeOrigin: true,
-    //     pathRewrite: {"^/api": ''}
-    // }));
+
+    // 设置代理转发
+    appSever.use('/api', createProxyMiddleware({
+        target: 'http://127.0.0.1:9001/v2',
+        changeOrigin: true,
+        pathRewrite: {"^/api": ''}
+    }));
 
     // 设置代理转发
     appSever.use(createProxyMiddleware('/websocket', {
@@ -68,12 +65,6 @@ function createServer() {
 }
 
 const server = createServer();
-
-
-settingHandleHttp(server)
-
-
-
 server.listen(30003, () => {
     // createWebSocketServer(server);
     console.log('hello electron!')

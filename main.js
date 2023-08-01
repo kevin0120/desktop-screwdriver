@@ -24,8 +24,8 @@ app.on('ready', function () {
 
     setdefaultToken("http://127.0.0.1")
     // // 启动三方程序
-    // //当前应用的目录
-    // initBackend()
+    //当前应用的目录
+    initBackend()
 
     // // 模式 1：渲染器进程到主进程（单向）
     // ipcMain.on('openController', (event, ip) => {
