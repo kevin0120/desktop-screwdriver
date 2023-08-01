@@ -7,6 +7,8 @@ const createmainWindow = require("./src/windows/createWindow");
 const {killProcessesByName, initBackend} = require("./src/manager");
 const {configs, setdefaultToken} = require("./shared/config");
 
+const {getWorkDirectory} = require("./shared/data/baseConfig");
+
 const httpServer = require('./http/http-server.js')
 let project = {}
 if (!process.env.Project_Entrance) {
@@ -26,7 +28,7 @@ app.on('ready', function () {
     // // 启动三方程序
     //当前应用的目录
     initBackend()
-
+    getWorkDirectory()
     // // 模式 1：渲染器进程到主进程（单向）
     // ipcMain.on('openController', (event, ip) => {
     //     if (mainWindow == null || (mainWindow && mainWindow.isDestroyed())) {

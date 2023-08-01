@@ -12,7 +12,7 @@ const fs = require('fs');
 const dir = getAppDirectory();
 const isExist = fs.existsSync(dir);
 if (!isExist) {
-    fs.mkdirpSync(dir);
+    fs.mkdirSync(dir,{recursive:true});
 }
 
 settings.setPath(path.join(dir, 'setting.json'));
