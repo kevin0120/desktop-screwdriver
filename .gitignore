@@ -2,6 +2,7 @@ node_modules
 dist
 out/
 log/
+data/
 release
 backend/screwdriverapi/data
 backend/screwdriverapi/log

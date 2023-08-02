@@ -1,25 +1,30 @@
 const {defaultBYDConfigs} = require("../../shared/config/defaultControllers");
-
+const {fetchCurrentController, saveCurrentController} = require("../../shared/data/baseConfig");
 
 function settingHandleHttp(app) {
     app.get('/api/dev/cfg/base/info', (req, res) => {
+        let config = fetchCurrentController()
+
         res.send({
             status: 0,
             description: "",
-            data: defaultBYDConfigs.dev.cfg_base_info
+            data: config.dev.cfg_base_info
         });
     });
     app.get('/api/dev/ver', (req, res) => {
+        let config = fetchCurrentController()
         res.send({
             status: 0,
             description: "",
-            data: defaultBYDConfigs.dev.ver
+            data: config.dev.ver
         });
     });
 
     app.post('/api/dev/cfg/base/info/set', (req, res) => {
-        defaultBYDConfigs.dev.cfg_base_info.device_id = req.body.device_id
-        defaultBYDConfigs.dev.cfg_base_info.device_name = req.body.device_name
+        let config = fetchCurrentController()
+        config.dev.cfg_base_info.device_id = req.body.device_id
+        config.dev.cfg_base_info.device_name = req.body.device_name
+        saveCurrentController()
         res.send({
             status: 0,
             description: ""
@@ -128,5 +133,26 @@ function settingHandleHttp(app) {
     });
 }
 
+function settingHandleWs(wss) {
+    // 监听 WebSocket 连接事件
+    wss.on('connection', (ws, req) => {
+        console.log('WebSocket connected');
+        console.log(req.url);
+        let config = fetchCurrentController()
+        switch (req.url) {
+            case '/websocket/gstatus':
+                // ws.send(config.ws)
+                setInterval(() => {
+                    config.ws.heartbit=new Date().getTime()
+                    ws.send(JSON.stringify(config.ws))
+                }, 200)
 
+                break;
+            default:
+                console.log(` url: ${req.url}`);
+        }
+    });
+}
+
+module.exports.settingHandleWs = settingHandleWs
 module.exports.settingHandleHttp = settingHandleHttp
