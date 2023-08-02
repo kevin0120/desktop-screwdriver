@@ -11,6 +11,18 @@ let currentController = {
     ip: "192.168.20.145",
 }
 
+function getcurrentController() {
+    return currentController
+}
+
+function setcurrentController(c) {
+    currentController = c
+    CurrentController = fetchCurrentController()
+    CurrentController.dev.cfg_base_info.device_name = currentController.device_name
+    CurrentController.dev.cfg_base_info.device_id = currentController.device_id
+    CurrentController.dev.cfg_net_op.ip = currentController.ip
+    saveCurrentController()
+}
 
 const appPath = app.isPackaged ? path.dirname(app.getPath('exe')) : app.getAppPath();
 
@@ -44,12 +56,10 @@ function fetchCurrentController() {
             if (Object.keys(settings.getAll()).length === 0) {
                 settings.setAll(defaultBYDConfigs, {prettify: true});
             }
-
             CurrentController = settings.getAll();
             return CurrentController;
     }
 }
-
 
 function saveCurrentController() {
     switch (process.platform) {
@@ -63,3 +73,6 @@ function saveCurrentController() {
 
 module.exports.fetchCurrentController = fetchCurrentController;
 module.exports.saveCurrentController = saveCurrentController;
+module.exports.setcurrentController = setcurrentController;
+module.exports.getcurrentController = getcurrentController;
+module.exports.getWorkDirectory = getWorkDirectory;

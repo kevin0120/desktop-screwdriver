@@ -1,12 +1,12 @@
 // Modules to control application life and create native browser windows
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, ipcMain,shell } = require('electron')
 // run this as early in the main process as possible
 if (require('electron-squirrel-startup')) app.quit();
 const createmainWindow = require("./src/windows/createWindow");
 
 const {killProcessesByName, initBackend} = require("./src/manager");
 const {configs, setdefaultToken} = require("./shared/config");
-
+const {setcurrentController, getcurrentController,getWorkDirectory} = require("./shared/data/baseConfig");
 // const {getWorkDirectory} = require("./shared/data/baseConfig");
 
 const httpServer = require('./http/http-server.js')
@@ -26,21 +26,31 @@ app.on('ready', function () {
 
     setdefaultToken("http://127.0.0.1")
     // // 启动三方程序
-    //当前应用的目录
-    initBackend()
+    // //当前应用的目录
+    // initBackend()
     // getWorkDirectory()
-    // // 模式 1：渲染器进程到主进程（单向）
-    // ipcMain.on('openController', (event, ip) => {
-    //     if (mainWindow == null || (mainWindow && mainWindow.isDestroyed())) {
-    //         mainWindow = createmainWindow(ip)
-    //     }
-    // })
-    // // 模式 3：主进程到渲染器进程
-    // ipcMain.on('closeController', (ip) => {
-    //     if (mainWindow && !mainWindow.isDestroyed()) {
-    //         mainWindow.close();
-    //     }
-    // })
+    // 模式 1：渲染器进程到主进程（单向）
+    ipcMain.on('openController', (event, ip) => {
+        console.log(ip)
+        setcurrentController({
+            device_name: ip.controllerName,
+            device_id: parseInt(ip.deviceId),
+            ip: ip.ipAddress,
+        })
+    })
+    // 模式 3：主进程到渲染器进程
+    ipcMain.on('getController', (event) => {
+        event.returnValue = getcurrentController()
+    })
+
+    // 模式 3：主进程到渲染器进程
+    ipcMain.on('openWorkingDisk', (event) => {
+        shell.openPath(getWorkDirectory()).then(() => {
+            console.log('Folder opened successfully');
+        }).catch(err => {
+            console.error('Error opening folder:', err);
+        });
+    })
     createmainWindow()
 });
 

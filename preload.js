@@ -32,7 +32,7 @@ window.electronAPI = {
     setTitle: (title) => ipcRenderer.send('set-title', title),
     openFile: () => ipcRenderer.invoke('dialog:openFile'),
     handleCounter: (callback) => ipcRenderer.on('update-counter', callback),
-
+    openWorkingDisk: () => ipcRenderer.send('openWorkingDisk'),
     openController: (ip) => ipcRenderer.send('openController', ip),
-    closeController: () => ipcRenderer.send('closeController'),
+    getController: () => ipcRenderer.sendSync('getController'),
 }
