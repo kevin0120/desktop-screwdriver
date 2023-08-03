@@ -322,7 +322,6 @@ function createchildWindow(mainWindow) {
     return childWindow
 }
 
-
 function createmainWindow() {
     // 获取主显示器的屏幕大小
     let screenWidth = screen.getPrimaryDisplay();
@@ -346,13 +345,15 @@ function createmainWindow() {
     mainWindow.loadFile(path.resolve(__dirname, './hellodevice.html'));
     // 当页面加载完成后，执行刷新操作
     mainWindow.webContents.on('did-finish-load', () => {
-        mainWindow.setTitle(`                                           用户及设备管理${getcurrentController().device_id}@${getcurrentController().device_name}@${getcurrentController().ip}`);
+        mainWindow.setTitle(`                                  用户及设备管理${getcurrentController().device_id}@${getcurrentController().device_name}@${getcurrentController().ip}`);
     });
 }
 
 function reloadWindows() {
     if (isAlive(childWindow)) {
-        childWindow.webContents.reload()
+        childWindow.close()
+        childWindow = createchildWindow(mainWindow);
+        childWindow.show();
     }
     if (isAlive(mainWindow)) {
         mainWindow.webContents.reload()
