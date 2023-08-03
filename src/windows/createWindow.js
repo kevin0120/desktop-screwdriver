@@ -188,12 +188,9 @@ const MenuTemplate2 = Menu.buildFromTemplate([
     {
         label: "用户管理",
         click: () => mainWindow.loadURL('http://127.0.0.1:30003/setup/setuser/usrmng').then(mainWindow.setMenu(MenuTemplate3)),
-        // click: () =>     mainWindow.loadFile(path.resolve(__dirname, './hellouser.html')),
-
     },
 
 ])
-
 
 const MenuTemplate3 = Menu.buildFromTemplate([
     {
@@ -301,7 +298,6 @@ function createchildWindow(mainWindow) {
             return
         }
         childWindow.setPosition(mainWindow.getBounds().width + mainWindow.getBounds().x - 15, mainWindow.getBounds().y)
-        // console.log('窗口移动了');
     });
     // 监听窗口移动事件
     mainWindow.on('resize', () => {
@@ -353,7 +349,6 @@ function createmainWindow() {
         mainWindow.setTitle(`                                           用户及设备管理${getcurrentController().device_id}@${getcurrentController().device_name}@${getcurrentController().ip}`);
     });
 }
-
 
 function reloadWindows() {
     if (isAlive(childWindow)) {
