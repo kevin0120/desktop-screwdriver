@@ -8,11 +8,8 @@
             var deviceId = document.getElementById("deviceId").value;
             var controllerName = document.getElementById("controllerName").value;
             // 在这里可以执行你想要的操作，例如发送请求或处理数据
-            window.electronAPI.openController({ipAddress, deviceId, controllerName})
+            window.electronAPI.setCurrentController({ipAddress, deviceId, controllerName})
             // 示例：在控制台打印输入的值
-            console.log("IP地址: " + ipAddress);
-            console.log("设备ID: " + deviceId);
-            console.log("控器名: " + controllerName);
         }
 
         function handleClick2() {

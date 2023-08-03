@@ -1,29 +1,28 @@
 const {defaultBYDConfigs} = require("../../shared/config/defaultControllers");
-const {fetchCurrentController, saveCurrentController} = require("../../shared/data/baseConfig");
+const {fetchCurrentController, saveCurrentController, getcurrentController} = require("../../shared/data/baseConfig");
+// 导入原生的axios
+const axios = require('axios')
+
+const {defaultToken} = require('../../shared/config/defaultToken')
 
 function settingHandleHttp(app) {
     app.get('/api/dev/cfg/base/info', (req, res) => {
-        let config = fetchCurrentController()
-
         res.send({
             status: 0,
             description: "",
-            data: config.dev.cfg_base_info
+            data: fetchCurrentController().dev.cfg_base_info
         });
     });
     app.get('/api/dev/ver', (req, res) => {
-        let config = fetchCurrentController()
         res.send({
             status: 0,
             description: "",
-            data: config.dev.ver
+            data: fetchCurrentController().dev.ver
         });
     });
-
     app.post('/api/dev/cfg/base/info/set', (req, res) => {
-        let config = fetchCurrentController()
-        config.dev.cfg_base_info.device_id = req.body.device_id
-        config.dev.cfg_base_info.device_name = req.body.device_name
+        fetchCurrentController().dev.cfg_base_info.device_id = req.body.device_id
+        fetchCurrentController().dev.cfg_base_info.device_name = req.body.device_name
         saveCurrentController()
         res.send({
             status: 0,
@@ -36,12 +35,13 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: defaultBYDConfigs.dev.cfg_ctrl_src
+            data: fetchCurrentController().dev.cfg_ctrl_src
         });
     });
 
     app.post('/api/dev/cfg/ctrl/src/set', (req, res) => {
-        defaultBYDConfigs.dev.cfg_ctrl_src = req.body
+        fetchCurrentController().dev.cfg_ctrl_src = req.body
+        saveCurrentController()
         res.send({
             status: 0,
             description: "",
@@ -53,11 +53,12 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: defaultBYDConfigs.bus.io_cfg_upload
+            data: fetchCurrentController().bus.io_cfg_upload
         });
     });
     app.post('/api/bus/io/cfg/download', (req, res) => {
-        defaultBYDConfigs.bus.io_cfg_upload = req.body
+        fetchCurrentController().bus.io_cfg_upload = req.body
+        saveCurrentController()
         res.send({
             status: 0,
             description: "",
@@ -69,11 +70,12 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: defaultBYDConfigs.bus.fieldbus_cfg_upload
+            data: fetchCurrentController().bus.fieldbus_cfg_upload
         });
     });
     app.post('/api/bus/fieldbus/cfg/download', (req, res) => {
-        defaultBYDConfigs.bus.fieldbus_cfg_upload = req.body
+        fetchCurrentController().bus.fieldbus_cfg_upload = req.body
+        saveCurrentController()
         res.send({
             status: 0,
             description: "",
@@ -85,11 +87,12 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: defaultBYDConfigs.dev.cfg_net_op
+            data: fetchCurrentController().dev.cfg_net_op
         });
     });
     app.post('/api/dev/cfg/net/op/set', (req, res) => {
-        defaultBYDConfigs.dev.cfg_net_op = req.body
+        fetchCurrentController().dev.cfg_net_op = req.body
+        saveCurrentController()
         res.send({
             status: 0,
             description: "",
@@ -102,12 +105,13 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: defaultBYDConfigs.dev.cfg_serial_rs232
+            data: fetchCurrentController().dev.cfg_serial_rs232
         });
     });
 
     app.post('/api/dev/cfg/serial/set', (req, res) => {
-        defaultBYDConfigs.dev.cfg_serial_rs232 = req.body
+        fetchCurrentController().dev.cfg_serial_rs232 = req.body
+        saveCurrentController()
         res.send({
             status: 0,
             description: "",
@@ -120,11 +124,12 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: defaultBYDConfigs.bus.sn_ctrl_upload
+            data: fetchCurrentController().bus.sn_ctrl_upload
         });
     });
     app.post('/api/bus/sn/cfg/download', (req, res) => {
-        defaultBYDConfigs.bus.sn_ctrl_upload = req.body
+        fetchCurrentController().bus.sn_ctrl_upload = req.body
+        saveCurrentController()
         res.send({
             status: 0,
             description: "",
@@ -136,14 +141,13 @@ function settingHandleHttp(app) {
 function settingHandleWs(wss) {
     // 监听 WebSocket 连接事件
     wss.on('connection', (ws, req) => {
-        console.log('WebSocket connected');
-        console.log(req.url);
+        console.log('WebSocket connected', req.url);
         let config = fetchCurrentController()
         switch (req.url) {
             case '/websocket/gstatus':
                 // ws.send(config.ws)
                 setInterval(() => {
-                    config.ws.heartbit=new Date().getTime()
+                    config.ws.heartbit = new Date().getTime()
                     ws.send(JSON.stringify(config.ws))
                 }, 200)
 
@@ -154,5 +158,36 @@ function settingHandleWs(wss) {
     });
 }
 
+function getHttpClient() {
+
+    let client = axios.create({
+        baseURL: `http://${getcurrentController().ip}/api`,
+        timeout: 2000,// 请求超时时间
+        headers: {
+            'Content-Type': 'application/json', // 设置请求头
+            'Authorization': defaultToken.TOKEN ? defaultToken.TOKEN : ""
+        },
+    })
+    const errorHandler = (error) => {
+        if (error.response) {
+            return Promise.reject({
+                err: error.response.data ? error.response.data.toString() : '',
+                code: error.response.status
+            })
+        }
+        // console.log("error.response ", error.toString() );
+        return Promise.reject({
+            err: error.response ? error.response.data.description : error.toJSON(),
+            code: error.response ? error.response.status : '999'
+        })
+    }
+    // 响应拦截器
+    client.interceptors.response.use((response) => {
+        return response.data
+    }, errorHandler)
+    return client
+}
+
 module.exports.settingHandleWs = settingHandleWs
 module.exports.settingHandleHttp = settingHandleHttp
+module.exports.getHttpClient = getHttpClient

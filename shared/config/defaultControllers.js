@@ -70,10 +70,10 @@ module.exports.defaultBYDConfigs = {
         },
         ver: {
             em_hardver: "0.1.0",
-            em_softver: "1.4.37",
+            em_softver: "离线软件",
             hand_version: "AT:0.5.7",
             mcu_version: "1.2.4D22.12.21",
-            webapiver: "V1.5.2-731"
+            webapiver: "离线软件"
         },
         cfg_ctrl_src: {
             alarm_reset: false,
@@ -95,7 +95,7 @@ module.exports.defaultBYDConfigs = {
         cfg_net_op: {
             ip: "192.168.20.145",
             port: 9101,
-            use_op: true,
+            use_op: false,
             server_ip: "192.168.20.100",
             server_enable: false
         },
