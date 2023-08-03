@@ -68,7 +68,7 @@ const MenuTemplate2 = Menu.buildFromTemplate([
             },
             {
                 click: () => showDialog("updateProfiles"),
-                label: '更新工艺配置',
+                label: '更新工艺',
             },
             {
                 click: () => showDialog("updateIO"),
@@ -85,7 +85,7 @@ const MenuTemplate2 = Menu.buildFromTemplate([
             {type: 'separator'}, // 添加横线
             {
                 click: () => showDialog("updateAllConfigs"),
-                label: '更新全部配置',
+                label: '更新全部',
             }
         ]
     },
@@ -101,7 +101,7 @@ const MenuTemplate2 = Menu.buildFromTemplate([
             },
             {
                 click: () => showDialog("syncProfiles"),
-                label: '同步工艺配置',
+                label: '同步工艺',
             },
             {
                 click: () => showDialog("syncIO"),
@@ -118,7 +118,7 @@ const MenuTemplate2 = Menu.buildFromTemplate([
             {type: 'separator'}, // 添加横线
             {
                 click: () => showDialog("syncAllConfigs"),
-                label: '同步全部配置',
+                label: '同步全部',
             }
         ]
     },

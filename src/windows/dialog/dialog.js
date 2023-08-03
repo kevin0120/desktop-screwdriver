@@ -71,8 +71,31 @@ function showDialog(info) {
                     });
                     break
                 case "updateSystemConfigs":
-                case "updateAllConfigs":
                     Promise.all([httpClient.devCfgBaseInfoSetApi(), httpClient.busSnCfgDownload(), httpClient.devCfgCtrlSrcSetApi(), httpClient.devCfgSerialSet()])
+                        .then((result) => {
+                                if (result.every((value) => value.status === 0)) {
+                                    //op协议能重启网卡
+                                    httpClient.devCfgNetOpSetApi()
+                                    ind = setInterval(() => {
+                                        bar.value = bar.value + 5;
+                                        if (bar.value >= 100) {
+                                            clearInterval(ind)
+                                            bar.close()
+                                        }
+                                    }, 100)
+                                } else {
+                                    console.log(result)
+                                    bar.close()
+                                }
+                            }
+                        ).catch(err => {
+                        bar.close()
+                        console.error('123456:', err);
+                    });
+                    break
+                case "updateAllConfigs":
+                    Promise.all([httpClient.busIoCfgDownloadApi(), httpClient.busFieldbusCfgDownloadApi(), httpClient.devCfgBaseInfoSetApi(),
+                        httpClient.busSnCfgDownload(), httpClient.devCfgCtrlSrcSetApi(), httpClient.devCfgSerialSet()])
                         .then((result) => {
                                 if (result.every((value) => value.status === 0)) {
                                     //op协议能重启网卡
@@ -139,10 +162,32 @@ function showDialog(info) {
                     });
                     break
                 case "syncSystemConfigs":
-                case "syncAllConfigs":
-                    Promise.all([httpClient.devVerApi(), httpClient.devCfgBaseInfoGetApi(), httpClient.devCfgCtrlSrcGetApi(), httpClient.devCfgNetOpGetApi(),httpClient.devCfgSerialRs232(),httpClient.busSnCfgUpload()])
+                    Promise.all([httpClient.devVerApi(), httpClient.devCfgBaseInfoGetApi(), httpClient.devCfgCtrlSrcGetApi(),
+                        httpClient.devCfgNetOpGetApi(), httpClient.devCfgSerialRs232(), httpClient.busSnCfgUpload()])
                         .then((result) => {
-                                if (result.every((value) => value=== 0)) {
+                                if (result.every((value) => value === 0)) {
+                                    ind = setInterval(() => {
+                                        bar.value = bar.value + 5;
+                                        if (bar.value >= 100) {
+                                            clearInterval(ind)
+                                            bar.close()
+                                        }
+                                    }, 100)
+                                } else {
+                                    console.log(result)
+                                    bar.close()
+                                }
+                            }
+                        ).catch(err => {
+                        bar.close()
+                        console.error('123456:', err);
+                    });
+                    break
+                case "syncAllConfigs":
+                    Promise.all([httpClient.busIoCfgUploadApi(), httpClient.busFieldbusCfgUploadApi(), httpClient.devVerApi(),
+                        httpClient.devCfgBaseInfoGetApi(), httpClient.devCfgCtrlSrcGetApi(), httpClient.devCfgNetOpGetApi(), httpClient.devCfgSerialRs232(), httpClient.busSnCfgUpload()])
+                        .then((result) => {
+                                if (result.every((value) => value === 0)) {
                                     ind = setInterval(() => {
                                         bar.value = bar.value + 5;
                                         if (bar.value >= 100) {
