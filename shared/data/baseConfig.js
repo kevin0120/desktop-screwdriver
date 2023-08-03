@@ -18,10 +18,10 @@ function getcurrentController() {
 function setcurrentController(c) {
     currentController = c
     CurrentController = fetchCurrentController()
-    CurrentController.dev.cfg_base_info.device_name = currentController.device_name
-    CurrentController.dev.cfg_base_info.device_id = currentController.device_id
-    CurrentController.dev.cfg_net_op.ip = currentController.ip
-    saveCurrentController()
+    CurrentController.config.dev.cfg_base_info.device_name = currentController.device_name
+    CurrentController.config.dev.cfg_base_info.device_id = currentController.device_id
+    CurrentController.config.dev.cfg_net_op.ip = currentController.ip
+    saveCurrentController('config')
 }
 
 const appPath = app.isPackaged ? path.dirname(app.getPath('exe')) : app.getAppPath();
@@ -38,7 +38,12 @@ function getWorkDirectory() {
     }
 }
 
-let CurrentController
+let CurrentController = {
+    config: {},
+    profiles: {},
+    users: {}
+}
+
 
 function fetchCurrentController() {
     switch (process.platform) {
@@ -56,17 +61,62 @@ function fetchCurrentController() {
             if (Object.keys(settings.getAll()).length === 0) {
                 settings.setAll(defaultBYDConfigs, {prettify: true});
             }
-            CurrentController = settings.getAll();
+            CurrentController.config = settings.getAll();
+            settings.setPath(path.join(getWorkDirectory(), 'users.json'));
+            if ((
+                process.env.NODE_ENV === 'development' ||
+                process.env.DEBUG_PROD === 'true'
+            ) && (!CurrentController)) {
+                settings.deleteAll();
+            }
+
+            if (Object.keys(settings.getAll()).length === 0) {
+                settings.setAll(defaultBYDConfigs, {prettify: true});
+            }
+            CurrentController.users = settings.getAll();
+            settings.setPath(path.join(getWorkDirectory(), 'profiles.json'));
+            if ((
+                process.env.NODE_ENV === 'development' ||
+                process.env.DEBUG_PROD === 'true'
+            ) && (!CurrentController)) {
+                settings.deleteAll();
+            }
+
+            if (Object.keys(settings.getAll()).length === 0) {
+                settings.setAll(defaultBYDConfigs, {prettify: true});
+            }
+            CurrentController.users = settings.getAll();
+
             return CurrentController;
     }
 }
 
-function saveCurrentController() {
+function saveCurrentController(type) {
     switch (process.platform) {
         case 'linux':
         case 'win32':
-            settings.setPath(path.join(getWorkDirectory(), 'config.json'));
-            settings.setAll(CurrentController, {prettify: true});
+            switch (type) {
+                case 'config':
+                    settings.setPath(path.join(getWorkDirectory(), 'config.json'));
+                    settings.setAll(CurrentController.config, {prettify: true});
+                    break
+                case 'users':
+                    settings.setPath(path.join(getWorkDirectory(), 'users.json'));
+                    settings.setAll(CurrentController.users, {prettify: true});
+                    break
+                case 'profiles':
+                    settings.setPath(path.join(getWorkDirectory(), 'profiles.json'));
+                    settings.setAll(CurrentController.profiles, {prettify: true});
+                    break
+                default:
+                    settings.setPath(path.join(getWorkDirectory(), 'config.json'));
+                    settings.setAll(CurrentController.config, {prettify: true});
+                    settings.setPath(path.join(getWorkDirectory(), 'users.json'));
+                    settings.setAll(CurrentController.users, {prettify: true});
+                    settings.setPath(path.join(getWorkDirectory(), 'profiles.json'));
+                    settings.setAll(CurrentController.profiles, {prettify: true});
+                    break
+            }
             return CurrentController;
     }
 }

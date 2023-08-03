@@ -10,20 +10,20 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: fetchCurrentController().dev.cfg_base_info
+            data: fetchCurrentController().config.dev.cfg_base_info
         });
     });
     app.get('/api/dev/ver', (req, res) => {
         res.send({
             status: 0,
             description: "",
-            data: fetchCurrentController().dev.ver
+            data: fetchCurrentController().config.dev.ver
         });
     });
     app.post('/api/dev/cfg/base/info/set', (req, res) => {
-        fetchCurrentController().dev.cfg_base_info.device_id = req.body.device_id
-        fetchCurrentController().dev.cfg_base_info.device_name = req.body.device_name
-        saveCurrentController()
+        fetchCurrentController().config.dev.cfg_base_info.device_id = req.body.device_id
+        fetchCurrentController().config.dev.cfg_base_info.device_name = req.body.device_name
+        saveCurrentController('config')
         res.send({
             status: 0,
             description: ""
@@ -35,13 +35,13 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: fetchCurrentController().dev.cfg_ctrl_src
+            data: fetchCurrentController().config.dev.cfg_ctrl_src
         });
     });
 
     app.post('/api/dev/cfg/ctrl/src/set', (req, res) => {
-        fetchCurrentController().dev.cfg_ctrl_src = req.body
-        saveCurrentController()
+        fetchCurrentController().config.dev.cfg_ctrl_src = req.body
+        saveCurrentController('config')
         res.send({
             status: 0,
             description: "",
@@ -53,12 +53,12 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: fetchCurrentController().bus.io_cfg_upload
+            data: fetchCurrentController().config.bus.io_cfg_upload
         });
     });
     app.post('/api/bus/io/cfg/download', (req, res) => {
-        fetchCurrentController().bus.io_cfg_upload = req.body
-        saveCurrentController()
+        fetchCurrentController().config.bus.io_cfg_upload = req.body
+        saveCurrentController('config')
         res.send({
             status: 0,
             description: "",
@@ -70,12 +70,12 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: fetchCurrentController().bus.fieldbus_cfg_upload
+            data: fetchCurrentController().config.bus.fieldbus_cfg_upload
         });
     });
     app.post('/api/bus/fieldbus/cfg/download', (req, res) => {
-        fetchCurrentController().bus.fieldbus_cfg_upload = req.body
-        saveCurrentController()
+        fetchCurrentController().config.bus.fieldbus_cfg_upload = req.body
+        saveCurrentController('config')
         res.send({
             status: 0,
             description: "",
@@ -87,12 +87,12 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: fetchCurrentController().dev.cfg_net_op
+            data: fetchCurrentController().config.dev.cfg_net_op
         });
     });
     app.post('/api/dev/cfg/net/op/set', (req, res) => {
-        fetchCurrentController().dev.cfg_net_op = req.body
-        saveCurrentController()
+        fetchCurrentController().config.dev.cfg_net_op = req.body
+        saveCurrentController('config')
         res.send({
             status: 0,
             description: "",
@@ -105,13 +105,13 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: fetchCurrentController().dev.cfg_serial_rs232
+            data: fetchCurrentController().config.dev.cfg_serial_rs232
         });
     });
 
     app.post('/api/dev/cfg/serial/set', (req, res) => {
-        fetchCurrentController().dev.cfg_serial_rs232 = req.body
-        saveCurrentController()
+        fetchCurrentController().config.dev.cfg_serial_rs232 = req.body
+        saveCurrentController('config')
         res.send({
             status: 0,
             description: "",
@@ -124,12 +124,12 @@ function settingHandleHttp(app) {
         res.send({
             status: 0,
             description: "",
-            data: fetchCurrentController().bus.sn_ctrl_upload
+            data: fetchCurrentController().config.bus.sn_ctrl_upload
         });
     });
     app.post('/api/bus/sn/cfg/download', (req, res) => {
-        fetchCurrentController().bus.sn_ctrl_upload = req.body
-        saveCurrentController()
+        fetchCurrentController().config.bus.sn_ctrl_upload = req.body
+        saveCurrentController('config')
         res.send({
             status: 0,
             description: "",
@@ -142,7 +142,7 @@ function settingHandleWs(wss) {
     // 监听 WebSocket 连接事件
     wss.on('connection', (ws, req) => {
         console.log('WebSocket connected', req.url);
-        let config = fetchCurrentController()
+        let config = fetchCurrentController().config
         switch (req.url) {
             case '/websocket/gstatus':
                 // ws.send(config.ws)

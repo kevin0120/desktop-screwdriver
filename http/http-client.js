@@ -7,8 +7,8 @@ function devCfgBaseInfoSetApi() {
         url: "dev/cfg/base/info/set",
         method: "post",
         data: {
-            device_id: fetchCurrentController().dev.cfg_base_info.device_id,
-            device_name: fetchCurrentController().dev.cfg_base_info.device_name
+            device_id: fetchCurrentController().config.dev.cfg_base_info.device_id,
+            device_name: fetchCurrentController().config.dev.cfg_base_info.device_name
         }
     })
 }
@@ -17,7 +17,7 @@ function devCfgCtrlSrcSetApi() {
     return getHttpClient()({
         url: "dev/cfg/ctrl/src/set",
         method: "post",
-        data: fetchCurrentController().dev.cfg_ctrl_src
+        data: fetchCurrentController().config.dev.cfg_ctrl_src
     })
 }
 
@@ -26,7 +26,7 @@ function devCfgNetOpSetApi() {
     return getHttpClient()({
         url: "dev/cfg/net/op/set",
         method: "post",
-        data: fetchCurrentController().dev.cfg_net_op
+        data: fetchCurrentController().config.dev.cfg_net_op
     })
 }
 
@@ -34,7 +34,7 @@ function devCfgSerialSet() {
     return getHttpClient()({
         url: "dev/cfg/serial/set",
         method: "post",
-        data: fetchCurrentController().dev.cfg_serial_rs232
+        data: fetchCurrentController().config.dev.cfg_serial_rs232
     })
 }
 
@@ -42,7 +42,7 @@ function busSnCfgDownload() {
     return getHttpClient()({
         url: "bus/sn/cfg/download",
         method: "post",
-        data: fetchCurrentController().bus.sn_ctrl_upload
+        data: fetchCurrentController().config.bus.sn_ctrl_upload
     })
 }
 
@@ -50,7 +50,7 @@ function busIoCfgDownloadApi() {
     return getHttpClient()({
         url: 'bus/io/cfg/download',
         method: 'post',
-        data: fetchCurrentController().bus.io_cfg_upload
+        data: fetchCurrentController().config.bus.io_cfg_upload
     })
 }
 
@@ -58,7 +58,7 @@ function busFieldbusCfgDownloadApi() {
     return getHttpClient()({
         url: 'bus/filedbus/cfg/download',
         method: 'post',
-        data: fetchCurrentController().bus.fieldbus_cfg_upload
+        data: fetchCurrentController().config.bus.fieldbus_cfg_upload
     })
 }
 
@@ -70,8 +70,8 @@ async function devVerApi() {
             method: "get",
         })
         if (result.status === 0) {
-            fetchCurrentController().dev.ver = result.data
-            saveCurrentController()
+            fetchCurrentController().config.dev.ver = result.data
+            saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -86,10 +86,10 @@ async function devCfgBaseInfoGetApi() {
             method: "get",
         })
         if (result.status === 0) {
-            fetchCurrentController().dev.cfg_base_info = result.data;
-            fetchCurrentController().ws.sensor_max = result.data.max_torque;
-            fetchCurrentController().ws.speed_max = result.data.max_speed;
-            saveCurrentController()
+            fetchCurrentController().config.dev.cfg_base_info = result.data;
+            fetchCurrentController().config.ws.sensor_max = result.data.max_torque;
+            fetchCurrentController().config.ws.speed_max = result.data.max_speed;
+            saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -104,8 +104,8 @@ async function devCfgCtrlSrcGetApi() {
             method: "get",
         })
         if (result.status === 0) {
-            fetchCurrentController().dev.cfg_ctrl_src = result.data
-            saveCurrentController()
+            fetchCurrentController().config.dev.cfg_ctrl_src = result.data
+            saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -121,8 +121,8 @@ async function devCfgNetOpGetApi() {
             method: "get",
         })
         if (result.status === 0) {
-            fetchCurrentController().dev.cfg_net_op = result.data
-            saveCurrentController()
+            fetchCurrentController().config.dev.cfg_net_op = result.data
+            saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -137,8 +137,8 @@ async function devCfgSerialRs232() {
             method: "get",
         })
         if (result.status === 0) {
-            fetchCurrentController().dev.cfg_serial_rs232 = result.data
-            saveCurrentController()
+            fetchCurrentController().config.dev.cfg_serial_rs232 = result.data
+            saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -154,8 +154,8 @@ async function busSnCfgUpload() {
             method: "get",
         })
         if (result.status === 0) {
-            fetchCurrentController().bus.sn_ctrl_upload = result.data
-            saveCurrentController()
+            fetchCurrentController().config.bus.sn_ctrl_upload = result.data
+            saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -171,8 +171,8 @@ async function busIoCfgUploadApi() {
             method: "get",
         })
         if (result.status === 0) {
-            fetchCurrentController().bus.io_cfg_upload = result.data
-            saveCurrentController()
+            fetchCurrentController().config.bus.io_cfg_upload = result.data
+            saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -187,8 +187,8 @@ async function busFieldbusCfgUploadApi() {
             method: "get",
         })
         if (result.status === 0) {
-            fetchCurrentController().bus.fieldbus_cfg_upload = result.data
-            saveCurrentController()
+            fetchCurrentController().config.bus.fieldbus_cfg_upload = result.data
+            saveCurrentController('config')
         }
         return result.status
     } catch (e) {
