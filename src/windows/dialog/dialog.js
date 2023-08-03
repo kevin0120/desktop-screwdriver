@@ -21,9 +21,9 @@ function showDialog(info) {
         let bar;
         if (response.response === 1) {
             bar = createProgressBar();
-            setTimeout(()=>{
+            setTimeout(() => {
                 bar.close()
-            },10000)
+            }, 10000)
             bar.value = 0
             switch (info) {
                 case "updateUsers":
@@ -119,10 +119,46 @@ function showDialog(info) {
                     });
                     break
                 case "syncFieldBus":
+                    httpClient.busFieldbusCfgUploadApi().then((status) => {
+                            if (status === 0) {
+                                ind = setInterval(() => {
+                                    bar.value = bar.value + 5;
+                                    if (bar.value >= 100) {
+                                        clearInterval(ind)
+                                        bar.close()
+                                    }
+                                }, 100)
+                            } else {
+                                // console.log(result)
+                                bar.close()
+                            }
+                        }
+                    ).catch(err => {
+                        bar.close()
+                        console.error('123456:', err);
+                    });
                     break
                 case "syncSystemConfigs":
-                    break
                 case "syncAllConfigs":
+                    Promise.all([httpClient.devVerApi(), httpClient.devCfgBaseInfoGetApi(), httpClient.devCfgCtrlSrcGetApi(), httpClient.devCfgNetOpGetApi(),httpClient.devCfgSerialRs232(),httpClient.busSnCfgUpload()])
+                        .then((result) => {
+                                if (result.every((value) => value=== 0)) {
+                                    ind = setInterval(() => {
+                                        bar.value = bar.value + 5;
+                                        if (bar.value >= 100) {
+                                            clearInterval(ind)
+                                            bar.close()
+                                        }
+                                    }, 100)
+                                } else {
+                                    console.log(result)
+                                    bar.close()
+                                }
+                            }
+                        ).catch(err => {
+                        bar.close()
+                        console.error('123456:', err);
+                    });
                     break
                 default:
                     break

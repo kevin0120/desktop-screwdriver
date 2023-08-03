@@ -63,21 +63,48 @@ function busFieldbusCfgDownloadApi() {
 }
 
 
-// function devCfgBaseInfoGetApi() {
-//     return axios_ins({
-//         url: "dev/cfg/base/info",
-//         method: "get"
-//     })
-// }
-
 async function devVerApi() {
     try {
-        const result = await  getHttpClient()({
+        const result = await getHttpClient()({
             url: "dev/ver",
             method: "get",
         })
         if (result.status === 0) {
-            fetchCurrentController().dev.cfg_base_info = result.data
+            fetchCurrentController().dev.ver = result.data
+            saveCurrentController()
+        }
+        return result.status
+    } catch (e) {
+        return 404
+    }
+}
+
+async function devCfgBaseInfoGetApi() {
+    try {
+        const result = await getHttpClient()({
+            url: "dev/cfg/base/info",
+            method: "get",
+        })
+        if (result.status === 0) {
+            fetchCurrentController().dev.cfg_base_info = result.data;
+            fetchCurrentController().ws.sensor_max = result.data.max_torque;
+            fetchCurrentController().ws.speed_max = result.data.max_speed;
+            saveCurrentController()
+        }
+        return result.status
+    } catch (e) {
+        return 404
+    }
+}
+
+async function devCfgCtrlSrcGetApi() {
+    try {
+        const result = await getHttpClient()({
+            url: "dev/cfg/ctrl/src",
+            method: "get",
+        })
+        if (result.status === 0) {
+            fetchCurrentController().dev.cfg_ctrl_src = result.data
             saveCurrentController()
         }
         return result.status
@@ -87,12 +114,60 @@ async function devVerApi() {
 }
 
 
-async function busIoCfgUploadApi(){
-
-
+async function devCfgNetOpGetApi() {
     try {
-        const result = await  getHttpClient()({
-            url:'bus/io/cfg/upload',
+        const result = await getHttpClient()({
+            url: "dev/cfg/net/op",
+            method: "get",
+        })
+        if (result.status === 0) {
+            fetchCurrentController().dev.cfg_net_op = result.data
+            saveCurrentController()
+        }
+        return result.status
+    } catch (e) {
+        return 404
+    }
+}
+
+async function devCfgSerialRs232() {
+    try {
+        const result = await getHttpClient()({
+            url: "/dev/cfg/serial/rs232",
+            method: "get",
+        })
+        if (result.status === 0) {
+            fetchCurrentController().dev.cfg_serial_rs232 = result.data
+            saveCurrentController()
+        }
+        return result.status
+    } catch (e) {
+        return 404
+    }
+}
+
+
+async function busSnCfgUpload() {
+    try {
+        const result = await getHttpClient()({
+            url: "/bus/sn/cfg/upload",
+            method: "get",
+        })
+        if (result.status === 0) {
+            fetchCurrentController().bus.sn_ctrl_upload = result.data
+            saveCurrentController()
+        }
+        return result.status
+    } catch (e) {
+        return 404
+    }
+}
+
+
+async function busIoCfgUploadApi() {
+    try {
+        const result = await getHttpClient()({
+            url: 'bus/io/cfg/upload',
             method: "get",
         })
         if (result.status === 0) {
@@ -105,6 +180,21 @@ async function busIoCfgUploadApi(){
     }
 }
 
+async function busFieldbusCfgUploadApi() {
+    try {
+        const result = await getHttpClient()({
+            url: 'bus/fieldbus/cfg/upload',
+            method: "get",
+        })
+        if (result.status === 0) {
+            fetchCurrentController().bus.fieldbus_cfg_upload = result.data
+            saveCurrentController()
+        }
+        return result.status
+    } catch (e) {
+        return 404
+    }
+}
 
 
 module.exports = {
@@ -117,7 +207,14 @@ module.exports = {
     busFieldbusCfgDownloadApi,
 
 
+    devVerApi,
+    devCfgBaseInfoGetApi,
+    devCfgCtrlSrcGetApi,
+    devCfgNetOpGetApi,
+    devCfgSerialRs232,
+    busSnCfgUpload,
 
     busIoCfgUploadApi,
-    devVerApi
+    busFieldbusCfgUploadApi,
+
 }
