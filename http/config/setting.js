@@ -147,7 +147,7 @@ function settingHandleHttp(app) {
     });
     // 工艺详情
     app.get('/api/pf/cur/pset', (req, res) => {
-        let pset = req.query.id
+        let pset = parseInt(req.query.id)
         res.send({
             status: 0,
             description: "",
@@ -201,6 +201,14 @@ function settingHandleWs(wss) {
                 // ws.send(config.ws)
                 setInterval(() => {
                     config.ws.heartbit = new Date().getTime()
+                    config.ws.enablesrc = config.dev.cfg_ctrl_src.power_enable
+                    config.ws.job_enable = config.dev.cfg_ctrl_src.job_enable
+                    config.ws.job_pset_mode = config.dev.cfg_ctrl_src.job_pset_mode
+                    config.ws.job_src = config.dev.cfg_ctrl_src.job_src
+                    config.ws.psetsrc = config.dev.cfg_ctrl_src.pset
+                    config.ws.pset = 0
+                    config.ws.toolsrc = config.dev.cfg_ctrl_src.tool_run
+
                     ws.send(JSON.stringify(config.ws))
                 }, 200)
 

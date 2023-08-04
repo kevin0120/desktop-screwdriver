@@ -17,11 +17,16 @@ function getcurrentController() {
 
 function setcurrentController(c) {
     currentController = c
+    CurrentController = {
+        config: {},
+        profiles: {},
+        users: {}
+    }
     CurrentController = fetchCurrentController()
     CurrentController.config.dev.cfg_base_info.device_name = currentController.device_name
     CurrentController.config.dev.cfg_base_info.device_id = currentController.device_id
     CurrentController.config.dev.cfg_net_op.ip = currentController.ip
-    saveCurrentController('config')
+    saveCurrentController()
 }
 
 const appPath = app.isPackaged ? path.dirname(app.getPath('exe')) : app.getAppPath();
@@ -57,15 +62,12 @@ function fetchCurrentController() {
             ) && (!CurrentController)) {
                 settings.deleteAll();
             }
-
             if (Object.keys(settings.getAll()).length === 0) {
                 settings.setAll(defaultBYD.defaultBYDConfigs, {prettify: true});
             }
-
             if (Object.keys(CurrentController.config).length === 0) {
                 CurrentController.config = settings.getAll();
             }
-
 
 
             settings.setPath(path.join(getWorkDirectory(), 'users.json'));
@@ -79,8 +81,8 @@ function fetchCurrentController() {
             if (Object.keys(settings.getAll()).length === 0) {
                 settings.setAll(defaultBYD.defaultBYDConfigs, {prettify: true});
             }
-            if (Object.keys(CurrentController.config).length === 0) {
-                CurrentController.config = settings.getAll();
+            if (Object.keys(CurrentController.users).length === 0) {
+                CurrentController.users = settings.getAll();
             }
 
             settings.setPath(path.join(getWorkDirectory(), 'profiles.json'));

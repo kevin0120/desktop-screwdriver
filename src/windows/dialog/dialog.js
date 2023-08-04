@@ -30,10 +30,27 @@ function showDialog(info) {
                 case "updateUsers":
                     break
                 case "updateProfiles":
+                    httpClient.profilesUpdateApi().then((result) => {
+                            if (result.status === 0) {
+                                ind = setInterval(() => {
+                                    bar.value = bar.value + 5;
+                                    if (bar.value >= 100) {
+                                        clearInterval(ind)
+                                        bar.close()
+                                    }
+                                }, 100)
+                            } else {
+                                bar.close()
+                            }
+                        }
+                    ).catch(err => {
+                        bar.close()
+                        console.error('123456:', err);
+                    });
                     break
                 case "updateIO":
                     httpClient.busIoCfgDownloadApi().then((result) => {
-                            if (result.status == 0) {
+                            if (result.status === 0) {
                                 ind = setInterval(() => {
                                     bar.value = bar.value + 5;
                                     if (bar.value >= 100) {
@@ -52,7 +69,7 @@ function showDialog(info) {
                     break
                 case "updateFieldBus":
                     httpClient.busFieldbusCfgDownloadApi().then((result) => {
-                            if (result.status == 0) {
+                            if (result.status === 0) {
                                 ind = setInterval(() => {
                                     bar.value = bar.value + 5;
                                     if (bar.value >= 100) {
@@ -118,7 +135,7 @@ function showDialog(info) {
                 case "syncUsers":
                     break
                 case "syncProfiles":
-                    httpClient.profilesUploadApi().then((status) => {
+                    httpClient.profilesSyncApi().then((status) => {
                         console.log(status)
                             if (status === 0) {
                                 ind = setInterval(() => {
@@ -209,7 +226,7 @@ function showDialog(info) {
                     })
                     break
                 case "syncAllConfigs":
-                    Promise.all([httpClient.busIoCfgUploadApi(), httpClient.busFieldbusCfgUploadApi(), httpClient.devVerApi(),
+                    Promise.all([httpClient.profilesSyncApi(),httpClient.busIoCfgUploadApi(), httpClient.busFieldbusCfgUploadApi(), httpClient.devVerApi(),
                         httpClient.devCfgBaseInfoGetApi(), httpClient.devCfgCtrlSrcGetApi(), httpClient.devCfgNetOpGetApi(), httpClient.devCfgSerialRs232(), httpClient.busSnCfgUpload()])
                         .then((result) => {
                                 if (result.every((value) => value === 0)) {
