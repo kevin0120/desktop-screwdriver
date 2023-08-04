@@ -350,3 +350,228 @@ module.exports.defaultBYDConfigs = {
     ws: gstatus,
 }
 
+
+module.exports.defaultBYDProfiles = {
+    psets: {
+        1:{
+            name: "pset1",
+            pset: 1,
+            mode: 2,
+            details:{
+                Profile: {
+                    Name: "pset1",
+                    Pset: 1,
+                    Ver: "1.0.0",
+                    Mode: 2,
+                    Sequence: {
+                        GlobalParams: {
+                            AutoPowerOn: true,
+                            AutoPowerOff: false,
+                            Direction: "CW",
+                            SampleFrequency: 1000,
+                            SamplingNumber: 10000,
+                            CalibrationeOn: true,
+                            GlobalAngleMonitoring: false,
+                            ThresholdValue: 0,
+                            AngleLimit: {
+                                Min: -500,
+                                Max: 500
+                            },
+                            ReverseSpeedValue: 1.025,
+                            ReverseAngleValue: 0
+                        },
+                        Branchs: [
+                            {
+                                Name: "MainBranch",
+                                Axis: {
+                                    Name: "MainSpindle",
+                                    StartMode: "csv",
+                                    Direction: "CW"
+                                },
+                                Start: 0,
+                                End: 1,
+                                SeqItems: [
+                                    {
+                                        Type: "DatalogStart",
+                                        Name: "a0",
+                                        Descr: "0",
+                                        IndentLevel: 0
+                                    },
+                                    {
+                                        Type: "Motion",
+                                        Name: "FindBolt",
+                                        Descr: "FindBolt",
+                                        IndentLevel: 0,
+                                        Action: "FindBolt",
+                                        ActionPara: {
+                                            Direction: 0,
+                                            Target: 3,
+                                            TargetIsAbs: false,
+                                            Velocity: 1.025,
+                                            Acc: {
+                                                Type: "Const",
+                                                DataType: "F64",
+                                                Constant: 102.5
+                                            },
+                                            AccTime: 0.01,
+                                            Limit: {
+                                                Min: -0.05,
+                                                Max: 3
+                                            },
+                                            Repeat: {
+                                                RepeatCounts: 3,
+                                                IntervalTime_mS: 10000
+                                            },
+                                            Timeout_mS: 10000
+                                        },
+                                        NOKAction: {
+                                            JumpRow: -1
+                                        }
+                                    },
+                                    {
+                                        Type: "Motion",
+                                        Name: "finallytighten",
+                                        Descr: "Tighten",
+                                        IndentLevel: 0,
+                                        Action: "ForceOpenLoop",
+                                        ActionPara: {
+                                            Target: {
+                                                Type: "Const",
+                                                DataType: "F64",
+                                                Constant: 3
+                                            },
+                                            TargetIsAbs: true,
+                                            Velocity: 1.025,
+                                            Acc: {
+                                                Type: "Const",
+                                                DataType: "F64",
+                                                Constant: 102.5
+                                            },
+                                            AccTime: 0.01,
+                                            ThresholdValue: 0.12,
+                                            Limit: {
+                                                Min: 0,
+                                                Max: 15
+                                            },
+                                            HoldTime: 100,
+                                            Timeout_mS: 10000,
+                                            ResultTorque: {
+                                                Min: 1.5,
+                                                Max: 4.5
+                                            },
+                                            ResultAngle: {
+                                                Min: 5,
+                                                Max: 10
+                                            }
+                                        },
+                                        AngleZero: false,
+                                        TorqueZero: false,
+                                        AngleValueMode: 0,
+                                        TorqueValueMode: 0,
+                                        Delay_ms: 0,
+                                        NOKAction: {
+                                            JumpRow: -1
+                                        }
+                                    },
+                                    {
+                                        Type: "DatalogEnd",
+                                        Name: "a5",
+                                        Descr: "0",
+                                        IndentLevel: 0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+    },
+        2:{
+            name: "pset2",
+            pset: 2,
+            mode: 1,
+            details:{
+                Profile: {
+                    Name: "pset2",
+                    Pset: 2,
+                    Ver: "1.0.0",
+                    Mode: 1,
+                    Sequence: {
+                        GlobalParams: {
+                            AutoPowerOn: true,
+                            AutoPowerOff: false,
+                            Direction: "CW",
+                            SampleFrequency: 1000,
+                            SamplingNumber: 10000,
+                            CalibrationeOn: true,
+                            GlobalAngleMonitoring: false,
+                            ThresholdValue: 0,
+                            AngleLimit: {
+                                Min: -500,
+                                Max: 500
+                            },
+                            ReverseSpeedValue: 1.025,
+                            ReverseAngleValue: 0
+                        },
+                        Branchs: [
+                            {
+                                Name: "MainBranch",
+                                Axis: {
+                                    Name: "MainSpindle",
+                                    StartMode: "csv",
+                                    Direction: "CW"
+                                },
+                                Start: 0,
+                                End: 1,
+                                SeqItems: [
+                                    {
+                                        Type: "DatalogStart",
+                                        Name: "a0",
+                                        Descr: "0",
+                                        IndentLevel: 0
+                                    },
+                                    {
+                                        Type: "Motion",
+                                        Name: "finallytighten",
+                                        Descr: "0",
+                                        IndentLevel: 0,
+                                        Action: "Standard",
+                                        ActionPara: {
+                                            Target: 3,
+                                            TargetIsAbs: false,
+                                            Velocity: 1.025,
+                                            TightenVelocity: 1.025,
+                                            ResultTorque: {
+                                                Min: 1.5,
+                                                Max: 4.5
+                                            },
+                                            ResultAngle: {
+                                                Min: 5,
+                                                Max: 10
+                                            },
+                                            ThresholdValue: 0.12,
+                                            HoldTime: 0,
+                                            Timeout_mS: 10000
+                                        },
+                                        Delay_ms: 0,
+                                        NOKAction: {
+                                            JumpRow: -1
+                                        }
+                                    },
+                                    {
+                                        Type: "DatalogEnd",
+                                        Name: "a5",
+                                        Descr: "0",
+                                        IndentLevel: 0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+    },
+    jobs: {
+    },
+}

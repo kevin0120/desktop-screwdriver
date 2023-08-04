@@ -10,7 +10,7 @@
       "packagerConfig": {
         "arch": "x64",
         "icon": "resources/imgs/defaultWorking",
-        "asar": false
+        "asar": true
       },
       "makers": [
         {

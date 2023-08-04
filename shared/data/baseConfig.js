@@ -2,7 +2,7 @@ const settings = require('electron-settings');
 const path = require('path');
 const fs = require('fs');
 const {app} = require('electron')
-const {defaultBYDConfigs} = require('../config/defaultControllers')
+const defaultBYD = require('../config/defaultControllers')
 
 
 let currentController = {
@@ -59,9 +59,15 @@ function fetchCurrentController() {
             }
 
             if (Object.keys(settings.getAll()).length === 0) {
-                settings.setAll(defaultBYDConfigs, {prettify: true});
+                settings.setAll(defaultBYD.defaultBYDConfigs, {prettify: true});
             }
-            CurrentController.config = settings.getAll();
+
+            if (Object.keys(CurrentController.config).length === 0) {
+                CurrentController.config = settings.getAll();
+            }
+
+
+
             settings.setPath(path.join(getWorkDirectory(), 'users.json'));
             if ((
                 process.env.NODE_ENV === 'development' ||
@@ -71,9 +77,12 @@ function fetchCurrentController() {
             }
 
             if (Object.keys(settings.getAll()).length === 0) {
-                settings.setAll(defaultBYDConfigs, {prettify: true});
+                settings.setAll(defaultBYD.defaultBYDConfigs, {prettify: true});
             }
-            CurrentController.users = settings.getAll();
+            if (Object.keys(CurrentController.config).length === 0) {
+                CurrentController.config = settings.getAll();
+            }
+
             settings.setPath(path.join(getWorkDirectory(), 'profiles.json'));
             if ((
                 process.env.NODE_ENV === 'development' ||
@@ -83,10 +92,11 @@ function fetchCurrentController() {
             }
 
             if (Object.keys(settings.getAll()).length === 0) {
-                settings.setAll(defaultBYDConfigs, {prettify: true});
+                settings.setAll(defaultBYD.defaultBYDProfiles, {prettify: true});
             }
-            CurrentController.users = settings.getAll();
-
+            if (Object.keys(CurrentController.profiles).length === 0) {
+                CurrentController.profiles = settings.getAll();
+            }
             return CurrentController;
     }
 }

@@ -136,6 +136,34 @@ function settingHandleHttp(app) {
 
         });
     });
+
+    // 工艺列表
+    app.get('/api/pf/cur/lst', (req, res) => {
+        res.send({
+            status: 0,
+            description: "",
+            data: Object.values(fetchCurrentController().profiles.psets)
+        });
+    });
+    // 工艺详情
+    app.get('/api/pf/cur/pset', (req, res) => {
+        let pset = req.query.id
+        res.send({
+            status: 0,
+            description: "",
+            data: fetchCurrentController().profiles.psets[pset].details
+        });
+    });
+    // 工艺保存
+    app.post('/api/pf/mod', (req, res) => {
+        let pset = req.body.Profile.Pset
+        fetchCurrentController().profiles.psets[pset].details = req.body
+        saveCurrentController('profiles')
+        res.send({
+            status: 0,
+            description: ""
+        });
+    });
 }
 
 function settingHandleWs(wss) {

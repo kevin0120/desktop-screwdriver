@@ -1,6 +1,7 @@
 const ProgressBar = require('electron-progressbar');
 const {dialog} = require('electron')
 const httpClient = require('../../../http/http-client')
+const {saveCurrentController} = require("../../../shared/data/baseConfig");
 let mainWindow
 
 function setDialogWindow(window) {
@@ -41,7 +42,6 @@ function showDialog(info) {
                                     }
                                 }, 100)
                             } else {
-                                console.log(result)
                                 bar.close()
                             }
                         }
@@ -61,7 +61,6 @@ function showDialog(info) {
                                     }
                                 }, 100)
                             } else {
-                                console.log(result)
                                 bar.close()
                             }
                         }
@@ -84,7 +83,6 @@ function showDialog(info) {
                                         }
                                     }, 100)
                                 } else {
-                                    console.log(result)
                                     bar.close()
                                 }
                             }
@@ -181,6 +179,8 @@ function showDialog(info) {
                         ).catch(err => {
                         bar.close()
                         console.error('123456:', err);
+                    }).then(() => {
+                        saveCurrentController('config')
                     });
                     break
                 case "syncAllConfigs":
@@ -203,6 +203,8 @@ function showDialog(info) {
                         ).catch(err => {
                         bar.close()
                         console.error('123456:', err);
+                    }).then(() => {
+                        saveCurrentController('config')
                     });
                     break
                 default:

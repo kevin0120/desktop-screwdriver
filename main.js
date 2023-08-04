@@ -3,21 +3,11 @@ const {app, BrowserWindow, ipcMain, shell} = require('electron')
 // run this as early in the main process as possible
 if (require('electron-squirrel-startup')) app.quit();
 const {createmainWindow, reloadWindows} = require("./src/windows/createWindow");
-
 const {killProcessesByName} = require("./src/manager");
-const {configs, setdefaultToken} = require("./shared/config");
+const {setdefaultToken} = require("./shared/config");
 const {setcurrentController, getcurrentController, getWorkDirectory} = require("./shared/data/baseConfig");
 const httpServer = require('./http/http-server')
-let project = {}
-if (!process.env.Project_Entrance) {
-    project = configs.projects[configs.project]
-} else if (configs.projects.hasOwnProperty(process.env.Project_Entrance)) {
-    project = configs.projects[process.env.Project_Entrance]
-} else {
-    project = {}
-}
 
-let mainWindow
 
 app.on('ready', function () {
     // 获取默认会话
