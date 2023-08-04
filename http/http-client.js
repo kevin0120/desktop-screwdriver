@@ -89,7 +89,7 @@ async function devCfgBaseInfoGetApi() {
             fetchCurrentController().config.dev.cfg_base_info = result.data;
             fetchCurrentController().config.ws.sensor_max = result.data.max_torque;
             fetchCurrentController().config.ws.speed_max = result.data.max_speed;
-            saveCurrentController('config')
+            // saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -105,7 +105,7 @@ async function devCfgCtrlSrcGetApi() {
         })
         if (result.status === 0) {
             fetchCurrentController().config.dev.cfg_ctrl_src = result.data
-            saveCurrentController('config')
+            // saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -122,7 +122,7 @@ async function devCfgNetOpGetApi() {
         })
         if (result.status === 0) {
             fetchCurrentController().config.dev.cfg_net_op = result.data
-            saveCurrentController('config')
+            // saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -138,7 +138,7 @@ async function devCfgSerialRs232() {
         })
         if (result.status === 0) {
             fetchCurrentController().config.dev.cfg_serial_rs232 = result.data
-            saveCurrentController('config')
+            // saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -155,7 +155,7 @@ async function busSnCfgUpload() {
         })
         if (result.status === 0) {
             fetchCurrentController().config.bus.sn_ctrl_upload = result.data
-            saveCurrentController('config')
+            // saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -172,7 +172,7 @@ async function busIoCfgUploadApi() {
         })
         if (result.status === 0) {
             fetchCurrentController().config.bus.io_cfg_upload = result.data
-            saveCurrentController('config')
+            // saveCurrentController('config')
         }
         return result.status
     } catch (e) {
@@ -188,10 +188,37 @@ async function busFieldbusCfgUploadApi() {
         })
         if (result.status === 0) {
             fetchCurrentController().config.bus.fieldbus_cfg_upload = result.data
-            saveCurrentController('config')
+            // saveCurrentController('config')
         }
         return result.status
     } catch (e) {
+        return 404
+    }
+}
+
+async function profilesUploadApi() {
+    try {
+        const result = await getHttpClient()({
+            url: 'pf/cur/lst',
+            method: "get",
+        })
+        let status = 0
+        fetchCurrentController().profiles.psets = {}
+        for (const item of result.data) {
+            fetchCurrentController().profiles.psets[item.pset] = item
+            const result1 = await getHttpClient()({
+                url: `pf/cur/pset?id=${item.pset}`,
+                method: "get",
+            })
+            if (result1.status) {
+                status = result.status
+                continue
+            }
+            fetchCurrentController().profiles.psets[item.pset].details = result1.data
+        }
+        return status
+    } catch (e) {
+        console.log(e.err)
         return 404
     }
 }
@@ -213,8 +240,9 @@ module.exports = {
     devCfgNetOpGetApi,
     devCfgSerialRs232,
     busSnCfgUpload,
-
     busIoCfgUploadApi,
     busFieldbusCfgUploadApi,
 
+
+    profilesUploadApi
 }

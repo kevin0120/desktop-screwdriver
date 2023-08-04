@@ -118,6 +118,27 @@ function showDialog(info) {
                 case "syncUsers":
                     break
                 case "syncProfiles":
+                    httpClient.profilesUploadApi().then((status) => {
+                        console.log(status)
+                            if (status === 0) {
+                                ind = setInterval(() => {
+                                    bar.value = bar.value + 5;
+                                    if (bar.value >= 100) {
+                                        clearInterval(ind)
+                                        bar.close()
+                                    }
+                                }, 100)
+                            } else {
+                                // console.log(result)
+                                bar.close()
+                            }
+                        }
+                    ).catch(err => {
+                        bar.close()
+                        console.error('123456:', err);
+                    }).then(()=>{
+                        saveCurrentController('profiles')
+                    });
                     break
                 case "syncIO":
                     httpClient.busIoCfgUploadApi().then((status) => {
@@ -137,6 +158,8 @@ function showDialog(info) {
                     ).catch(err => {
                         bar.close()
                         console.error('123456:', err);
+                    }).then(()=>{
+                        saveCurrentController('config')
                     });
                     break
                 case "syncFieldBus":
@@ -157,6 +180,8 @@ function showDialog(info) {
                     ).catch(err => {
                         bar.close()
                         console.error('123456:', err);
+                    }).then(()=>{
+                        saveCurrentController('config')
                     });
                     break
                 case "syncSystemConfigs":
@@ -181,7 +206,7 @@ function showDialog(info) {
                         console.error('123456:', err);
                     }).then(() => {
                         saveCurrentController('config')
-                    });
+                    })
                     break
                 case "syncAllConfigs":
                     Promise.all([httpClient.busIoCfgUploadApi(), httpClient.busFieldbusCfgUploadApi(), httpClient.devVerApi(),
