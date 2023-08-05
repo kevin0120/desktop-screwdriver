@@ -178,11 +178,12 @@ function settingHandleHttp(app) {
     // 工艺新建
     app.post('/api/pf/add', (req, res) => {
         let pset = req.body.Profile.Pset
-        fetchCurrentController().profiles.psets[pset]={
+        fetchCurrentController().profiles.psets[pset] = {
             name: req.body.Profile.Name,
             pset: req.body.Profile.Pset,
             mode: req.body.Profile.Mode,
-            details:req.body}
+            details: req.body
+        }
         saveCurrentController('profiles')
         res.send({
             status: 0,

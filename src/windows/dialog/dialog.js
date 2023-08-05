@@ -8,6 +8,16 @@ function setDialogWindow(window) {
     mainWindow = window
 
 }
+function showErrorDialog(){
+// 弹出错误框
+    dialog.showMessageBox({
+        type: 'error',
+        title: '错误',
+        message: '发生了一个错误。',
+        buttons: ['确定']
+    }).then(r => console.log("EEEe"));
+}
+
 
 function showDialog(info) {
     const options = {
@@ -41,6 +51,7 @@ function showDialog(info) {
                                 }, 100)
                             } else {
                                 bar.close()
+                                showErrorDialog()
                             }
                         }
                     ).catch(err => {
@@ -64,7 +75,7 @@ function showDialog(info) {
                         }
                     ).catch(err => {
                         bar.close()
-                        console.error('123456:', err);
+                        showErrorDialog()
                     });
                     break
                 case "updateFieldBus":
@@ -79,6 +90,7 @@ function showDialog(info) {
                                 }, 100)
                             } else {
                                 bar.close()
+                                showErrorDialog()
                             }
                         }
                     ).catch(err => {
@@ -101,6 +113,7 @@ function showDialog(info) {
                                     }, 100)
                                 } else {
                                     bar.close()
+                                    showErrorDialog()
                                 }
                             }
                         ).catch(err => {
@@ -109,7 +122,7 @@ function showDialog(info) {
                     });
                     break
                 case "updateAllConfigs":
-                    Promise.all([httpClient.busIoCfgDownloadApi(), httpClient.busFieldbusCfgDownloadApi(), httpClient.devCfgBaseInfoSetApi(),
+                    Promise.all([httpClient.profilesUpdateApi(),httpClient.busIoCfgDownloadApi(), httpClient.busFieldbusCfgDownloadApi(), httpClient.devCfgBaseInfoSetApi(),
                         httpClient.busSnCfgDownload(), httpClient.devCfgCtrlSrcSetApi(), httpClient.devCfgSerialSet()])
                         .then((result) => {
                                 if (result.every((value) => value.status === 0)) {
@@ -123,8 +136,8 @@ function showDialog(info) {
                                         }
                                     }, 100)
                                 } else {
-                                    console.log(result)
                                     bar.close()
+                                    showErrorDialog()
                                 }
                             }
                         ).catch(err => {
@@ -148,6 +161,7 @@ function showDialog(info) {
                             } else {
                                 // console.log(result)
                                 bar.close()
+                                showErrorDialog()
                             }
                         }
                     ).catch(err => {
@@ -170,6 +184,7 @@ function showDialog(info) {
                             } else {
                                 // console.log(result)
                                 bar.close()
+                                showErrorDialog()
                             }
                         }
                     ).catch(err => {
@@ -192,6 +207,7 @@ function showDialog(info) {
                             } else {
                                 // console.log(result)
                                 bar.close()
+                                showErrorDialog()
                             }
                         }
                     ).catch(err => {
@@ -216,6 +232,7 @@ function showDialog(info) {
                                 } else {
                                     console.log(result)
                                     bar.close()
+                                    showErrorDialog()
                                 }
                             }
                         ).catch(err => {
@@ -240,11 +257,12 @@ function showDialog(info) {
                                 } else {
                                     console.log(result)
                                     bar.close()
+                                    showErrorDialog()
                                 }
                             }
                         ).catch(err => {
                         bar.close()
-                        console.error('123456:', err);
+                        // console.error('123456:', err);
                     }).then(() => {
                         saveCurrentController('config')
                     });

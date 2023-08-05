@@ -1,4 +1,4 @@
-const {fetchCurrentController, saveCurrentController, getcurrentController} = require("../shared/data/baseConfig");
+const {fetchCurrentController, saveCurrentController} = require("../shared/data/baseConfig");
 
 const {getHttpClient} = require('./config/setting')
 
@@ -203,7 +203,6 @@ async function profilesSyncApi() {
             method: "get",
         })
         let status = 0
-        console.log(result)
         fetchCurrentController().profiles.psets = {}
         for (const item of result.data) {
             fetchCurrentController().profiles.psets[item.pset] = item
@@ -211,7 +210,6 @@ async function profilesSyncApi() {
                 url: `pf/cur/pset?id=${item.pset}`,
                 method: "get",
             })
-            console.log(result1)
             if (result1.status) {
                 status = result.status
                 continue
@@ -220,7 +218,6 @@ async function profilesSyncApi() {
         }
         return status
     } catch (e) {
-        console.log(e)
         return 404
     }
 }
@@ -280,7 +277,7 @@ async function profilesUpdateApi() {
         }
         return data
     } catch (e) {
-        console.log(e.err)
+        // console.log(e.err)
         return {
             status: 404,
             data: []
