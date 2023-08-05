@@ -262,7 +262,7 @@ function showDialog(info) {
                             }
                         ).catch(err => {
                         bar.close()
-                        // console.error('123456:', err);
+                        console.error('123456:', err);
                     }).then(() => {
                         saveCurrentController('config')
                     });

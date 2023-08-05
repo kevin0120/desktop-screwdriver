@@ -350,14 +350,13 @@ module.exports.defaultBYDConfigs = {
     ws: gstatus,
 }
 
-
 module.exports.defaultBYDProfiles = {
     psets: {
-        1:{
+        1: {
             name: "pset1",
             pset: 1,
             mode: 2,
-            details:{
+            details: {
                 Profile: {
                     Name: "pset1",
                     Pset: 1,
@@ -485,12 +484,12 @@ module.exports.defaultBYDProfiles = {
                     }
                 }
             }
-    },
-        2:{
+        },
+        2: {
             name: "pset2",
             pset: 2,
             mode: 1,
-            details:{
+            details: {
                 Profile: {
                     Name: "pset2",
                     Pset: 2,
@@ -572,6 +571,339 @@ module.exports.defaultBYDProfiles = {
             }
         },
     },
-    jobs: {
+    jobs: {},
+}
+
+module.exports.defaultBYDUsers = {
+    users: {
+        2: {
+            email: "None",
+            group_id: 2,
+            group_name: "administrator",
+            status: 1,
+            tel: null,
+            user_id: 2,
+            user_name: "admin"
+        },
+        4: {
+            email: "None",
+            group_id: 8,
+            group_name: "operator",
+            status: 1,
+            tel: null,
+            user_id: 4,
+            user_name: "eng"
+        },
+        8: {
+            email: "None",
+            group_id: 8,
+            group_name: "operator",
+            status: 1,
+            tel: null,
+            user_id: 8,
+            user_name: "op"
+        },
+    },
+    groups: {
+        2: {
+            group_id: 2,
+            group_name: "administrator",
+            group_desc: "",
+            status: 1,
+            permission: {
+                modules: [
+                    {
+                        module_id: 1,
+                        module_name: "DEBUG",
+                        module_desc: "调试",
+                        level: 1
+                    },
+                    {
+                        module_id: 2,
+                        module_name: "DEBUG_IO",
+                        module_desc: "IO监视",
+                        level: 1
+                    },
+                    {
+                        module_id: 3,
+                        module_name: "DEBUG_FILEDBUS",
+                        module_desc: "总线监视",
+                        level: 1
+                    },
+                    {
+                        module_id: 4,
+                        module_name: "CALIBRATION",
+                        module_desc: "标定",
+                        level: 1
+                    },
+                    {
+                        module_id: 5,
+                        module_name: "PROFILE",
+                        module_desc: "工艺管理",
+                        level: 1
+                    },
+                    {
+                        module_id: 6,
+                        module_name: "ALARM",
+                        module_desc: "报警记录",
+                        level: 4
+                    },
+                    {
+                        module_id: 7,
+                        module_name: "AUTH_GROUP",
+                        module_desc: "权限管理",
+                        level: 1
+                    },
+                    {
+                        module_id: 8,
+                        module_name: "FTP",
+                        module_desc: "文件传输",
+                        level: 1
+                    },
+                    {
+                        module_id: 9,
+                        module_name: "DEV_BUS",
+                        module_desc: "总线设置",
+                        level: 1
+                    },
+                    {
+                        module_id: 10,
+                        module_name: "DEV_CONFIG",
+                        module_desc: "基础配置",
+                        level: 1
+                    },
+                    {
+                        module_id: 11,
+                        module_name: "DEV_CONTROL",
+                        module_desc: "控制设置",
+                        level: 1
+                    },
+                    {
+                        module_id: 12,
+                        module_name: "RECORDS",
+                        module_desc: "数据记录",
+                        level: 1
+                    },
+                    {
+                        module_id: 13,
+                        module_name: "JOB",
+                        module_desc: "JOB管理",
+                        level: 1
+                    },
+                    {
+                        module_id: 14,
+                        module_name: "SELPSET",
+                        module_desc: "PSET激活",
+                        level: 1
+                    },
+                    {
+                        module_id: 15,
+                        module_name: "SELJOB",
+                        module_desc: "JOB激活",
+                        level: 1
+                    }
+                ]
+            }
+        },
+        4: {
+            group_id: 4,
+            group_name: "engineer",
+            group_desc: "",
+            status: 1,
+            permission: {
+                modules: [
+                    {
+                        module_id: 1,
+                        module_name: "DEBUG",
+                        module_desc: "调试",
+                        level: 1
+                    },
+                    {
+                        module_id: 2,
+                        module_name: "DEBUG_IO",
+                        module_desc: "IO监视",
+                        level: 1
+                    },
+                    {
+                        module_id: 3,
+                        module_name: "DEBUG_FILEDBUS",
+                        module_desc: "总线监视",
+                        level: 1
+                    },
+                    {
+                        module_id: 4,
+                        module_name: "CALIBRATION",
+                        module_desc: "标定",
+                        level: 1
+                    },
+                    {
+                        module_id: 5,
+                        module_name: "PROFILE",
+                        module_desc: "工艺管理",
+                        level: 1
+                    },
+                    {
+                        module_id: 6,
+                        module_name: "ALARM",
+                        module_desc: "报警记录",
+                        level: 4
+                    },
+                    {
+                        module_id: 7,
+                        module_name: "AUTH_GROUP",
+                        module_desc: "权限管理",
+                        level: 1
+                    },
+                    {
+                        module_id: 8,
+                        module_name: "FTP",
+                        module_desc: "文件传输",
+                        level: 1
+                    },
+                    {
+                        module_id: 9,
+                        module_name: "DEV_BUS",
+                        module_desc: "总线设置",
+                        level: 1
+                    },
+                    {
+                        module_id: 10,
+                        module_name: "DEV_CONFIG",
+                        module_desc: "基础配置",
+                        level: 1
+                    },
+                    {
+                        module_id: 11,
+                        module_name: "DEV_CONTROL",
+                        module_desc: "控制设置",
+                        level: 1
+                    },
+                    {
+                        module_id: 12,
+                        module_name: "RECORDS",
+                        module_desc: "数据记录",
+                        level: 1
+                    },
+                    {
+                        module_id: 13,
+                        module_name: "JOB",
+                        module_desc: "JOB管理",
+                        level: 1
+                    },
+                    {
+                        module_id: 14,
+                        module_name: "SELPSET",
+                        module_desc: "PSET激活",
+                        level: 1
+                    },
+                    {
+                        module_id: 15,
+                        module_name: "SELJOB",
+                        module_desc: "JOB激活",
+                        level: 1
+                    }
+                ]
+            }
+        },
+        8: {
+            group_id: 8,
+            group_name: "operator",
+            group_desc: "",
+            status: 1,
+            permission: {
+                modules: [
+                    {
+                        module_id: 1,
+                        module_name: "DEBUG",
+                        module_desc: "调试",
+                        level: 1
+                    },
+                    {
+                        module_id: 2,
+                        module_name: "DEBUG_IO",
+                        module_desc: "IO监视",
+                        level: 1
+                    },
+                    {
+                        module_id: 3,
+                        module_name: "DEBUG_FILEDBUS",
+                        module_desc: "总线监视",
+                        level: 1
+                    },
+                    {
+                        module_id: 4,
+                        module_name: "CALIBRATION",
+                        module_desc: "标定",
+                        level: 1
+                    },
+                    {
+                        module_id: 5,
+                        module_name: "PROFILE",
+                        module_desc: "工艺管理",
+                        level: 1
+                    },
+                    {
+                        module_id: 6,
+                        module_name: "ALARM",
+                        module_desc: "报警记录",
+                        level: 4
+                    },
+                    {
+                        module_id: 7,
+                        module_name: "AUTH_GROUP",
+                        module_desc: "权限管理",
+                        level: 1
+                    },
+                    {
+                        module_id: 8,
+                        module_name: "FTP",
+                        module_desc: "文件传输",
+                        level: 1
+                    },
+                    {
+                        module_id: 9,
+                        module_name: "DEV_BUS",
+                        module_desc: "总线设置",
+                        level: 1
+                    },
+                    {
+                        module_id: 10,
+                        module_name: "DEV_CONFIG",
+                        module_desc: "基础配置",
+                        level: 1
+                    },
+                    {
+                        module_id: 11,
+                        module_name: "DEV_CONTROL",
+                        module_desc: "控制设置",
+                        level: 1
+                    },
+                    {
+                        module_id: 12,
+                        module_name: "RECORDS",
+                        module_desc: "数据记录",
+                        level: 1
+                    },
+                    {
+                        module_id: 13,
+                        module_name: "JOB",
+                        module_desc: "JOB管理",
+                        level: 1
+                    },
+                    {
+                        module_id: 14,
+                        module_name: "SELPSET",
+                        module_desc: "PSET激活",
+                        level: 1
+                    },
+                    {
+                        module_id: 15,
+                        module_name: "SELJOB",
+                        module_desc: "JOB激活",
+                        level: 1
+                    }
+                ]
+            }
+        },
     },
 }

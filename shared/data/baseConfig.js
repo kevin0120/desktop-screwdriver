@@ -79,7 +79,7 @@ function fetchCurrentController() {
             }
 
             if (Object.keys(settings.getAll()).length === 0) {
-                settings.setAll(defaultBYD.defaultBYDConfigs, {prettify: true});
+                settings.setAll(defaultBYD.defaultBYDUsers, {prettify: true});
             }
             if (Object.keys(CurrentController.users).length === 0) {
                 CurrentController.users = settings.getAll();
