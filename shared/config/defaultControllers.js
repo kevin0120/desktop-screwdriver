@@ -583,7 +583,8 @@ module.exports.defaultBYDUsers = {
             status: 1,
             tel: null,
             user_id: 2,
-            user_name: "admin"
+            user_name: "admin",
+            pwd:"admin"
         },
         4: {
             email: "None",
@@ -592,7 +593,8 @@ module.exports.defaultBYDUsers = {
             status: 1,
             tel: null,
             user_id: 4,
-            user_name: "eng"
+            user_name: "eng",
+            pwd:"eng"
         },
         8: {
             email: "None",
@@ -601,7 +603,8 @@ module.exports.defaultBYDUsers = {
             status: 1,
             tel: null,
             user_id: 8,
-            user_name: "op"
+            user_name: "op",
+            pwd:"op"
         },
     },
     groups: {
