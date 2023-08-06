@@ -340,7 +340,7 @@ function createmainWindow() {
     mainWindow.setPosition(screenWidth.size.width / 2 - mainWindow.getBounds().width, mainWindow.getBounds().y)
     // childWindow = createchildWindow(mainWindow);
 
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
 
 
     mainWindow.setMenu(MenuTemplate1)

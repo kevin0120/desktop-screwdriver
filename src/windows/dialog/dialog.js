@@ -146,6 +146,28 @@ function showDialog(info) {
                     });
                     break
                 case "syncUsers":
+                    httpClient.usersSyncApi().then((status) => {
+                            console.log(status)
+                            if (status === 0) {
+                                ind = setInterval(() => {
+                                    bar.value = bar.value + 5;
+                                    if (bar.value >= 100) {
+                                        clearInterval(ind)
+                                        bar.close()
+                                    }
+                                }, 100)
+                            } else {
+                                // console.log(result)
+                                bar.close()
+                                showErrorDialog()
+                            }
+                        }
+                    ).catch(err => {
+                        bar.close()
+                        console.error('123456:', err);
+                    }).then(()=>{
+                        saveCurrentController('users')
+                    });
                     break
                 case "syncProfiles":
                     httpClient.profilesSyncApi().then((status) => {

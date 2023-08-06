@@ -304,7 +304,7 @@ function settingHandleHttp(app) {
 
     // 用户新建
     app.post('/api/auth/user/add', (req, res) => {
-        id = getCurrentId("group") + 1
+        id = getCurrentId("user") + 1
         fetchCurrentController().users.users[id] = {
             email: "None",
             group_id: req.body.group_id,
