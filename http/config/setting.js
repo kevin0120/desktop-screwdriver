@@ -282,6 +282,11 @@ function settingHandleHttp(app) {
     app.get('/api/auth/group/del', (req, res) => {
         id = req.query.group_id
         delete fetchCurrentController().users.groups[id]
+        for (let user in fetchCurrentController().users.users) {
+            if (fetchCurrentController().users.users[user].group_id === parseInt(id)) {
+                delete fetchCurrentController().users.users[user]
+            }
+        }
         saveCurrentController('users')
         res.send({
             status: 0,
@@ -321,8 +326,6 @@ function settingHandleHttp(app) {
             description: "",
         });
     });
-
-
 }
 
 function settingHandleWs(wss) {
@@ -345,7 +348,6 @@ function settingHandleWs(wss) {
 
                     ws.send(JSON.stringify(config.ws))
                 }, 200)
-
                 break;
             default:
                 console.log(` url: ${req.url}`);

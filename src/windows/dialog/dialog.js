@@ -8,7 +8,8 @@ function setDialogWindow(window) {
     mainWindow = window
 
 }
-function showErrorDialog(){
+
+function showErrorDialog() {
 // 弹出错误框
     dialog.showMessageBox({
         type: 'error',
@@ -38,6 +39,24 @@ function showDialog(info) {
             bar.value = 0
             switch (info) {
                 case "updateUsers":
+                    httpClient.usersAndGroupsUpdateApi().then((result) => {
+                            if (result.status === 0) {
+                                ind = setInterval(() => {
+                                    bar.value = bar.value + 5;
+                                    if (bar.value >= 100) {
+                                        clearInterval(ind)
+                                        bar.close()
+                                    }
+                                }, 100)
+                            } else {
+                                bar.close()
+                                showErrorDialog()
+                            }
+                        }
+                    ).catch(err => {
+                        bar.close()
+                        console.error('123456:', err);
+                    });
                     break
                 case "updateProfiles":
                     httpClient.profilesUpdateApi().then((result) => {
@@ -122,7 +141,7 @@ function showDialog(info) {
                     });
                     break
                 case "updateAllConfigs":
-                    Promise.all([httpClient.profilesUpdateApi(),httpClient.busIoCfgDownloadApi(), httpClient.busFieldbusCfgDownloadApi(), httpClient.devCfgBaseInfoSetApi(),
+                    Promise.all([httpClient.profilesUpdateApi(), httpClient.busIoCfgDownloadApi(), httpClient.busFieldbusCfgDownloadApi(), httpClient.devCfgBaseInfoSetApi(),
                         httpClient.busSnCfgDownload(), httpClient.devCfgCtrlSrcSetApi(), httpClient.devCfgSerialSet()])
                         .then((result) => {
                                 if (result.every((value) => value.status === 0)) {
@@ -165,13 +184,13 @@ function showDialog(info) {
                     ).catch(err => {
                         bar.close()
                         console.error('123456:', err);
-                    }).then(()=>{
+                    }).then(() => {
                         saveCurrentController('users')
                     });
                     break
                 case "syncProfiles":
                     httpClient.profilesSyncApi().then((status) => {
-                        console.log(status)
+                            console.log(status)
                             if (status === 0) {
                                 ind = setInterval(() => {
                                     bar.value = bar.value + 5;
@@ -189,7 +208,7 @@ function showDialog(info) {
                     ).catch(err => {
                         bar.close()
                         console.error('123456:', err);
-                    }).then(()=>{
+                    }).then(() => {
                         saveCurrentController('profiles')
                     });
                     break
@@ -212,7 +231,7 @@ function showDialog(info) {
                     ).catch(err => {
                         bar.close()
                         console.error('123456:', err);
-                    }).then(()=>{
+                    }).then(() => {
                         saveCurrentController('config')
                     });
                     break
@@ -235,7 +254,7 @@ function showDialog(info) {
                     ).catch(err => {
                         bar.close()
                         console.error('123456:', err);
-                    }).then(()=>{
+                    }).then(() => {
                         saveCurrentController('config')
                     });
                     break
@@ -265,7 +284,7 @@ function showDialog(info) {
                     })
                     break
                 case "syncAllConfigs":
-                    Promise.all([httpClient.profilesSyncApi(),httpClient.busIoCfgUploadApi(), httpClient.busFieldbusCfgUploadApi(), httpClient.devVerApi(),
+                    Promise.all([httpClient.usersSyncApi(), httpClient.profilesSyncApi(), httpClient.busIoCfgUploadApi(), httpClient.busFieldbusCfgUploadApi(), httpClient.devVerApi(),
                         httpClient.devCfgBaseInfoGetApi(), httpClient.devCfgCtrlSrcGetApi(), httpClient.devCfgNetOpGetApi(), httpClient.devCfgSerialRs232(), httpClient.busSnCfgUpload()])
                         .then((result) => {
                                 if (result.every((value) => value === 0)) {

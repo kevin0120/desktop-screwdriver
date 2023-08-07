@@ -326,6 +326,82 @@ async function usersSyncApi() {
 }
 
 
+async function usersAndGroupsUpdateApi() {
+    try {
+        const result = await getHttpClient()({
+            url: 'auth/group/lst',
+            method: "get",
+        })
+        let status = 0
+        if (result.status) {
+            status = result.status
+        }
+        const values = Object.values(fetchCurrentController().users.groups).map(item => item.group_name);
+        const needToDelete = result.data.filter((item) => {
+            return !values.includes(item.group_name)
+
+        })
+        const needToAdd = Object.values(fetchCurrentController().users.groups).filter((item) => {
+            for (const r of result.data) {
+                if (r.group_name === item.group_name) {
+                    return false
+                }
+            }
+            return true
+        })
+        for (const add of needToAdd) {
+            const result1 = await getHttpClient()({
+                url: 'auth/group/add',
+                method: "post",
+                data: {
+                    group_name: add.group_name,
+                    group_desc: add.group_desc
+                }
+            })
+            if (result1.status) {
+                status = result1.status
+            }
+        }
+        for (const del of needToDelete) {
+            const result2 = await getHttpClient()({
+                url: `auth/group/del?group_id=${del.group_id}`,
+                method: "get",
+            })
+            if (result2.status) {
+                status = result2.status
+            }
+        }
+
+        const result3 = await getHttpClient()({
+            url: 'auth/group/lst',
+            method: "get",
+        })
+
+        for (const modify of result3.data) {
+            const m = Object.values(fetchCurrentController().users.groups).filter(item => item.group_name === modify.group_name)
+            if (m.length === 0) {
+                continue
+            }
+            const result4 = await getHttpClient()({
+                url: 'auth/modules/right/mod',
+                method: "post",
+                data: {
+                    group_id: modify.group_id,
+                    reload: false,
+                    modules: m[0].permission.modules
+                }
+            })
+            if (result4.status) {
+                status = result4.status
+            }
+        }
+        return {status: status}
+    } catch (e) {
+        return {status: 404}
+    }
+}
+
+
 module.exports = {
     devCfgBaseInfoSetApi,
     devCfgCtrlSrcSetApi,
@@ -334,7 +410,6 @@ module.exports = {
     busSnCfgDownload,
     busIoCfgDownloadApi,
     busFieldbusCfgDownloadApi,
-
 
     devVerApi,
     devCfgBaseInfoGetApi,
@@ -348,6 +423,6 @@ module.exports = {
     profilesSyncApi,
     profilesUpdateApi,
 
-
-    usersSyncApi
+    usersSyncApi,
+    usersAndGroupsUpdateApi
 }
