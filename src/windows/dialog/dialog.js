@@ -141,7 +141,7 @@ function showDialog(info) {
                     });
                     break
                 case "updateAllConfigs":
-                    Promise.all([httpClient.profilesUpdateApi(), httpClient.busIoCfgDownloadApi(), httpClient.busFieldbusCfgDownloadApi(), httpClient.devCfgBaseInfoSetApi(),
+                    Promise.all([httpClient.usersAndGroupsUpdateApi(), httpClient.profilesUpdateApi(), httpClient.busIoCfgDownloadApi(), httpClient.busFieldbusCfgDownloadApi(), httpClient.devCfgBaseInfoSetApi(),
                         httpClient.busSnCfgDownload(), httpClient.devCfgCtrlSrcSetApi(), httpClient.devCfgSerialSet()])
                         .then((result) => {
                                 if (result.every((value) => value.status === 0)) {
