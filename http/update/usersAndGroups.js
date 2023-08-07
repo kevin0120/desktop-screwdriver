@@ -1,4 +1,4 @@
-const {fetchCurrentController, saveCurrentController} = require("../../shared/data/baseConfig");
+const {fetchCurrentController} = require("../../shared/data/baseConfig");
 const {getHttpClient} = require('../config/setting')
 
 

@@ -1,66 +1,16 @@
 const {fetchCurrentController, saveCurrentController} = require("../shared/data/baseConfig");
 const {getHttpClient} = require('./config/setting')
 const {groupsUpdateApi, usersUpdateApi} = require('./update/usersAndGroups')
-
-function devCfgBaseInfoSetApi() {
-    return getHttpClient()({
-        url: "dev/cfg/base/info/set",
-        method: "post",
-        data: {
-            device_id: fetchCurrentController().config.dev.cfg_base_info.device_id,
-            device_name: fetchCurrentController().config.dev.cfg_base_info.device_name
-        }
-    })
-}
-
-function devCfgCtrlSrcSetApi() {
-    return getHttpClient()({
-        url: "dev/cfg/ctrl/src/set",
-        method: "post",
-        data: fetchCurrentController().config.dev.cfg_ctrl_src
-    })
-}
-
-
-function devCfgNetOpSetApi() {
-    return getHttpClient()({
-        url: "dev/cfg/net/op/set",
-        method: "post",
-        data: fetchCurrentController().config.dev.cfg_net_op
-    })
-}
-
-function devCfgSerialSet() {
-    return getHttpClient()({
-        url: "dev/cfg/serial/set",
-        method: "post",
-        data: fetchCurrentController().config.dev.cfg_serial_rs232
-    })
-}
-
-function busSnCfgDownload() {
-    return getHttpClient()({
-        url: "bus/sn/cfg/download",
-        method: "post",
-        data: fetchCurrentController().config.bus.sn_ctrl_upload
-    })
-}
-
-function busIoCfgDownloadApi() {
-    return getHttpClient()({
-        url: 'bus/io/cfg/download',
-        method: 'post',
-        data: fetchCurrentController().config.bus.io_cfg_upload
-    })
-}
-
-function busFieldbusCfgDownloadApi() {
-    return getHttpClient()({
-        url: 'bus/filedbus/cfg/download',
-        method: 'post',
-        data: fetchCurrentController().config.bus.fieldbus_cfg_upload
-    })
-}
+const {psetsUpdateApi} = require('./update/psetsAndJobs')
+const {
+    devCfgBaseInfoSetApi,
+    devCfgCtrlSrcSetApi,
+    devCfgNetOpSetApi,
+    devCfgSerialSet,
+    busSnCfgDownload,
+    busIoCfgDownloadApi,
+    busFieldbusCfgDownloadApi,
+} = require('./update/updateConfigs')
 
 
 async function devVerApi() {
@@ -222,68 +172,6 @@ async function profilesSyncApi() {
     }
 }
 
-async function profilesUpdateApi() {
-    try {
-        const result = await getHttpClient()({
-            url: 'pf/cur/lst',
-            method: "get",
-        })
-        let data = {
-            data: [],
-            status: 0
-        }
-        let remoetPset = result.data.map((item) => {
-            return item.pset
-        })
-        for (let pset in fetchCurrentController().profiles.psets) {
-            if (fetchCurrentController().profiles.psets.hasOwnProperty(pset)) {
-                let index = remoetPset.indexOf(parseInt(pset))
-                if (index !== -1) {
-                    remoetPset.splice(index, 1);
-                    // 只需要保存pset
-                } else {
-                    //需要 先新建再保存pset
-                    const result1 = await getHttpClient()({
-                        url: 'pf/add',
-                        method: "post",
-                        data: fetchCurrentController().profiles.psets[pset].details
-                    })
-                    if (result1.status) {
-                        data.status = result1.status
-                        data.data.push(pset)
-                    }
-                }
-                const result2 = await getHttpClient()({
-                    url: 'pf/mod',
-                    method: "post",
-                    data: fetchCurrentController().profiles.psets[pset].details
-                })
-                if (result2.status) {
-                    data.status = result2.status
-                    data.data.push(pset)
-                }
-            }
-        }
-        for (const item of remoetPset) {
-            fetchCurrentController().profiles.psets[item.pset] = item
-            const result3 = await getHttpClient()({
-                url: `pf/del?pset=${item}`,
-                method: "post",
-            })
-            if (result3.status) {
-                status = result.status
-                data.data.push(item)
-            }
-        }
-        return data
-    } catch (e) {
-        // console.log(e.err)
-        return {
-            status: 404,
-            data: []
-        }
-    }
-}
 
 async function usersSyncApi() {
     try {
@@ -326,6 +214,7 @@ async function usersSyncApi() {
 }
 
 
+// 更新用户和权限
 async function usersAndGroupsUpdateApi() {
     try {
         let status = await groupsUpdateApi();
@@ -340,16 +229,21 @@ async function usersAndGroupsUpdateApi() {
     }
 }
 
+// 更新工艺pset和job
+async function profilesUpdateApi() {
+    try {
+        return await psetsUpdateApi()
+    } catch (e) {
+        // console.log(e.err)
+        return {
+            status: 404,
+            data: []
+        }
+    }
+}
+
 
 module.exports = {
-    devCfgBaseInfoSetApi,
-    devCfgCtrlSrcSetApi,
-    devCfgNetOpSetApi,
-    devCfgSerialSet,
-    busSnCfgDownload,
-    busIoCfgDownloadApi,
-    busFieldbusCfgDownloadApi,
-
     devVerApi,
     devCfgBaseInfoGetApi,
     devCfgCtrlSrcGetApi,
@@ -360,11 +254,17 @@ module.exports = {
     busFieldbusCfgUploadApi,
 
     profilesSyncApi,
-    profilesUpdateApi,
-
     usersSyncApi,
 
 
+    usersAndGroupsUpdateApi,
+    profilesUpdateApi,
+    busIoCfgDownloadApi,
+    busFieldbusCfgDownloadApi,
 
-    usersAndGroupsUpdateApi
+    devCfgBaseInfoSetApi,
+    devCfgCtrlSrcSetApi,
+    devCfgNetOpSetApi,
+    devCfgSerialSet,
+    busSnCfgDownload,
 }

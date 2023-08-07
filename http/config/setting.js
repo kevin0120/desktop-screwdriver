@@ -14,7 +14,6 @@ function getCurrentId(name) {
             const list1 = Object.keys(fetchCurrentController().users.groups).map(key => parseInt(key))
             return list1.length === 0 ? 0 : Math.max(...list1)
     }
-
 }
 
 
