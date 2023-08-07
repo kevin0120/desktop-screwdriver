@@ -347,6 +347,7 @@ function createmainWindow() {
     mainWindow.loadFile(path.resolve(__dirname, './hellodevice.html'));
     // 当页面加载完成后，执行刷新操作
     mainWindow.webContents.on('did-finish-load', () => {
+        setdefaultToken("http://127.0.0.1")
         mainWindow.setTitle(`                                  用户及设备管理${getcurrentController().device_id}@${getcurrentController().device_name}@${getcurrentController().ip}`);
     });
 }

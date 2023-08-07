@@ -86,7 +86,7 @@ function settingHandleHttp(app) {
             data: fetchCurrentController().config.bus.fieldbus_cfg_upload
         });
     });
-    app.post('/api/bus/fieldbus/cfg/download', (req, res) => {
+    app.post('/api/bus/filedbus/cfg/download', (req, res) => {
         fetchCurrentController().config.bus.fieldbus_cfg_upload = req.body
         saveCurrentController('config')
         res.send({
