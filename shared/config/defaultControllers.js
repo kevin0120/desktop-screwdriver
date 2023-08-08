@@ -619,31 +619,31 @@ module.exports.defaultBYDUsers = {
                         module_id: 1,
                         module_name: "DEBUG",
                         module_desc: "调试",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 2,
                         module_name: "DEBUG_IO",
                         module_desc: "IO监视",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 3,
                         module_name: "DEBUG_FILEDBUS",
                         module_desc: "总线监视",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 4,
                         module_name: "CALIBRATION",
                         module_desc: "标定",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 5,
                         module_name: "PROFILE",
                         module_desc: "工艺管理",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 6,
@@ -655,55 +655,55 @@ module.exports.defaultBYDUsers = {
                         module_id: 7,
                         module_name: "AUTH_GROUP",
                         module_desc: "权限管理",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 8,
                         module_name: "FTP",
                         module_desc: "文件传输",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 9,
                         module_name: "DEV_BUS",
                         module_desc: "总线设置",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 10,
                         module_name: "DEV_CONFIG",
                         module_desc: "基础配置",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 11,
                         module_name: "DEV_CONTROL",
                         module_desc: "控制设置",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 12,
                         module_name: "RECORDS",
                         module_desc: "数据记录",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 13,
                         module_name: "JOB",
                         module_desc: "JOB管理",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 14,
                         module_name: "SELPSET",
                         module_desc: "PSET激活",
-                        level: 1
+                        level: 4
                     },
                     {
                         module_id: 15,
                         module_name: "SELJOB",
                         module_desc: "JOB激活",
-                        level: 1
+                        level: 4
                     }
                 ]
             }
