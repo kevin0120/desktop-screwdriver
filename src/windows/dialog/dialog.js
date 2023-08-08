@@ -118,55 +118,52 @@ function showDialog(info) {
                     });
                     break
                 case "updateSystemConfigs":
-                    Promise.all([httpClient.devCfgBaseInfoSetApi(), httpClient.busSnCfgDownload(), httpClient.devCfgCtrlSrcSetApi(), httpClient.devCfgSerialSet()])
-                        .then((result) => {
-                                if (result.every((value) => value.status === 0)) {
-                                    //op协议能重启网卡
-                                    httpClient.devCfgNetOpSetApi()
-                                    ind = setInterval(() => {
-                                        bar.value = bar.value + 5;
-                                        if (bar.value >= 100) {
-                                            clearInterval(ind)
-                                            bar.close()
-                                        }
-                                    }, 100)
-                                } else {
-                                    bar.close()
-                                    showErrorDialog()
-                                }
+                    httpClient.updateSystemConfigsApi().then((result) => {
+                        console.log(result)
+                        if (result.every((value) => value.status === 0)) {
+                                //op协议能重启网卡
+                                httpClient.devCfgNetOpSetApi()
+                                ind = setInterval(() => {
+                                    bar.value = bar.value + 5;
+                                    if (bar.value >= 100) {
+                                        clearInterval(ind)
+                                        bar.close()
+                                    }
+                                }, 100)
+                            } else {
+                                bar.close()
+                                showErrorDialog()
                             }
-                        ).catch(err => {
+                        }
+                    ).catch(err => {
                         bar.close()
                         console.error('123456:', err);
                     });
                     break
                 case "updateAllConfigs":
-                    Promise.all([httpClient.usersAndGroupsUpdateApi(), httpClient.profilesUpdateApi(), httpClient.busIoCfgDownloadApi(), httpClient.busFieldbusCfgDownloadApi(), httpClient.devCfgBaseInfoSetApi(),
-                        httpClient.busSnCfgDownload(), httpClient.devCfgCtrlSrcSetApi(), httpClient.devCfgSerialSet()])
-                        .then((result) => {
-                                if (result.every((value) => value.status === 0)) {
-                                    //op协议能重启网卡
-                                    httpClient.devCfgNetOpSetApi()
-                                    ind = setInterval(() => {
-                                        bar.value = bar.value + 5;
-                                        if (bar.value >= 100) {
-                                            clearInterval(ind)
-                                            bar.close()
-                                        }
-                                    }, 100)
-                                } else {
-                                    bar.close()
-                                    showErrorDialog()
-                                }
+                    httpClient.updateAllApi().then((result) => {
+                        if (result.every((value) => value.status === 0)) {
+                                //op协议能重启网卡
+                                httpClient.devCfgNetOpSetApi()
+                                ind = setInterval(() => {
+                                    bar.value = bar.value + 5;
+                                    if (bar.value >= 100) {
+                                        clearInterval(ind)
+                                        bar.close()
+                                    }
+                                }, 100)
+                            } else {
+                                bar.close()
+                                showErrorDialog()
                             }
-                        ).catch(err => {
+                        }
+                    ).catch(err => {
                         bar.close()
                         console.error('123456:', err);
                     });
                     break
                 case "syncUsers":
-                    httpClient.usersSyncApi().then((status) => {
-                            console.log(status)
+                    httpClient.usersAndGroupsSyncApi().then((status) => {
                             if (status === 0) {
                                 ind = setInterval(() => {
                                     bar.value = bar.value + 5;
@@ -190,7 +187,6 @@ function showDialog(info) {
                     break
                 case "syncProfiles":
                     httpClient.profilesSyncApi().then((status) => {
-                            console.log(status)
                             if (status === 0) {
                                 ind = setInterval(() => {
                                     bar.value = bar.value + 5;
@@ -259,24 +255,22 @@ function showDialog(info) {
                     });
                     break
                 case "syncSystemConfigs":
-                    Promise.all([httpClient.devVerApi(), httpClient.devCfgBaseInfoGetApi(), httpClient.devCfgCtrlSrcGetApi(),
-                        httpClient.devCfgNetOpGetApi(), httpClient.devCfgSerialRs232(), httpClient.busSnCfgUpload()])
-                        .then((result) => {
-                                if (result.every((value) => value === 0)) {
-                                    ind = setInterval(() => {
-                                        bar.value = bar.value + 5;
-                                        if (bar.value >= 100) {
-                                            clearInterval(ind)
-                                            bar.close()
-                                        }
-                                    }, 100)
-                                } else {
-                                    console.log(result)
-                                    bar.close()
-                                    showErrorDialog()
-                                }
+                    httpClient.configsSyncApi().then((result) => {
+                            if (result === 0) {
+                                ind = setInterval(() => {
+                                    bar.value = bar.value + 5;
+                                    if (bar.value >= 100) {
+                                        clearInterval(ind)
+                                        bar.close()
+                                    }
+                                }, 100)
+                            } else {
+                                console.log(result)
+                                bar.close()
+                                showErrorDialog()
                             }
-                        ).catch(err => {
+                        }
+                    ).catch(err => {
                         bar.close()
                         console.error('123456:', err);
                     }).then(() => {
@@ -284,24 +278,22 @@ function showDialog(info) {
                     })
                     break
                 case "syncAllConfigs":
-                    Promise.all([httpClient.usersSyncApi(), httpClient.profilesSyncApi(), httpClient.busIoCfgUploadApi(), httpClient.busFieldbusCfgUploadApi(), httpClient.devVerApi(),
-                        httpClient.devCfgBaseInfoGetApi(), httpClient.devCfgCtrlSrcGetApi(), httpClient.devCfgNetOpGetApi(), httpClient.devCfgSerialRs232(), httpClient.busSnCfgUpload()])
-                        .then((result) => {
-                                if (result.every((value) => value === 0)) {
-                                    ind = setInterval(() => {
-                                        bar.value = bar.value + 5;
-                                        if (bar.value >= 100) {
-                                            clearInterval(ind)
-                                            bar.close()
-                                        }
-                                    }, 100)
-                                } else {
-                                    console.log(result)
-                                    bar.close()
-                                    showErrorDialog()
-                                }
+                    httpClient.allSyncApi().then((result) => {
+                            if (result === 0) {
+                                ind = setInterval(() => {
+                                    bar.value = bar.value + 5;
+                                    if (bar.value >= 100) {
+                                        clearInterval(ind)
+                                        bar.close()
+                                    }
+                                }, 100)
+                            } else {
+                                console.log(result)
+                                bar.close()
+                                showErrorDialog()
                             }
-                        ).catch(err => {
+                        }
+                    ).catch(err => {
                         bar.close()
                         console.error('123456:', err);
                     }).then(() => {

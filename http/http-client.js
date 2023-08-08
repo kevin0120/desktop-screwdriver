@@ -1,7 +1,5 @@
-const {fetchCurrentController, saveCurrentController} = require("../shared/data/baseConfig");
-const {getHttpClient} = require('./config/setting')
-const {groupsUpdateApi, usersUpdateApi} = require('./update/usersAndGroups')
-const {psetsUpdateApi} = require('./update/psetsAndJobs')
+const {groupsUpdateApi, usersUpdateApi} = require('./update/updateUsersAndGroups')
+const {psetsUpdateApi} = require('./update/updatePsetsAndJobs')
 const {
     devCfgBaseInfoSetApi,
     devCfgCtrlSrcSetApi,
@@ -12,159 +10,27 @@ const {
     busFieldbusCfgDownloadApi,
 } = require('./update/updateConfigs')
 
-
-async function devVerApi() {
-    try {
-        const result = await getHttpClient()({
-            url: "dev/ver",
-            method: "get",
-        })
-        if (result.status === 0) {
-            fetchCurrentController().config.dev.ver = result.data
-            saveCurrentController('config')
-        }
-        return result.status
-    } catch (e) {
-        return 404
-    }
-}
-
-async function devCfgBaseInfoGetApi() {
-    try {
-        const result = await getHttpClient()({
-            url: "dev/cfg/base/info",
-            method: "get",
-        })
-        if (result.status === 0) {
-            fetchCurrentController().config.dev.cfg_base_info = result.data;
-            fetchCurrentController().config.ws.sensor_max = result.data.max_torque;
-            fetchCurrentController().config.ws.speed_max = result.data.max_speed;
-            // saveCurrentController('config')
-        }
-        return result.status
-    } catch (e) {
-        return 404
-    }
-}
-
-async function devCfgCtrlSrcGetApi() {
-    try {
-        const result = await getHttpClient()({
-            url: "dev/cfg/ctrl/src",
-            method: "get",
-        })
-        if (result.status === 0) {
-            fetchCurrentController().config.dev.cfg_ctrl_src = result.data
-            // saveCurrentController('config')
-        }
-        return result.status
-    } catch (e) {
-        return 404
-    }
-}
+const {usersAndGroupsSyncApi} = require('./sync/syncUsersAndGroups')
+const {psetsSyncApi, jobsSyncApi} = require('./sync/syncPsetsAndJobs')
+const {
+    devVerApi,
+    devCfgBaseInfoGetApi,
+    devCfgCtrlSrcGetApi,
+    devCfgNetOpGetApi,
+    devCfgSerialRs232,
+    busSnCfgUpload,
+    busIoCfgUploadApi,
+    busFieldbusCfgUploadApi
+} = require('./sync/syncConfigs')
 
 
-async function devCfgNetOpGetApi() {
-    try {
-        const result = await getHttpClient()({
-            url: "dev/cfg/net/op",
-            method: "get",
-        })
-        if (result.status === 0) {
-            fetchCurrentController().config.dev.cfg_net_op = result.data
-            // saveCurrentController('config')
-        }
-        return result.status
-    } catch (e) {
-        return 404
-    }
-}
-
-async function devCfgSerialRs232() {
-    try {
-        const result = await getHttpClient()({
-            url: "/dev/cfg/serial/rs232",
-            method: "get",
-        })
-        if (result.status === 0) {
-            fetchCurrentController().config.dev.cfg_serial_rs232 = result.data
-            // saveCurrentController('config')
-        }
-        return result.status
-    } catch (e) {
-        return 404
-    }
-}
-
-
-async function busSnCfgUpload() {
-    try {
-        const result = await getHttpClient()({
-            url: "/bus/sn/cfg/upload",
-            method: "get",
-        })
-        if (result.status === 0) {
-            fetchCurrentController().config.bus.sn_ctrl_upload = result.data
-            // saveCurrentController('config')
-        }
-        return result.status
-    } catch (e) {
-        return 404
-    }
-}
-
-
-async function busIoCfgUploadApi() {
-    try {
-        const result = await getHttpClient()({
-            url: 'bus/io/cfg/upload',
-            method: "get",
-        })
-        if (result.status === 0) {
-            fetchCurrentController().config.bus.io_cfg_upload = result.data
-            // saveCurrentController('config')
-        }
-        return result.status
-    } catch (e) {
-        return 404
-    }
-}
-
-async function busFieldbusCfgUploadApi() {
-    try {
-        const result = await getHttpClient()({
-            url: 'bus/fieldbus/cfg/upload',
-            method: "get",
-        })
-        if (result.status === 0) {
-            fetchCurrentController().config.bus.fieldbus_cfg_upload = result.data
-            // saveCurrentController('config')
-        }
-        return result.status
-    } catch (e) {
-        return 404
-    }
-}
-
+//同步工艺包括pset和job
 async function profilesSyncApi() {
     try {
-        const result = await getHttpClient()({
-            url: 'pf/cur/lst',
-            method: "get",
-        })
-        let status = 0
-        fetchCurrentController().profiles.psets = {}
-        for (const item of result.data) {
-            fetchCurrentController().profiles.psets[item.pset] = item
-            const result1 = await getHttpClient()({
-                url: `pf/cur/pset?id=${item.pset}`,
-                method: "get",
-            })
-            if (result1.status) {
-                status = result.status
-                continue
-            }
-            fetchCurrentController().profiles.psets[item.pset].details = result1.data
+        let status = await psetsSyncApi()
+        const status1 = await jobsSyncApi()
+        if (status1) {
+            status = status1
         }
         return status
     } catch (e) {
@@ -173,46 +39,34 @@ async function profilesSyncApi() {
 }
 
 
-async function usersSyncApi() {
+//同步系统配置
+async function configsSyncApi() {
     try {
-        const result = await getHttpClient()({
-            url: 'auth/group/lst',
-            method: "get",
-        })
-        let status = 0
-        fetchCurrentController().users.groups = {}
-        for (const item of result.data) {
-            fetchCurrentController().users.groups[item.group_id] = item
-            const result1 = await getHttpClient()({
-                url: `auth/group/modules/lst?group_id=${item.group_id}`,
-                method: "get",
-            })
-            if (result1.status) {
-                status = result.status
-                continue
-            }
-            fetchCurrentController().users.groups[item.group_id].permission = {
-                modules: result1.data.modules
-            }
-        }
+        const results = await Promise.all([devVerApi(), devCfgBaseInfoGetApi(), devCfgCtrlSrcGetApi(),
+            devCfgNetOpGetApi(), devCfgSerialRs232(), busSnCfgUpload()])
 
-        const result2 = await getHttpClient()({
-            url: 'auth/user/lst',
-            method: "get",
-        })
-        if (result2.status) {
-            status = result2.status
+        if (results.every((value) => value === 0)) {
+            return 0
         }
-        fetchCurrentController().users.users = {}
-        for (const item of result2.data) {
-            fetchCurrentController().users.users[item.user_id] = item
-        }
-        return status
+        return 404
     } catch (e) {
         return 404
     }
 }
 
+//同步所有配置
+async function allSyncApi() {
+    try {
+        const results = await Promise.all([usersAndGroupsSyncApi(), profilesSyncApi(), busIoCfgUploadApi(), busFieldbusCfgUploadApi(), devVerApi(),
+            devCfgBaseInfoGetApi(), devCfgCtrlSrcGetApi(), devCfgNetOpGetApi(), devCfgSerialRs232(), busSnCfgUpload()])
+        if (results.every((value) => value === 0)) {
+            return 0
+        }
+        return 404
+    } catch (e) {
+        return 404
+    }
+}
 
 // 更新用户和权限
 async function usersAndGroupsUpdateApi() {
@@ -242,29 +96,50 @@ async function profilesUpdateApi() {
     }
 }
 
+// 更新系统配置 ps op的配置需要单独最后启用因为它会导致网卡重启
+async function updateSystemConfigsApi() {
+    try {
+        return await Promise.all([devCfgBaseInfoSetApi(), busSnCfgDownload(), devCfgCtrlSrcSetApi(), devCfgSerialSet()])
+
+    } catch (e) {
+        // console.log(e.err)
+        return [{
+            status: 404,
+            data: []
+        }]
+    }
+}
+
+
+// 更新所有配置 ps op的配置需要单独最后启用因为它会导致网卡重启
+async function updateAllApi() {
+    try {
+        return await Promise.all([usersAndGroupsUpdateApi(), profilesUpdateApi(), busIoCfgDownloadApi(),
+            busFieldbusCfgDownloadApi(), devCfgBaseInfoSetApi(), busSnCfgDownload(), devCfgCtrlSrcSetApi(), devCfgSerialSet()])
+    } catch (e) {
+        // console.log(e.err)
+        return [{
+            status: 404,
+            data: []
+        }]
+    }
+}
 
 module.exports = {
-    devVerApi,
-    devCfgBaseInfoGetApi,
-    devCfgCtrlSrcGetApi,
-    devCfgNetOpGetApi,
-    devCfgSerialRs232,
-    busSnCfgUpload,
+
+    usersAndGroupsSyncApi,
+    profilesSyncApi,
     busIoCfgUploadApi,
     busFieldbusCfgUploadApi,
-
-    profilesSyncApi,
-    usersSyncApi,
+    configsSyncApi,
+    allSyncApi,
 
 
     usersAndGroupsUpdateApi,
     profilesUpdateApi,
     busIoCfgDownloadApi,
     busFieldbusCfgDownloadApi,
-
-    devCfgBaseInfoSetApi,
-    devCfgCtrlSrcSetApi,
+    updateSystemConfigsApi,
+    updateAllApi,
     devCfgNetOpSetApi,
-    devCfgSerialSet,
-    busSnCfgDownload,
 }
