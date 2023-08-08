@@ -588,8 +588,8 @@ module.exports.defaultBYDUsers = {
         },
         4: {
             email: "None",
-            group_id: 8,
-            group_name: "operator",
+            group_id: 4,
+            group_name: "engineer",
             status: 1,
             tel: null,
             user_id: 4,
