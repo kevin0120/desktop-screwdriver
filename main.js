@@ -7,7 +7,13 @@ const {killProcessesByName} = require("./src/manager");
 const {setdefaultToken} = require("./shared/config");
 const {setcurrentController, getcurrentController, getWorkDirectory} = require("./shared/data/baseConfig");
 const httpServer = require('./http/http-server')
-
+// const path = require('path')
+//
+// if (process.env.NODE_ENV === 'development') {
+//     require('electron-reload')(__dirname, {
+//         electron: require(`'${path.join(__dirname, 'node_modules', '.bin', 'electron')}'`)
+// });
+// }
 
 app.on('ready', function () {
     // 获取默认会话
