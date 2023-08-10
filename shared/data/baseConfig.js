@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const {app} = require('electron')
 const defaultBYD = require('../config/defaultControllers')
-
+const httpClient = require('../../http/http-client')
 
 let currentController = {
     device_name: "Line1-0.9",
@@ -26,7 +26,6 @@ function setcurrentController(c) {
     CurrentController.config.dev.cfg_base_info.device_name = currentController.device_name
     CurrentController.config.dev.cfg_base_info.device_id = currentController.device_id
     CurrentController.config.dev.cfg_net_op.ip = currentController.ip
-    saveCurrentController()
 }
 
 const appPath = app.isPackaged ? path.dirname(app.getPath('exe')) : app.getAppPath();

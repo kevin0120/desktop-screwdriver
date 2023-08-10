@@ -1,6 +1,26 @@
-const {saveCurrentController} = require("../../shared/data/baseConfig");
+
 const {fetchCurrentController} = require("../../shared/data/baseConfig");
 const {getHttpClient} = require('../config/setting')
+
+
+async function getRemoteWsApi() {
+    try {
+        const result = await getHttpClient()({
+            url: "auth/sync/ws",
+            method: "get",
+        })
+        if (result.status === 0) {
+            if (!result.data.offline){
+                fetchCurrentController().config.ws = result.data
+            }
+            // saveCurrentController('config')
+        }
+        return 0
+    } catch (e) {
+        return 0
+    }
+}
+
 
 
 async function devVerApi() {
@@ -144,5 +164,7 @@ module.exports = {
     devCfgSerialRs232,
     busSnCfgUpload,
     busIoCfgUploadApi,
-    busFieldbusCfgUploadApi
+    busFieldbusCfgUploadApi,
+
+    getRemoteWsApi
 }

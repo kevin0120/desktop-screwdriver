@@ -20,7 +20,8 @@ const {
     devCfgSerialRs232,
     busSnCfgUpload,
     busIoCfgUploadApi,
-    busFieldbusCfgUploadApi
+    busFieldbusCfgUploadApi,
+    getRemoteWsApi
 } = require('./sync/syncConfigs')
 
 
@@ -42,7 +43,7 @@ async function profilesSyncApi() {
 //同步系统配置
 async function configsSyncApi() {
     try {
-        const results = await Promise.all([devVerApi(), devCfgBaseInfoGetApi(), devCfgCtrlSrcGetApi(),
+        const results = await Promise.all([getRemoteWsApi(),devVerApi(), devCfgBaseInfoGetApi(), devCfgCtrlSrcGetApi(),
             devCfgNetOpGetApi(), devCfgSerialRs232(), busSnCfgUpload()])
 
         if (results.every((value) => value === 0)) {
@@ -57,7 +58,7 @@ async function configsSyncApi() {
 //同步所有配置
 async function allSyncApi() {
     try {
-        const results = await Promise.all([usersAndGroupsSyncApi(), profilesSyncApi(), busIoCfgUploadApi(), busFieldbusCfgUploadApi(), devVerApi(),
+        const results = await Promise.all([getRemoteWsApi(),usersAndGroupsSyncApi(), profilesSyncApi(), busIoCfgUploadApi(), busFieldbusCfgUploadApi(), devVerApi(),
             devCfgBaseInfoGetApi(), devCfgCtrlSrcGetApi(), devCfgNetOpGetApi(), devCfgSerialRs232(), busSnCfgUpload()])
         if (results.every((value) => value === 0)) {
             return 0
@@ -142,4 +143,6 @@ module.exports = {
     updateSystemConfigsApi,
     updateAllApi,
     devCfgNetOpSetApi,
+
+    getRemoteWsApi,
 }
