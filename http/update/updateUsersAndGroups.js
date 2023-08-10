@@ -116,6 +116,7 @@ async function usersUpdateApi() {
                     group_id: id,
                     pwd: add.hasOwnProperty('pwd') ? add.pwd : add.user_name,
                     user: add.user_name,
+                    user_key: add.user_key,
                     workNum: 0
                 }
             })
@@ -152,9 +153,11 @@ async function usersUpdateApi() {
         for (const modify of result3.data) {
             let id = 0
             let group_name = ""
+            let user_key = ""
             for (const user of Object.values(fetchCurrentController().users.users)) {
                 if (user.user_name === modify.user_name) {
                     group_name = user.group_name
+                    user_key = user.user_key
                     break
                 }
             }
@@ -172,6 +175,7 @@ async function usersUpdateApi() {
                     user_id: modify.user_id,
                     user_name: modify.user_name,
                     group_id: id,
+                    user_key: user_key,
                 }
             })
 

@@ -584,6 +584,7 @@ module.exports.defaultBYDUsers = {
             tel: null,
             user_id: 2,
             user_name: "admin",
+            user_key: "admin",
             pwd:"admin"
         },
         4: {
@@ -594,6 +595,7 @@ module.exports.defaultBYDUsers = {
             tel: null,
             user_id: 4,
             user_name: "eng",
+            user_key: "eng",
             pwd:"eng"
         },
         8: {
@@ -604,6 +606,7 @@ module.exports.defaultBYDUsers = {
             tel: null,
             user_id: 8,
             user_name: "op",
+            user_key: "op",
             pwd:"op"
         },
     },

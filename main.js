@@ -14,10 +14,15 @@ const httpServer = require('./http/http-server')
 //         electron: require(`'${path.join(__dirname, 'node_modules', '.bin', 'electron')}'`)
 // });
 // }
+const { session } = require('electron');
+
 
 app.on('ready', function () {
     // 获取默认会话
-
+// 获取默认的会话对象
+    const defaultSession = session.defaultSession;
+// 清除缓存
+    defaultSession.clearCache().then(r => console.log("成功清除缓存"));
     setdefaultToken("http://127.0.0.1")
     // // 启动三方程序
     // //当前应用的目录

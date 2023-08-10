@@ -306,7 +306,7 @@ function createchildWindow(mainWindow) {
         }
         childWindow.setSize(mainWindow.getBounds().width, mainWindow.getBounds().height, true)
     });
-
+    // childWindow.webContents.openDevTools()
     childWindow.setPosition(mainWindow.getBounds().width + mainWindow.getBounds().x - 15, mainWindow.getBounds().y)
 
     // 当页面加载完成后，执行刷新操作

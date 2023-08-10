@@ -220,6 +220,7 @@ function settingHandleHttp(app) {
         fetchCurrentController().users.users[req.body.user_id].group_id = req.body.group_id
         fetchCurrentController().users.users[req.body.user_id].group_name = fetchCurrentController().users.groups[req.body.group_id].group_name
         fetchCurrentController().users.users[req.body.user_id].user_name = req.body.user_name
+        fetchCurrentController().users.users[req.body.user_id].user_key = req.body.user_key
         saveCurrentController('users')
         res.send({
             status: 0,
@@ -317,6 +318,7 @@ function settingHandleHttp(app) {
             tel: null,
             user_id: id,
             user_name: req.body.user,
+            user_key: req.body.user_key,
             pwd: req.body.pwd,
         }
         saveCurrentController('users')
