@@ -329,6 +329,27 @@ function settingHandleHttp(app) {
     });
 }
 
+
+
+async function getRemoteWsApi() {
+    try {
+        const result = await getHttpClient()({
+            url: "auth/sync/ws",
+            method: "get",
+        })
+        if (result.status === 0) {
+            if (!result.data.offline){
+                fetchCurrentController().config.ws = result.data
+                saveCurrentController('config')
+            }
+            // saveCurrentController('config')
+        }
+        return 0
+    } catch (e) {
+        return 0
+    }
+}
+
 function settingHandleWs(wss) {
     // 监听 WebSocket 连接事件
     wss.on('connection', (ws, req) => {
@@ -337,6 +358,9 @@ function settingHandleWs(wss) {
         switch (req.url) {
             case '/websocket/gstatus':
                 // ws.send(config.ws)
+                getRemoteWsApi().then(
+                    ()=>console.log("wbsocket 连接")
+                )
                 setInterval(() => {
                     config.ws.heartbit = new Date().getTime()
                     config.ws.enablesrc = config.dev.cfg_ctrl_src.power_enable
