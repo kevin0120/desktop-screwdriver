@@ -204,6 +204,69 @@ function settingHandleHttp(app) {
     });
 
 
+    // job工艺列表
+    app.get('/api/pf/cur/joblst', (req, res) => {
+        res.send({
+            status: 0,
+            description: "",
+            data: Object.values(fetchCurrentController().profiles.jobs)
+        });
+    });
+    // job工艺详情
+    app.get('/api/pf/cur/job', (req, res) => {
+        let job = parseInt(req.query.id)
+        res.send({
+            status: 0,
+            description: "",
+            data: fetchCurrentController().profiles.jobs[job].details
+        });
+    });
+    // job工艺保存
+    app.post('/api/pf/jobmod', (req, res) => {
+        let job = req.body.Profile.JobId
+        fetchCurrentController().profiles.jobs[job]={
+                    name: req.body.Profile.Name,
+                    job: req.body.Profile.JobId,
+                    mode: req.body.Profile.Mode,
+                    desc:req.body.Profile.Descr,
+                    details: req.body
+        }
+        saveCurrentController('profiles')
+        res.send({
+            status: 0,
+            description: ""
+        });
+    });
+
+    // job工艺删除
+    app.post('/api/pf/jobdel', (req, res) => {
+        let job = req.query.job
+        delete fetchCurrentController().profiles.jobs[job]
+        saveCurrentController('profiles')
+        res.send({
+            status: 0,
+            description: ""
+        });
+    });
+    // // 工艺新建
+    // app.post('/api/pf/add', (req, res) => {
+    //     let pset = req.body.Profile.Pset
+    //     fetchCurrentController().profiles.psets[pset] = {
+    //         name: req.body.Profile.Name,
+    //         pset: req.body.Profile.Pset,
+    //         mode: req.body.Profile.Mode,
+    //         details: req.body
+    //     }
+    //     saveCurrentController('profiles')
+    //     res.send({
+    //         status: 0,
+    //         description: ""
+    //     });
+    // });
+
+
+
+
     // 用户列表
     app.get('/api/auth/user/lst', (req, res) => {
         res.send({

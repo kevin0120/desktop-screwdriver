@@ -571,7 +571,42 @@ module.exports.defaultBYDProfiles = {
             }
         },
     },
-    jobs: {},
+    jobs: {
+        1: {
+            name: "job1",
+            job: 1,
+            desc: "",
+            details: {
+                Profile: {
+                    Name: "job1",
+                    JobId: 1,
+                    Descr: "",
+                    Ver: "1.0.0",
+                    Mode: 1,
+                    Reused: true,
+                    JobSelSource: 0,
+                    AutoSelPset: true,
+                    JobItems: [
+                        [
+                            {
+                                Pset: 1,
+                                RetriesLimit: true,
+                                Retries: 1,
+                                BatchSizeLimit: true,
+                                BatchSize: 10,
+                                LooseningMode: 0,
+                                OnlyCntOK: 1,
+                                ForceBatchStatus: 0,
+                                DecLoosening: 0,
+                                ReverseOk: 0.025
+                            }
+                        ]
+                    ]
+                }
+            }
+
+        }
+    },
 }
 
 module.exports.defaultBYDUsers = {
@@ -585,7 +620,7 @@ module.exports.defaultBYDUsers = {
             user_id: 2,
             user_name: "admin",
             user_key: "admin",
-            pwd:"admin"
+            pwd: "admin"
         },
         4: {
             email: "None",
@@ -596,7 +631,7 @@ module.exports.defaultBYDUsers = {
             user_id: 4,
             user_name: "eng",
             user_key: "eng",
-            pwd:"eng"
+            pwd: "eng"
         },
         8: {
             email: "None",
@@ -607,7 +642,7 @@ module.exports.defaultBYDUsers = {
             user_id: 8,
             user_name: "op",
             user_key: "op",
-            pwd:"op"
+            pwd: "op"
         },
     },
     groups: {

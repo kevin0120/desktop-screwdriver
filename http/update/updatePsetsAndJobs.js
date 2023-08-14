@@ -45,7 +45,7 @@ async function psetsUpdateApi() {
             }
         }
         for (const item of remotePset) {
-            fetchCurrentController().profiles.psets[item.pset] = item
+            // fetchCurrentController().profiles.psets[item.pset] = item
             const result3 = await getHttpClient()({
                 url: `pf/del?pset=${item}`,
                 method: "post",
@@ -65,6 +65,76 @@ async function psetsUpdateApi() {
     }
 }
 
+
+
+async function jobsUpdateApi() {
+    try {
+        const result = await getHttpClient()({
+            url: 'pf/cur/joblst',
+            method: "get",
+        })
+        let data = {
+            data: [],
+            status: 0
+        }
+        let remoteJob = result.data.map((item) => {
+            return item.job
+        })
+        for (let job in fetchCurrentController().profiles.jobs) {
+            if (fetchCurrentController().profiles.jobs.hasOwnProperty(job)) {
+                let index = remoteJob.indexOf(parseInt(job))
+                if (index !== -1) {
+                    remoteJob.splice(index, 1);
+                    // 只需要保存pset
+                }
+            // else {
+            //         //需要 先新建再保存pset
+            //         const result1 = await getHttpClient()({
+            //             url: 'pf/add',
+            //             method: "post",
+            //             data: fetchCurrentController().profiles.psets[pset].details
+            //         })
+            //         if (result1.status) {
+            //             data.status = result1.status
+            //             data.data.push(pset)
+            //         }
+            //     }
+                const result2 = await getHttpClient()({
+                    url: 'pf/jobmod',
+                    method: "post",
+                    data: fetchCurrentController().profiles.jobs[job].details
+                })
+                if (result2.status) {
+                    data.status = result2.status
+                    data.data.push(job)
+                }
+            }
+        }
+        for (const item of remoteJob) {
+            // fetchCurrentController().profiles.jobs[item.job] = item
+            const result3 = await getHttpClient()({
+                url: `pf/jobdel?job=${item}`,
+                method: "post",
+            })
+            if (result3.status) {
+                status = result.status
+                data.data.push(item)
+            }
+        }
+        return data
+    } catch (e) {
+        // console.log(e.err)
+        return {
+            status: 404,
+            data: []
+        }
+    }
+}
+
+
+
+
 module.exports = {
-    psetsUpdateApi
+    psetsUpdateApi,
+    jobsUpdateApi
 }

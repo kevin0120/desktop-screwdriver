@@ -1,5 +1,5 @@
 const {groupsUpdateApi, usersUpdateApi} = require('./update/updateUsersAndGroups')
-const {psetsUpdateApi} = require('./update/updatePsetsAndJobs')
+const {psetsUpdateApi, jobsUpdateApi} = require('./update/updatePsetsAndJobs')
 const {
     devCfgBaseInfoSetApi,
     devCfgCtrlSrcSetApi,
@@ -43,7 +43,7 @@ async function profilesSyncApi() {
 //同步系统配置
 async function configsSyncApi() {
     try {
-        const results = await Promise.all([getRemoteWsApi(),devVerApi(), devCfgBaseInfoGetApi(), devCfgCtrlSrcGetApi(),
+        const results = await Promise.all([getRemoteWsApi(), devVerApi(), devCfgBaseInfoGetApi(), devCfgCtrlSrcGetApi(),
             devCfgNetOpGetApi(), devCfgSerialRs232(), busSnCfgUpload()])
 
         if (results.every((value) => value === 0)) {
@@ -58,7 +58,7 @@ async function configsSyncApi() {
 //同步所有配置
 async function allSyncApi() {
     try {
-        const results = await Promise.all([getRemoteWsApi(),usersAndGroupsSyncApi(), profilesSyncApi(), busIoCfgUploadApi(), busFieldbusCfgUploadApi(), devVerApi(),
+        const results = await Promise.all([getRemoteWsApi(), usersAndGroupsSyncApi(), profilesSyncApi(), busIoCfgUploadApi(), busFieldbusCfgUploadApi(), devVerApi(),
             devCfgBaseInfoGetApi(), devCfgCtrlSrcGetApi(), devCfgNetOpGetApi(), devCfgSerialRs232(), busSnCfgUpload()])
         if (results.every((value) => value === 0)) {
             return 0
@@ -87,7 +87,16 @@ async function usersAndGroupsUpdateApi() {
 // 更新工艺pset和job
 async function profilesUpdateApi() {
     try {
-        return await psetsUpdateApi()
+        const res = await psetsUpdateApi()
+        const res2 = await jobsUpdateApi()
+        let status = res.status
+        if (res2.status) {
+            status = res2.status
+        }
+        return {
+            status: status,
+            data: []
+        }
     } catch (e) {
         // console.log(e.err)
         return {
@@ -138,6 +147,7 @@ module.exports = {
 
     usersAndGroupsUpdateApi,
     profilesUpdateApi,
+
     busIoCfgDownloadApi,
     busFieldbusCfgDownloadApi,
     updateSystemConfigsApi,
