@@ -49,13 +49,6 @@ const MenuTemplate1 = Menu.buildFromTemplate([
             }
         ]
     },
-    {
-        type: 'separator'
-    },
-    {
-        label: "用户管理",
-        click: () => mainWindow.loadURL('http://127.0.0.1:30003/setup/setuser/usrmng').then(mainWindow.setMenu(MenuTemplate3)),
-    },
 ])
 
 const MenuTemplate2 = Menu.buildFromTemplate([
@@ -180,15 +173,15 @@ const MenuTemplate2 = Menu.buildFromTemplate([
         ]
     },
 
-
-    {
-        type: 'separator'
-    },
-
-    {
-        label: "用户管理",
-        click: () => mainWindow.loadURL('http://127.0.0.1:30003/setup/setuser/usrmng').then(mainWindow.setMenu(MenuTemplate3)),
-    },
+    //
+    // {
+    //     type: 'separator'
+    // },
+    //
+    // {
+    //     label: "用户管理",
+    //     click: () => mainWindow.loadURL('http://127.0.0.1:30003/setup/setuser/usrmng').then(mainWindow.setMenu(MenuTemplate3)),
+    // },
 
 ])
 
@@ -238,23 +231,23 @@ const MenuTemplate3 = Menu.buildFromTemplate([
         ]
     },
 
-
-    {
-        type: 'separator'
-    },
-    {
-        label: "用户管理",
-        submenu: [
-            {
-                click: () => mainWindow.loadURL('http://127.0.0.1:30003/setup/setuser/usrmng').then(mainWindow.setMenu(MenuTemplate3)),
-                label: '编辑用户',
-            },
-            {
-                click: () => mainWindow.webContents.send('update-counter', -1),
-                label: '导入勾选的用户以及权限',
-            },
-        ]
-    },
+    //
+    // {
+    //     type: 'separator'
+    // },
+    // {
+    //     label: "用户管理",
+    //     submenu: [
+    //         {
+    //             click: () => mainWindow.loadURL('http://127.0.0.1:30003/setup/setuser/usrmng').then(mainWindow.setMenu(MenuTemplate3)),
+    //             label: '编辑用户',
+    //         },
+    //         {
+    //             click: () => mainWindow.webContents.send('update-counter', -1),
+    //             label: '导入勾选的用户以及权限',
+    //         },
+    //     ]
+    // },
 
 ])
 
@@ -270,6 +263,7 @@ function createchildWindow(mainWindow) {
         modal: false,
         show: false
     });
+    // childWindow.webContents.openDevTools()
     // 创建子窗口菜单模
     const childMenuTemplate = Menu.buildFromTemplate([
         {
@@ -348,7 +342,7 @@ function createmainWindow() {
     // 当页面加载完成后，执行刷新操作
     mainWindow.webContents.on('did-finish-load', () => {
         setdefaultToken("http://127.0.0.1")
-        mainWindow.setTitle(`                                  用户及设备管理${getcurrentController().device_id}@${getcurrentController().device_name}@${getcurrentController().ip}`);
+        mainWindow.setTitle(`                                  离线本地设备${getcurrentController().device_id}@${getcurrentController().device_name}@${getcurrentController().ip}`);
     });
 }
 
