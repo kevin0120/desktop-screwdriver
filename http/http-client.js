@@ -70,10 +70,10 @@ async function allSyncApi() {
 }
 
 // 更新用户和权限
-async function usersAndGroupsUpdateApi() {
+async function usersAndGroupsUpdateApi(pwd) {
     try {
         let status = await groupsUpdateApi();
-        const status2 = await usersUpdateApi();
+        const status2 = await usersUpdateApi(pwd);
         if (status2) {
             status = status2
         }
@@ -122,9 +122,9 @@ async function updateSystemConfigsApi() {
 
 
 // 更新所有配置 ps op的配置需要单独最后启用因为它会导致网卡重启
-async function updateAllApi() {
+async function updateAllApi(pwd) {
     try {
-        return await Promise.all([usersAndGroupsUpdateApi(), profilesUpdateApi(), busIoCfgDownloadApi(),
+        return await Promise.all([usersAndGroupsUpdateApi(pwd), profilesUpdateApi(), busIoCfgDownloadApi(),
             busFieldbusCfgDownloadApi(), devCfgBaseInfoSetApi(), busSnCfgDownload(), devCfgCtrlSrcSetApi(), devCfgSerialSet()])
     } catch (e) {
         // console.log(e.err)

@@ -224,12 +224,12 @@ function settingHandleHttp(app) {
     // job工艺保存
     app.post('/api/pf/jobmod', (req, res) => {
         let job = req.body.Profile.JobId
-        fetchCurrentController().profiles.jobs[job]={
-                    name: req.body.Profile.Name,
-                    job: req.body.Profile.JobId,
-                    mode: req.body.Profile.Mode,
-                    desc:req.body.Profile.Descr,
-                    details: req.body
+        fetchCurrentController().profiles.jobs[job] = {
+            name: req.body.Profile.Name,
+            job: req.body.Profile.JobId,
+            mode: req.body.Profile.Mode,
+            desc: req.body.Profile.Descr,
+            details: req.body
         }
         saveCurrentController('profiles')
         res.send({
@@ -265,8 +265,6 @@ function settingHandleHttp(app) {
     // });
 
 
-
-
     // 用户列表
     app.get('/api/auth/user/lst', (req, res) => {
         res.send({
@@ -284,6 +282,8 @@ function settingHandleHttp(app) {
         fetchCurrentController().users.users[req.body.user_id].group_name = fetchCurrentController().users.groups[req.body.group_id].group_name
         fetchCurrentController().users.users[req.body.user_id].user_name = req.body.user_name
         fetchCurrentController().users.users[req.body.user_id].user_key = req.body.user_key
+        fetchCurrentController().users.users[req.body.user_id].user_password = req.body.user_password ? req.body.user_password : fetchCurrentController().users.users[req.body.user_id].user_password
+
         saveCurrentController('users')
         res.send({
             status: 0,
@@ -382,7 +382,7 @@ function settingHandleHttp(app) {
             user_id: id,
             user_name: req.body.user,
             user_key: req.body.user_key,
-            pwd: req.body.pwd,
+            user_password: req.body.pwd,
         }
         saveCurrentController('users')
         res.send({
@@ -393,7 +393,6 @@ function settingHandleHttp(app) {
 }
 
 
-
 async function getRemoteWsApi() {
     try {
         const result = await getHttpClient()({
@@ -401,7 +400,7 @@ async function getRemoteWsApi() {
             method: "get",
         })
         if (result.status === 0) {
-            if (!result.data.offline){
+            if (!result.data.offline) {
                 fetchCurrentController().config.ws = result.data
                 saveCurrentController('config')
             }
@@ -422,7 +421,7 @@ function settingHandleWs(wss) {
             case '/websocket/gstatus':
                 // ws.send(config.ws)
                 getRemoteWsApi().then(
-                    ()=>console.log("wbsocket 连接")
+                    () => console.log("wbsocket 连接")
                 )
                 setInterval(() => {
                     config.ws.heartbit = new Date().getTime()

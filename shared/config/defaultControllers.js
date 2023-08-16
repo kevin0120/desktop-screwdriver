@@ -620,7 +620,7 @@ module.exports.defaultBYDUsers = {
             user_id: 2,
             user_name: "admin",
             user_key: "admin",
-            pwd: "admin"
+            user_password: "admin"
         },
         4: {
             email: "None",
@@ -631,7 +631,7 @@ module.exports.defaultBYDUsers = {
             user_id: 4,
             user_name: "eng",
             user_key: "eng",
-            pwd: "eng"
+            user_password: "eng"
         },
         8: {
             email: "None",
@@ -642,7 +642,7 @@ module.exports.defaultBYDUsers = {
             user_id: 8,
             user_name: "op",
             user_key: "op",
-            pwd: "op"
+            user_password: "op"
         },
     },
     groups: {

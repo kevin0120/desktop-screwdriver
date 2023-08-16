@@ -21,10 +21,19 @@ function showErrorDialog() {
 
 
 function showDialog(info) {
-    const options = {
-        type: 'info',
+    const options = (info==="updateUsers" || info==="updateAllConfigs") ? {
+        type: 'question',
         title: info,
         message: typeof info === 'string' && info.startsWith("update") ? '确定要进行  更新远程配置  的操作吗?' : typeof info === 'string' && info.startsWith("sync") ? '确定要进行  同步本地离线配置  的操作吗?' : "",
+
+        checkboxLabel: '密码',
+        checkboxChecked: true,  // 默认勾选某些选项
+        buttons: ['Cancel', 'OK']
+    } : {
+        type: 'question',
+        title: info,
+        message: typeof info === 'string' && info.startsWith("update") ? '确定要进行  更新远程配置  的操作吗?' : typeof info === 'string' && info.startsWith("sync") ? '确定要进行  同步本地离线配置  的操作吗?' : "",
+
         buttons: ['Cancel', 'OK']
     };
 
@@ -39,7 +48,7 @@ function showDialog(info) {
             bar.value = 0
             switch (info) {
                 case "updateUsers":
-                    httpClient.usersAndGroupsUpdateApi().then((result) => {
+                    httpClient.usersAndGroupsUpdateApi(response.checkboxChecked).then((result) => {
                             if (result.status === 0) {
                                 ind = setInterval(() => {
                                     bar.value = bar.value + 5;
@@ -119,8 +128,8 @@ function showDialog(info) {
                     break
                 case "updateSystemConfigs":
                     httpClient.updateSystemConfigsApi().then((result) => {
-                        console.log(result)
-                        if (result.every((value) => value.status === 0)) {
+                            console.log(result)
+                            if (result.every((value) => value.status === 0)) {
                                 //op协议能重启网卡
                                 httpClient.devCfgNetOpSetApi()
                                 ind = setInterval(() => {
@@ -141,8 +150,8 @@ function showDialog(info) {
                     });
                     break
                 case "updateAllConfigs":
-                    httpClient.updateAllApi().then((result) => {
-                        if (result.every((value) => value.status === 0)) {
+                    httpClient.updateAllApi(response.checkboxChecked).then((result) => {
+                            if (result.every((value) => value.status === 0)) {
                                 //op协议能重启网卡
                                 httpClient.devCfgNetOpSetApi()
                                 ind = setInterval(() => {

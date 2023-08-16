@@ -77,7 +77,7 @@ async function groupsUpdateApi() {
     }
 }
 
-async function usersUpdateApi() {
+async function usersUpdateApi(pwd) {
 
     try {
         const result = await getHttpClient()({
@@ -114,7 +114,7 @@ async function usersUpdateApi() {
                 method: "post",
                 data: {
                     group_id: id,
-                    pwd: add.hasOwnProperty('pwd') ? add.pwd : add.user_name,
+                    pwd: add.hasOwnProperty('user_password') ? add.user_password : add.user_name,
                     user: add.user_name,
                     user_key: add.user_key,
                     workNum: 0
@@ -154,10 +154,12 @@ async function usersUpdateApi() {
             let id = 0
             let group_name = ""
             let user_key = ""
+            let user_password = ""
             for (const user of Object.values(fetchCurrentController().users.users)) {
                 if (user.user_name === modify.user_name) {
                     group_name = user.group_name
                     user_key = user.user_key
+                    user_password = user.user_password
                     break
                 }
             }
@@ -167,7 +169,7 @@ async function usersUpdateApi() {
                     break
                 }
             }
-            const result5 = await getHttpClient()({
+            const result5 = pwd? await getHttpClient()({
                 url: 'auth/user/mod',
                 method: "post",
                 data: {
@@ -176,6 +178,17 @@ async function usersUpdateApi() {
                     user_name: modify.user_name,
                     group_id: id,
                     user_key: user_key,
+                    user_password:user_password
+                }
+            }) : await getHttpClient()({
+                url: 'auth/user/mod',
+                method: "post",
+                data: {
+                    email: "None",
+                    user_id: modify.user_id,
+                    user_name: modify.user_name,
+                    group_id: id,
+                    user_key: user_key
                 }
             })
 
