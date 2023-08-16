@@ -172,17 +172,6 @@ const MenuTemplate2 = Menu.buildFromTemplate([
             }
         ]
     },
-
-    //
-    // {
-    //     type: 'separator'
-    // },
-    //
-    // {
-    //     label: "用户管理",
-    //     click: () => mainWindow.loadURL('http://127.0.0.1:30003/setup/setuser/usrmng').then(mainWindow.setMenu(MenuTemplate3)),
-    // },
-
 ])
 
 const MenuTemplate3 = Menu.buildFromTemplate([
@@ -230,24 +219,6 @@ const MenuTemplate3 = Menu.buildFromTemplate([
             }
         ]
     },
-
-    //
-    // {
-    //     type: 'separator'
-    // },
-    // {
-    //     label: "用户管理",
-    //     submenu: [
-    //         {
-    //             click: () => mainWindow.loadURL('http://127.0.0.1:30003/setup/setuser/usrmng').then(mainWindow.setMenu(MenuTemplate3)),
-    //             label: '编辑用户',
-    //         },
-    //         {
-    //             click: () => mainWindow.webContents.send('update-counter', -1),
-    //             label: '导入勾选的用户以及权限',
-    //         },
-    //     ]
-    // },
 
 ])
 
