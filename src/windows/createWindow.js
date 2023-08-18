@@ -133,8 +133,13 @@ const MenuTemplate2 = Menu.buildFromTemplate([
             },
             {type: 'separator'}, // 添加横线
             {
-                click: () => showDialog("updateAllConfigs"),
-                label: '更新全部',
+                click: (menuItem, browserWindow, event) => {
+                    // 处理菜单项的点击事件
+                    let func1=MenuTemplate2.getMenuItemById('本地>>>远程').submenu.items.filter((item)=>item.checked).map((item)=>item.label);
+                    showDialog(func1,"本地>>>远程")
+                },
+                // click: () => showDialog("updateAllConfigs"),
+                label: '开始更新',
             }
 
         ]
@@ -213,8 +218,12 @@ const MenuTemplate2 = Menu.buildFromTemplate([
             },
             {type: 'separator'}, // 添加横线
             {
-                click: () => showDialog("syncAllConfigs"),
-                label: '同步全部',
+                click: (menuItem, browserWindow, event) => {
+                    // 处理菜单项的点击事件
+                    let func1=MenuTemplate2.getMenuItemById('远程>>>本地').submenu.items.filter((item)=>item.checked).map((item)=>item.label);
+                    showDialog(func1,"远程>>>本地")
+                },
+                label: '开始同步',
             }
         ]
     },

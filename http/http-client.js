@@ -33,41 +33,12 @@ async function profilesSyncApi() {
         if (status1) {
             status = status1
         }
-        return status
+        return {status: status}
     } catch (e) {
-        return 404
+        return {status: 404}
     }
 }
 
-
-//同步系统配置
-async function configsSyncApi() {
-    try {
-        const results = await Promise.all([getRemoteWsApi(), devVerApi(), devCfgBaseInfoGetApi(), devCfgCtrlSrcGetApi(),
-            devCfgNetOpGetApi(), devCfgSerialRs232(), busSnCfgUpload()])
-
-        if (results.every((value) => value === 0)) {
-            return 0
-        }
-        return 404
-    } catch (e) {
-        return 404
-    }
-}
-
-//同步所有配置
-async function allSyncApi() {
-    try {
-        const results = await Promise.all([getRemoteWsApi(), usersAndGroupsSyncApi(), profilesSyncApi(), busIoCfgUploadApi(), busFieldbusCfgUploadApi(), devVerApi(),
-            devCfgBaseInfoGetApi(), devCfgCtrlSrcGetApi(), devCfgNetOpGetApi(), devCfgSerialRs232(), busSnCfgUpload()])
-        if (results.every((value) => value === 0)) {
-            return 0
-        }
-        return 404
-    } catch (e) {
-        return 404
-    }
-}
 
 // 更新用户和权限
 async function usersAndGroupsUpdateApi(pwd) {
@@ -106,11 +77,58 @@ async function profilesUpdateApi() {
     }
 }
 
-// 更新系统配置 ps op的配置需要单独最后启用因为它会导致网卡重启
-async function updateSystemConfigsApi() {
-    try {
-        return await Promise.all([devCfgBaseInfoSetApi(), busSnCfgDownload(), devCfgCtrlSrcSetApi(), devCfgSerialSet()])
 
+async function syncAndUpdateByDialogApi(funcList, pwd) {
+    let L = []
+    for (const l of funcList) {
+        switch (l) {
+            case "更新用户及权限":
+                L.push(usersAndGroupsUpdateApi(pwd))
+                break
+            case "更新工艺":
+                L.push(profilesUpdateApi())
+                break
+            case "更新IO配置":
+                L.push(busIoCfgDownloadApi())
+                break
+            case "更新总线配置":
+                L.push(busFieldbusCfgDownloadApi())
+                break
+            case "更新系统配置":
+                L.push(devCfgBaseInfoSetApi())
+                L.push(busSnCfgDownload())
+                L.push(devCfgCtrlSrcSetApi())
+                L.push(devCfgSerialSet())
+                break
+            case "同步用户及权限":
+                L.push(usersAndGroupsSyncApi())
+                break
+            case "同步工艺":
+                L.push(profilesSyncApi())
+                break
+            case "同步IO配置":
+                L.push(busIoCfgUploadApi())
+                break
+            case "同步总线配置":
+                L.push(busFieldbusCfgUploadApi())
+                break
+            case "同步系统配置":
+                L.push(getRemoteWsApi())
+                L.push(devVerApi())
+                L.push(devCfgBaseInfoGetApi())
+                L.push(devCfgCtrlSrcGetApi())
+                L.push(devCfgNetOpGetApi())
+                L.push(devCfgSerialRs232())
+                L.push(busSnCfgUpload())
+                break
+        }
+    }
+    try {
+        const result = await Promise.all(L)
+        if (funcList.includes("更新系统配置")) {
+            devCfgNetOpSetApi()
+        }
+        return result
     } catch (e) {
         // console.log(e.err)
         return [{
@@ -120,39 +138,7 @@ async function updateSystemConfigsApi() {
     }
 }
 
-
-// 更新所有配置 ps op的配置需要单独最后启用因为它会导致网卡重启
-async function updateAllApi(pwd) {
-    try {
-        return await Promise.all([usersAndGroupsUpdateApi(pwd), profilesUpdateApi(), busIoCfgDownloadApi(),
-            busFieldbusCfgDownloadApi(), devCfgBaseInfoSetApi(), busSnCfgDownload(), devCfgCtrlSrcSetApi(), devCfgSerialSet()])
-    } catch (e) {
-        // console.log(e.err)
-        return [{
-            status: 404,
-            data: []
-        }]
-    }
-}
 
 module.exports = {
-
-    usersAndGroupsSyncApi,
-    profilesSyncApi,
-    busIoCfgUploadApi,
-    busFieldbusCfgUploadApi,
-    configsSyncApi,
-    allSyncApi,
-
-
-    usersAndGroupsUpdateApi,
-    profilesUpdateApi,
-
-    busIoCfgDownloadApi,
-    busFieldbusCfgDownloadApi,
-    updateSystemConfigsApi,
-    updateAllApi,
-    devCfgNetOpSetApi,
-
-    getRemoteWsApi,
+    syncAndUpdateByDialogApi,
 }

@@ -2,8 +2,6 @@ const {fetchCurrentController} = require("../../shared/data/baseConfig");
 const {getHttpClient} = require('../config/setting')
 
 
-
-
 function devCfgBaseInfoSetApi() {
     return getHttpClient()({
         url: "dev/cfg/base/info/set",
@@ -25,7 +23,7 @@ function devCfgCtrlSrcSetApi() {
 
 
 function devCfgNetOpSetApi() {
-    return getHttpClient()({
+    getHttpClient()({
         url: "dev/cfg/net/op/set",
         method: "post",
         data: fetchCurrentController().config.dev.cfg_net_op

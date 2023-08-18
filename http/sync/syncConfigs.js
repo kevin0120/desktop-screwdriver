@@ -1,4 +1,3 @@
-
 const {fetchCurrentController} = require("../../shared/data/baseConfig");
 const {getHttpClient} = require('../config/setting')
 
@@ -10,17 +9,16 @@ async function getRemoteWsApi() {
             method: "get",
         })
         if (result.status === 0) {
-            if (!result.data.offline){
+            if (!result.data.offline) {
                 fetchCurrentController().config.ws = result.data
             }
             // saveCurrentController('config')
         }
-        return 0
+        return {status: 0}
     } catch (e) {
-        return 0
+        return {status: 0}
     }
 }
-
 
 
 async function devVerApi() {
@@ -33,9 +31,9 @@ async function devVerApi() {
             fetchCurrentController().config.dev.ver = result.data
             // saveCurrentController('config')
         }
-        return result.status
+        return {status: result.status}
     } catch (e) {
-        return 404
+        return {status: 404}
     }
 }
 
@@ -51,9 +49,9 @@ async function devCfgBaseInfoGetApi() {
             fetchCurrentController().config.ws.speed_max = result.data.max_speed;
             // saveCurrentController('config')
         }
-        return result.status
+        return {status: result.status}
     } catch (e) {
-        return 404
+        return {status: 404}
     }
 }
 
@@ -67,9 +65,9 @@ async function devCfgCtrlSrcGetApi() {
             fetchCurrentController().config.dev.cfg_ctrl_src = result.data
             // saveCurrentController('config')
         }
-        return result.status
+        return {status: result.status}
     } catch (e) {
-        return 404
+        return {status: 404}
     }
 }
 
@@ -84,9 +82,9 @@ async function devCfgNetOpGetApi() {
             fetchCurrentController().config.dev.cfg_net_op = result.data
             // saveCurrentController('config')
         }
-        return result.status
+        return {status: result.status}
     } catch (e) {
-        return 404
+        return {status: 404}
     }
 }
 
@@ -100,9 +98,9 @@ async function devCfgSerialRs232() {
             fetchCurrentController().config.dev.cfg_serial_rs232 = result.data
             // saveCurrentController('config')
         }
-        return result.status
+        return {status: result.status}
     } catch (e) {
-        return 404
+        return {status: 404}
     }
 }
 
@@ -117,9 +115,9 @@ async function busSnCfgUpload() {
             fetchCurrentController().config.bus.sn_ctrl_upload = result.data
             // saveCurrentController('config')
         }
-        return result.status
+        return {status: result.status}
     } catch (e) {
-        return 404
+        return {status: 404}
     }
 }
 
@@ -134,9 +132,9 @@ async function busIoCfgUploadApi() {
             fetchCurrentController().config.bus.io_cfg_upload = result.data
             // saveCurrentController('config')
         }
-        return result.status
+        return {status: result.status}
     } catch (e) {
-        return 404
+        return {status: 404}
     }
 }
 
@@ -150,9 +148,9 @@ async function busFieldbusCfgUploadApi() {
             fetchCurrentController().config.bus.fieldbus_cfg_upload = result.data
             // saveCurrentController('config')
         }
-        return result.status
+        return {status: result.status}
     } catch (e) {
-        return 404
+        return {status: 404}
     }
 }
 

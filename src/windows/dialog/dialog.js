@@ -6,7 +6,6 @@ let mainWindow
 
 function setDialogWindow(window) {
     mainWindow = window
-
 }
 
 function showErrorDialog() {
@@ -21,19 +20,17 @@ function showErrorDialog() {
 
 
 function showDialog(info) {
-    const options = (info==="updateUsers" || info==="updateAllConfigs") ? {
+    const options = info.includes("更新用户及权限") ? {
         type: 'question',
-        title: info,
-        message: typeof info === 'string' && info.startsWith("update") ? '确定要进行  更新远程配置  的操作吗?' : typeof info === 'string' && info.startsWith("sync") ? '确定要进行  同步本地离线配置  的操作吗?' : "",
-
+        title: "leetx",
+        message: `确定要进行  ${info}  的操作吗?`,
         checkboxLabel: '用户密码',
         checkboxChecked: true,  // 默认勾选某些选项
         buttons: ['Cancel', 'OK']
     } : {
         type: 'question',
-        title: info,
-        message: typeof info === 'string' && info.startsWith("update") ? '确定要进行  更新远程配置  的操作吗?' : typeof info === 'string' && info.startsWith("sync") ? '确定要进行  同步本地离线配置  的操作吗?' : "",
-
+        title: "leetx",
+        message: `确定要进行  ${info}  的操作吗?`,
         buttons: ['Cancel', 'OK']
     };
 
@@ -46,274 +43,28 @@ function showDialog(info) {
                 bar.close()
             }, 10000)
             bar.value = 0
-            switch (info) {
-                case "updateUsers":
-                    httpClient.usersAndGroupsUpdateApi(response.checkboxChecked).then((result) => {
-                            if (result.status === 0) {
-                                ind = setInterval(() => {
-                                    bar.value = bar.value + 5;
-                                    if (bar.value >= 100) {
-                                        clearInterval(ind)
-                                        bar.close()
-                                    }
-                                }, 100)
-                            } else {
-                                bar.close()
-                                showErrorDialog()
-                            }
-                        }
-                    ).catch(err => {
-                        bar.close()
-                        console.error('123456:', err);
-                    });
-                    break
-                case "updateProfiles":
-                    httpClient.profilesUpdateApi().then((result) => {
-                            if (result.status === 0) {
-                                ind = setInterval(() => {
-                                    bar.value = bar.value + 5;
-                                    if (bar.value >= 100) {
-                                        clearInterval(ind)
-                                        bar.close()
-                                    }
-                                }, 100)
-                            } else {
-                                bar.close()
-                                showErrorDialog()
-                            }
-                        }
-                    ).catch(err => {
-                        bar.close()
-                        console.error('123456:', err);
-                    });
-                    break
-                case "updateIO":
-                    httpClient.busIoCfgDownloadApi().then((result) => {
-                            if (result.status === 0) {
-                                ind = setInterval(() => {
-                                    bar.value = bar.value + 5;
-                                    if (bar.value >= 100) {
-                                        clearInterval(ind)
-                                        bar.close()
-                                    }
-                                }, 100)
-                            } else {
-                                bar.close()
-                            }
-                        }
-                    ).catch(err => {
-                        bar.close()
-                        showErrorDialog()
-                    });
-                    break
-                case "updateFieldBus":
-                    httpClient.busFieldbusCfgDownloadApi().then((result) => {
-                            if (result.status === 0) {
-                                ind = setInterval(() => {
-                                    bar.value = bar.value + 5;
-                                    if (bar.value >= 100) {
-                                        clearInterval(ind)
-                                        bar.close()
-                                    }
-                                }, 100)
-                            } else {
-                                bar.close()
-                                showErrorDialog()
-                            }
-                        }
-                    ).catch(err => {
-                        bar.close()
-                        console.error('123456:', err);
-                    });
-                    break
-                case "updateSystemConfigs":
-                    httpClient.updateSystemConfigsApi().then((result) => {
-                            console.log(result)
-                            if (result.every((value) => value.status === 0)) {
-                                //op协议能重启网卡
-                                httpClient.devCfgNetOpSetApi()
-                                ind = setInterval(() => {
-                                    bar.value = bar.value + 5;
-                                    if (bar.value >= 100) {
-                                        clearInterval(ind)
-                                        bar.close()
-                                    }
-                                }, 100)
-                            } else {
-                                bar.close()
-                                showErrorDialog()
-                            }
-                        }
-                    ).catch(err => {
-                        bar.close()
-                        console.error('123456:', err);
-                    });
-                    break
-                case "updateAllConfigs":
-                    httpClient.updateAllApi(response.checkboxChecked).then((result) => {
-                            if (result.every((value) => value.status === 0)) {
-                                //op协议能重启网卡
-                                httpClient.devCfgNetOpSetApi()
-                                ind = setInterval(() => {
-                                    bar.value = bar.value + 5;
-                                    if (bar.value >= 100) {
-                                        clearInterval(ind)
-                                        bar.close()
-                                    }
-                                }, 100)
-                            } else {
-                                bar.close()
-                                showErrorDialog()
-                            }
-                        }
-                    ).catch(err => {
-                        bar.close()
-                        console.error('123456:', err);
-                    });
-                    break
-                case "syncUsers":
-                    httpClient.usersAndGroupsSyncApi().then((status) => {
-                            if (status === 0) {
-                                ind = setInterval(() => {
-                                    bar.value = bar.value + 5;
-                                    if (bar.value >= 100) {
-                                        clearInterval(ind)
-                                        bar.close()
-                                    }
-                                }, 100)
-                            } else {
-                                // console.log(result)
-                                bar.close()
-                                showErrorDialog()
-                            }
-                        }
-                    ).catch(err => {
-                        bar.close()
-                        console.error('123456:', err);
-                    }).then(() => {
-                        saveCurrentController('users')
-                    });
-                    break
-                case "syncProfiles":
-                    httpClient.profilesSyncApi().then((status) => {
-                            if (status === 0) {
-                                ind = setInterval(() => {
-                                    bar.value = bar.value + 5;
-                                    if (bar.value >= 100) {
-                                        clearInterval(ind)
-                                        bar.close()
-                                    }
-                                }, 100)
-                            } else {
-                                // console.log(result)
-                                bar.close()
-                                showErrorDialog()
-                            }
-                        }
-                    ).catch(err => {
-                        bar.close()
-                        console.error('123456:', err);
-                    }).then(() => {
-                        saveCurrentController('profiles')
-                    });
-                    break
-                case "syncIO":
-                    httpClient.busIoCfgUploadApi().then((status) => {
-                            if (status === 0) {
-                                ind = setInterval(() => {
-                                    bar.value = bar.value + 5;
-                                    if (bar.value >= 100) {
-                                        clearInterval(ind)
-                                        bar.close()
-                                    }
-                                }, 100)
-                            } else {
-                                // console.log(result)
-                                bar.close()
-                                showErrorDialog()
-                            }
-                        }
-                    ).catch(err => {
-                        bar.close()
-                        console.error('123456:', err);
-                    }).then(() => {
-                        saveCurrentController('config')
-                    });
-                    break
-                case "syncFieldBus":
-                    httpClient.busFieldbusCfgUploadApi().then((status) => {
-                            if (status === 0) {
-                                ind = setInterval(() => {
-                                    bar.value = bar.value + 5;
-                                    if (bar.value >= 100) {
-                                        clearInterval(ind)
-                                        bar.close()
-                                    }
-                                }, 100)
-                            } else {
-                                // console.log(result)
-                                bar.close()
-                                showErrorDialog()
-                            }
-                        }
-                    ).catch(err => {
-                        bar.close()
-                        console.error('123456:', err);
-                    }).then(() => {
-                        saveCurrentController('config')
-                    });
-                    break
-                case "syncSystemConfigs":
-                    httpClient.configsSyncApi().then((result) => {
-                            if (result === 0) {
-                                ind = setInterval(() => {
-                                    bar.value = bar.value + 5;
-                                    if (bar.value >= 100) {
-                                        clearInterval(ind)
-                                        bar.close()
-                                    }
-                                }, 100)
-                            } else {
-                                console.log(result)
-                                bar.close()
-                                showErrorDialog()
-                            }
-                        }
-                    ).catch(err => {
-                        bar.close()
-                        console.error('123456:', err);
-                    }).then(() => {
-                        saveCurrentController('config')
-                    })
-                    break
-                case "syncAllConfigs":
-                    httpClient.allSyncApi().then((result) => {
-                            if (result === 0) {
-                                ind = setInterval(() => {
-                                    bar.value = bar.value + 5;
-                                    if (bar.value >= 100) {
-                                        clearInterval(ind)
-                                        bar.close()
-                                    }
-                                }, 100)
-                            } else {
-                                console.log(result)
-                                bar.close()
-                                showErrorDialog()
-                            }
-                        }
-                    ).catch(err => {
-                        bar.close()
-                        console.error('123456:', err);
-                    }).then(() => {
-                        saveCurrentController('config')
-                    });
-                    break
-                default:
-                    break
-            }
             // 用户点击了确定按钮，执行后续操作
             // 在这里添加您想要执行的代码
+            httpClient.syncAndUpdateByDialogApi(info, response.checkboxChecked).then((result) => {
+                    if (result.every((value) => value.status === 0)) {
+                        ind = setInterval(() => {
+                            bar.value = bar.value + 5;
+                            if (bar.value >= 100) {
+                                clearInterval(ind)
+                                bar.close()
+                            }
+                        }, 100)
+                    } else {
+                        bar.close()
+                        showErrorDialog()
+                    }
+                }
+            ).catch(err => {
+                bar.close()
+                console.error('123456:', err);
+            }).then(() => {
+                saveCurrentController("all")
+            });
         } else {
             // 用户点击了取消按钮，忽略操作
         }

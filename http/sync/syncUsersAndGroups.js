@@ -37,9 +37,9 @@ async function usersAndGroupsSyncApi() {
         for (const item of result2.data) {
             fetchCurrentController().users.users[item.user_id] = item
         }
-        return status
+        return {status:status}
     } catch (e) {
-        return 404
+        return {status:404}
     }
 }
 
