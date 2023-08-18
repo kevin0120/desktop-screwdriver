@@ -54,32 +54,89 @@ const MenuTemplate1 = Menu.buildFromTemplate([
 const MenuTemplate2 = Menu.buildFromTemplate([
     {
         label: "本地>>>远程",
+        id: '本地>>>远程', // 唯一的ID
         submenu: [
             {
-                click: () => showDialog("updateUsers"),
+                // click: () => showDialog("updateUsers"),
                 label: '更新用户及权限',
+                type: "checkbox",
+                checked: true,
+                click: (menuItem, browserWindow, event) => {
+                    // 处理菜单项的点击事件
+                    let w = MenuTemplate2.getMenuItemById('本地>>>远程')
+                    w.submenu.popup({
+                        x: 0,
+                        y: 0,
+                    });
+
+                }
             },
             {
-                click: () => showDialog("updateProfiles"),
+                type: "checkbox",
+                checked: true,
+                // click: () => showDialog("updateProfiles"),
                 label: '更新工艺',
+                click: (menuItem, browserWindow, event) => {
+                    // 处理菜单项的点击事件
+                    let w = MenuTemplate2.getMenuItemById('本地>>>远程')
+                    w.submenu.popup({
+                        x: 0,
+                        y: 0,
+                    });
+
+                }
             },
             {
-                click: () => showDialog("updateIO"),
+                type: "checkbox",
+                checked: true,
+                // click: () => showDialog("updateIO"),
                 label: '更新IO配置',
+                click: (menuItem, browserWindow, event) => {
+                    // 处理菜单项的点击事件
+                    let w = MenuTemplate2.getMenuItemById('本地>>>远程')
+                    w.submenu.popup({
+                        x: 0,
+                        y: 0,
+                    });
+
+                }
             },
             {
-                click: () => showDialog("updateFieldBus"),
+                type: "checkbox",
+                checked: true,
+                // click: () => showDialog("updateFieldBus"),
                 label: '更新总线配置',
+                click: (menuItem, browserWindow, event) => {
+                    // 处理菜单项的点击事件
+                    let w = MenuTemplate2.getMenuItemById('本地>>>远程')
+                    w.submenu.popup({
+                        x: 0,
+                        y: 0,
+                    });
+
+                }
             },
             {
-                click: () => showDialog("updateSystemConfigs"),
+                type: "checkbox",
+                checked: true,
+                // click: () => showDialog("updateSystemConfigs"),
                 label: '更新系统配置',
+                click: (menuItem, browserWindow, event) => {
+                    // 处理菜单项的点击事件
+                    let w = MenuTemplate2.getMenuItemById('本地>>>远程')
+                    w.submenu.popup({
+                        x: 0,
+                        y: 0,
+                    });
+
+                }
             },
             {type: 'separator'}, // 添加横线
             {
                 click: () => showDialog("updateAllConfigs"),
                 label: '更新全部',
             }
+
         ]
     },
     {
@@ -87,26 +144,72 @@ const MenuTemplate2 = Menu.buildFromTemplate([
     },
     {
         label: "远程>>>本地",
+        id: '远程>>>本地', // 唯一的ID
         submenu: [
             {
-                click: () => showDialog("syncUsers"),
+                type: "checkbox",
+                checked: true,
+                // click: () => showDialog("syncUsers"),
                 label: '同步用户及权限',
+                click: (menuItem, browserWindow, event) => {
+                    // 处理菜单项的点击事件
+                    MenuTemplate2.getMenuItemById('远程>>>本地').submenu.popup({
+                        x: 100,
+                        y: 0,
+                    });
+                }
             },
             {
-                click: () => showDialog("syncProfiles"),
+                type: "checkbox",
+                checked: true,
+                // click: () => showDialog("syncProfiles"),
                 label: '同步工艺',
+                click: (menuItem, browserWindow, event) => {
+                    // 处理菜单项的点击事件
+                    MenuTemplate2.getMenuItemById('远程>>>本地').submenu.popup({
+                        x: 100,
+                        y: 0,
+                    });
+                }
             },
             {
-                click: () => showDialog("syncIO"),
+                type: "checkbox",
+                checked: true,
+                // click: () => showDialog("syncIO"),
                 label: '同步IO配置',
+                click: (menuItem, browserWindow, event) => {
+                    // 处理菜单项的点击事件
+                    MenuTemplate2.getMenuItemById('远程>>>本地').submenu.popup({
+                        x: 100,
+                        y: 0,
+                    });
+                }
             },
             {
-                click: () => showDialog("syncFieldBus"),
+                type: "checkbox",
+                checked: true,
+                // click: () => showDialog("syncFieldBus"),
                 label: '同步总线配置',
+                click: (menuItem, browserWindow, event) => {
+                    // 处理菜单项的点击事件
+                    MenuTemplate2.getMenuItemById('远程>>>本地').submenu.popup({
+                        x: 100,
+                        y: 0,
+                    });
+                }
             },
             {
-                click: () => showDialog("syncSystemConfigs"),
+                type: "checkbox",
+                checked: true,
+                // click: () => showDialog("syncSystemConfigs"),
                 label: '同步系统配置',
+                click: (menuItem, browserWindow, event) => {
+                    // 处理菜单项的点击事件
+                    MenuTemplate2.getMenuItemById('远程>>>本地').submenu.popup({
+                        x: 100,
+                        y: 0,
+                    });
+                }
             },
             {type: 'separator'}, // 添加横线
             {
@@ -120,108 +223,62 @@ const MenuTemplate2 = Menu.buildFromTemplate([
     },
     {
         label: "拧紧结果和曲线",
-        submenu: [
-            {
-                click: () => showDialog(),
-                label: '在线导入最新100条结果曲线',
-            },
-            {
-                label: '本地导入结果曲线',
-            },
-            {
-                label: '删除本地结果曲线',
-            }
-        ]
+        submenu:
+            [
+                {
+                    click: () => showDialog(),
+                    label: '在线导入最新100条结果曲线',
+                },
+                {
+                    label: '本地导入结果曲线',
+                },
+                {
+                    label: '删除本地结果曲线',
+                }
+            ]
     },
     {
         type: 'separator'
     },
     {
         label: "设备管理",
-        submenu: [
-            {
-                click: () => {
-                    mainWindow.loadFile(path.resolve(__dirname, './hellodevice.html')).then(
-                        mainWindow.setTitle('                                                          用户及设备管理'),
-                        mainWindow.setMenu(MenuTemplate1),
-                    )
+        submenu:
+            [
+                {
+                    click: () => {
+                        mainWindow.loadFile(path.resolve(__dirname, './hellodevice.html')).then(
+                            mainWindow.setTitle('                                                          用户及设备管理'),
+                            mainWindow.setMenu(MenuTemplate1),
+                        )
+                    },
+                    label: '返回设备主页',
+                    // icon:path.join(app.getAppPath(), 'resources', 'icon.ico')
                 },
-                label: '返回设备主页',
-            },
-            {
-                type: 'separator'
-            },
-            {
-                click: () => {
-                    if ((!isAlive(childWindow))) {
-                        childWindow = createchildWindow(mainWindow);
-                        childWindow.show();
-                    }
+                {
+                    type: 'separator'
+                },
+                {
+                    click: () => {
+                        if ((!isAlive(childWindow))) {
+                            childWindow = createchildWindow(mainWindow);
+                            childWindow.show();
+                        }
 
+                    },
+                    label: '打开远程设备',
                 },
-                label: '打开远程设备',
-            },
-            {
-                click: () => {
-                    if (isAlive(childWindow)) {
-                        childWindow.close();
-                    }
+                {
+                    click: () => {
+                        if (isAlive(childWindow)) {
+                            childWindow.close();
+                        }
 
-                },
-                label: '关闭远程设备',
-            }
-        ]
-    },
+                    },
+                    label: '关闭远程设备',
+                }
+            ]
+    }
 ])
-
-const MenuTemplate3 = Menu.buildFromTemplate([
-    {
-        label: "设备管理",
-        submenu: [
-            {
-                click: () => {
-                    mainWindow.loadFile(path.resolve(__dirname, './hellodevice.html')).then(
-                        mainWindow.setTitle('                                                          用户及设备管理'),
-                        mainWindow.setMenu(MenuTemplate1),
-                    )
-                },
-                label: '返回设备主页',
-            },
-            {
-                label: "离线编辑",
-                click: () => {
-                    mainWindow.loadURL("http://127.0.0.1:30003").then(
-                        mainWindow.setMenu(MenuTemplate2)
-                    );
-                },
-            },
-            {
-                type: 'separator'
-            },
-            {
-                click: () => {
-                    if ((!isAlive(childWindow))) {
-                        childWindow = createchildWindow(mainWindow);
-                        childWindow.show();
-                    }
-
-                },
-                label: '打开远程设备',
-            },
-            {
-                click: () => {
-                    if (isAlive(childWindow)) {
-                        childWindow.close();
-                    }
-
-                },
-                label: '关闭远程设备',
-            }
-        ]
-    },
-
-])
-
 
 function createchildWindow(mainWindow) {
     setdefaultToken(`http://${getcurrentController().ip}`)

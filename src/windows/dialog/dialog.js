@@ -26,7 +26,7 @@ function showDialog(info) {
         title: info,
         message: typeof info === 'string' && info.startsWith("update") ? '确定要进行  更新远程配置  的操作吗?' : typeof info === 'string' && info.startsWith("sync") ? '确定要进行  同步本地离线配置  的操作吗?' : "",
 
-        checkboxLabel: '密码',
+        checkboxLabel: '用户密码',
         checkboxChecked: true,  // 默认勾选某些选项
         buttons: ['Cancel', 'OK']
     } : {
