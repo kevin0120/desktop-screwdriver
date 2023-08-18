@@ -24,7 +24,6 @@ const {
     getRemoteWsApi
 } = require('./sync/syncConfigs')
 
-
 //同步工艺包括pset和job
 async function profilesSyncApi() {
     try {
@@ -38,7 +37,6 @@ async function profilesSyncApi() {
         return {status: 404}
     }
 }
-
 
 // 更新用户和权限
 async function usersAndGroupsUpdateApi(pwd) {
@@ -76,7 +74,6 @@ async function profilesUpdateApi() {
         }
     }
 }
-
 
 async function syncAndUpdateByDialogApi(funcList, pwd) {
     let L = []
@@ -137,7 +134,6 @@ async function syncAndUpdateByDialogApi(funcList, pwd) {
         }]
     }
 }
-
 
 module.exports = {
     syncAndUpdateByDialogApi,
