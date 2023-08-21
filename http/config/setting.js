@@ -1,8 +1,10 @@
 const defaultBYD = require("../../shared/config/defaultControllers");
-const {fetchCurrentController, saveCurrentController, getcurrentController} = require("../../shared/data/baseConfig");
+const {fetchCurrentController, saveCurrentController, getcurrentController, getWorkDirectory} = require("../../shared/data/baseConfig");
 // 导入原生的axios
 const axios = require('axios')
-
+const fs = require('fs');
+const csv = require('csv-parser');
+const path = require('path');
 const {defaultToken} = require('../../shared/config/defaultToken')
 
 function getCurrentId(name) {
@@ -390,6 +392,78 @@ function settingHandleHttp(app) {
             description: "",
         });
     });
+
+    // 判断某一行数据是否符合查询条件
+    function isMatch(row, query) {
+        for (const column in query) {
+            switch (column) {
+                case "is_ok":
+                    if (parseInt(row.is_ok) !== query.is_ok) {
+                        return false
+                    }
+                    break
+                case "time_start":
+                    if (row.created_time < query.time_start) {
+                        return false
+                    }
+                    break
+                case "time_end":
+                    if (row.created_time > query.time_end) {
+                        return false
+                    }
+                    break
+                case "pset":
+                    if (parseInt(row.pset) !== query.pset) {
+                        return false
+                    }
+                    break
+                case "code":
+                    if (row.code !== query.code) {
+                        return false
+                    }
+                    break
+                default:
+                    break
+            }
+        }
+        return true;
+    }
+
+    // 查询历史结果和曲线
+    app.post('/api/pdata/result/his', (req, res) => {
+        let his =[]
+        // 读取和查询 CSV 文件
+        const p =path.resolve(getWorkDirectory(), 'data', 'result.csv')
+        if (!fs.existsSync(p)) {
+            res.send({
+                status: 0,
+                description: "",
+                data:his
+            });
+            return
+        }
+        fs.createReadStream(p)
+            .pipe(csv())
+            .on('data', (row) => {
+                // 对每一行数据进行查询判断
+                if (isMatch(row, req.body)) {
+                    row.result=JSON.parse(row.result)
+                    his.push(row)
+                }
+            })
+            .on('end', () => {
+                console.log('查询结束');
+                if (his.length>req.body.numcurve){
+                    his=his.slice(0,req.body.numcurve)
+                }
+                res.send({
+                    status: 0,
+                    description: "",
+                    data:his
+                });
+            });
+    });
+
 }
 
 

@@ -38,6 +38,9 @@ function getWorkDirectory() {
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir, {recursive: true});
             }
+            if (!fs.existsSync(path.resolve(dir,'data','curves'))) {
+                fs.mkdirSync(path.resolve(dir,'data','curves'), {recursive: true});
+            }
             return dir;
     }
 }
