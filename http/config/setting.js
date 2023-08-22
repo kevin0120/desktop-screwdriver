@@ -3,6 +3,7 @@ const {fetchCurrentController, saveCurrentController, getcurrentController, getW
 // 导入原生的axios
 const axios = require('axios')
 const fs = require('fs');
+const fse = require('fs-extra');
 const csv = require('csv-parser');
 const path = require('path');
 const {defaultToken} = require('../../shared/config/defaultToken')
@@ -467,6 +468,17 @@ function settingHandleHttp(app) {
 }
 
 
+async function deleteLocalResults() {
+    try {
+        await fse.remove(path.resolve(getWorkDirectory(),'data'))
+        getWorkDirectory()
+        console.log('success!')
+    } catch (err) {
+        getWorkDirectory()
+        console.error(err)
+    }
+}
+
 async function getRemoteWsApi() {
     try {
         const result = await getHttpClient()({
@@ -549,3 +561,4 @@ function getHttpClient() {
 module.exports.settingHandleWs = settingHandleWs
 module.exports.settingHandleHttp = settingHandleHttp
 module.exports.getHttpClient = getHttpClient
+module.exports.deleteLocalResults = deleteLocalResults

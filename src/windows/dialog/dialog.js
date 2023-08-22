@@ -1,11 +1,16 @@
 const ProgressBar = require('electron-progressbar');
 const {dialog} = require('electron')
 const httpClient = require('../../../http/http-client')
+const {deleteLocalResults} = require("../../../http/config/setting");
 const {saveCurrentController} = require("../../../shared/data/baseConfig");
+
+const {selectFolder,setDialogWindow1} = require("./fileOperation");
+
 let mainWindow
 
 function setDialogWindow(window) {
     mainWindow = window
+    setDialogWindow1(window)
 }
 
 function showErrorDialog() {
@@ -39,10 +44,39 @@ function showDialog(info) {
         let bar;
         if (response.response === 1) {
             bar = createProgressBar();
-            setTimeout(() => {
-                bar.close()
-            }, 10000)
+            // setTimeout(() => {
+            //     bar.close()
+            // }, 10000)
             bar.value = 0
+
+
+            if (info.includes("删除本地结果曲线")){
+                deleteLocalResults().then(() => {
+                        ind = setInterval(() => {
+                            bar.value = bar.value + 5;
+                            if (bar.value >= 100) {
+                                clearInterval(ind)
+                                bar.close()
+                            }
+                        }, 100)
+                    }
+                )
+                return
+            }
+
+            if (info.includes("本地导入结果曲线")){
+                selectFolder().then(() => {
+                        ind = setInterval(() => {
+                            bar.value = bar.value + 5;
+                            if (bar.value >= 100) {
+                                clearInterval(ind)
+                                bar.close()
+                            }
+                        }, 100)
+                    }
+                )
+                return
+            }
             // 用户点击了确定按钮，执行后续操作
             // 在这里添加您想要执行的代码
             httpClient.syncAndUpdateByDialogApi(info, response.checkboxChecked).then((result) => {

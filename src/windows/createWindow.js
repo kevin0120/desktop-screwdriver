@@ -235,13 +235,15 @@ const MenuTemplate2 = Menu.buildFromTemplate([
         submenu:
             [
                 {
-                    click: () => showDialog(),
+                    click: () => showDialog(['在线导入最新100条结果曲线']),
                     label: '在线导入最新100条结果曲线',
                 },
                 {
+                    click: () => showDialog(['本地导入结果曲线']),
                     label: '本地导入结果曲线',
                 },
                 {
+                    click: () => showDialog(['删除本地结果曲线']),
                     label: '删除本地结果曲线',
                 }
             ]
