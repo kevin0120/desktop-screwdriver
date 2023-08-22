@@ -93,9 +93,13 @@ async function resultsUploadApi() {
 function convertToCSV(arr) {
     const separator = ",";
     const keys = Object.keys(arr[0]);
+    const values = Object.values(arr[0]).join(',') + '\n';
     const csvHeader = keys.join(separator);
     const csvRows = arr.map(row => {
         return keys.map(key => {
+            if (key==="code_desc"||key==="result"){
+                return `"${row[key]}"`;
+            }
             return row[key];
         }).join(separator);
     });

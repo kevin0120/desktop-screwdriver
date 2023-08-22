@@ -443,7 +443,7 @@ function settingHandleHttp(app) {
             });
             return
         }
-        fs.createReadStream(p)
+        fs.createReadStream(p,'utf-8')
             .pipe(csv())
             .on('data', (row) => {
                 // 对每一行数据进行查询判断
@@ -472,7 +472,7 @@ function settingHandleHttp(app) {
         let pdid = parseInt(req.query.pdid)
         // 读取和查询 CSV 文件
         // const p = path.resolve(getWorkDirectory(), 'data/curves', '760020.csv')
-        const p =path.resolve(getWorkDirectory(), 'data/curves', `${pdid}.csv`)
+        const p = path.resolve(getWorkDirectory(), 'data/curves', `${pdid}.csv`)
         if (!fs.existsSync(p)) {
             res.send({
                 status: 0,
@@ -495,12 +495,12 @@ function settingHandleHttp(app) {
             })
             .on('end', () => {
                 console.log('查询结束');
-                let curves= sensor_vals.concat(positions).concat(times).concat(speeds)
-                const buffer = Buffer.alloc(curves.length*4+4);
-                buffer.writeInt32LE(times.length,0)
+                let curves = sensor_vals.concat(positions).concat(times).concat(speeds)
+                const buffer = Buffer.alloc(curves.length * 4 + 4);
+                buffer.writeInt32LE(times.length, 0)
                 // 将每个浮点数依次写入 Buffer，每个浮点数占4个字节
                 for (let i = 0; i < curves.length; i++) {
-                    buffer.writeFloatLE(curves[i], i * 4+4);
+                    buffer.writeFloatLE(curves[i], i * 4 + 4);
                 }
 
                 res.send(buffer);
@@ -512,7 +512,10 @@ function settingHandleHttp(app) {
 
 async function deleteLocalResults() {
     try {
-        await fse.remove(path.resolve(getWorkDirectory(), 'data'))
+        if (fs.existsSync(path.resolve(getWorkDirectory(), 'data'))) {
+            await fse.remove(path.resolve(getWorkDirectory(), 'data'))
+        }
+
         getWorkDirectory()
         console.log('success!')
     } catch (err) {

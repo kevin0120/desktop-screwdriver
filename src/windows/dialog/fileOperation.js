@@ -23,7 +23,7 @@ async function selectFolder() {
         if (resultFiles.length > 0) {
             console.log('以 "result" 开头的文件存在');
             await deleteLocalResults()
-            await fs.copySync(path.resolve(sourceFolderPath, resultFiles[0]), path.resolve(destinationFolderPath, resultFiles[0])); // 复制文件到目标文件夹
+            await fs.copySync(path.resolve(sourceFolderPath, resultFiles[0]), path.resolve(destinationFolderPath, 'result.csv')); // 复制文件到目标文件夹
         } else {
             console.log('以 "result" 开头的文件不存在');
             return
