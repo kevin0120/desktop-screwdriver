@@ -432,14 +432,14 @@ function settingHandleHttp(app) {
 
     // 查询历史结果和曲线
     app.post('/api/pdata/result/his', (req, res) => {
-        let his =[]
+        let his = []
         // 读取和查询 CSV 文件
-        const p =path.resolve(getWorkDirectory(), 'data', 'result.csv')
+        const p = path.resolve(getWorkDirectory(), 'data', 'result.csv')
         if (!fs.existsSync(p)) {
             res.send({
                 status: 0,
                 description: "",
-                data:his
+                data: his
             });
             return
         }
@@ -448,20 +448,62 @@ function settingHandleHttp(app) {
             .on('data', (row) => {
                 // 对每一行数据进行查询判断
                 if (isMatch(row, req.body)) {
-                    row.result=JSON.parse(row.result)
+                    row.result = JSON.parse(row.result)
                     his.push(row)
                 }
             })
             .on('end', () => {
                 console.log('查询结束');
-                if (his.length>req.body.numcurve){
-                    his=his.slice(0,req.body.numcurve)
+                if (his.length > req.body.numcurve) {
+                    his = his.slice(0, req.body.numcurve)
                 }
                 res.send({
                     status: 0,
                     description: "",
-                    data:his
+                    data: his
                 });
+            });
+
+    });
+
+
+    // 查询历史结果和曲线
+    app.get('/api/pdata/his/curve', (req, res) => {
+        let pdid = parseInt(req.query.pdid)
+        // 读取和查询 CSV 文件
+        // const p = path.resolve(getWorkDirectory(), 'data/curves', '760020.csv')
+        const p =path.resolve(getWorkDirectory(), 'data/curves', `${pdid}.csv`)
+        if (!fs.existsSync(p)) {
+            res.send({
+                status: 0,
+                description: "",
+                data: ""
+            });
+            return
+        }
+        let times = []
+        let positions = []
+        let sensor_vals = []
+        let speeds = []
+        fs.createReadStream(p)
+            .pipe(csv())
+            .on('data', (row) => {
+                times.push(parseFloat(row.times))
+                positions.push(parseFloat(row.positions))
+                sensor_vals.push(parseFloat(row.sensor_vals))
+                speeds.push(parseFloat(row.speeds))
+            })
+            .on('end', () => {
+                console.log('查询结束');
+                let curves= sensor_vals.concat(positions).concat(times).concat(speeds)
+                const buffer = Buffer.alloc(curves.length*4+4);
+                buffer.writeInt32LE(times.length,0)
+                // 将每个浮点数依次写入 Buffer，每个浮点数占4个字节
+                for (let i = 0; i < curves.length; i++) {
+                    buffer.writeFloatLE(curves[i], i * 4+4);
+                }
+
+                res.send(buffer);
             });
     });
 
@@ -470,7 +512,7 @@ function settingHandleHttp(app) {
 
 async function deleteLocalResults() {
     try {
-        await fse.remove(path.resolve(getWorkDirectory(),'data'))
+        await fse.remove(path.resolve(getWorkDirectory(), 'data'))
         getWorkDirectory()
         console.log('success!')
     } catch (err) {
