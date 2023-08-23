@@ -33,5 +33,4 @@ const int32Array = Int32Array.from(binaryData.buffer, binaryData.byteOffset, 2);
 // const int32Array2 = binaryData.readInt32BE(0)
 console.log(int32Array);  // 输出 Int32Array [ 1, 2 ]
 
-
 console.log("%%%%%%%%%%%%%%%%%%%%%")

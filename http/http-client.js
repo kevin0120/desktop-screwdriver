@@ -121,7 +121,7 @@ async function syncAndUpdateByDialogApi(funcList, pwd) {
                 L.push(devCfgSerialRs232())
                 L.push(busSnCfgUpload())
                 break
-            case "在线导入最新100条结果曲线":
+            case "在线导入最新200条结果曲线":
                 L.push(resultsUploadApi())
                 break
         }

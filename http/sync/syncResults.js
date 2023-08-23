@@ -3,13 +3,14 @@ const path = require('path');
 const {getHttpClient} = require('../config/setting')
 const {getWorkDirectory} = require('../../shared/data/baseConfig');
 const {deleteLocalResults} = require('../../http/config/setting');
+
 async function resultsUploadApi() {
     try {
         const result = await getHttpClient()({
             url: 'pdata/result/his',
             method: "post",
             data: {
-                numcurve: 100
+                numcurve: 200
             },
         })
         if (result.status === 0 && result.data.length > 0) {
@@ -34,52 +35,75 @@ async function resultsUploadApi() {
                     if (r.pdid < 1) {
                         return
                     }
-                    req.push(getHttpClient()({
-                        url: 'pdata/his/curve',
-                        method: "get",
-                        params: {
-                            'pdid': r.pdid,
-                        },
-                        responseType: "arraybuffer"
-                    }));
+                    // req.push(getHttpClient()({
+                    //     url: 'pdata/his/curve',
+                    //     method: "get",
+                    //     params: {
+                    //         'pdid': r.pdid,
+                    //     },
+                    //     timeout: 20000,
+                    //     responseType: "arraybuffer"
+                    // }));
+                    req.push(r.pdid);
                     tid.push(r.tid);
                 }
             );
+            for (let i = 0; i < req.length; i += 100) {
+                let end = req.length
 
-
-            Promise.all(req).then(responses => {
-                // 处理所有请求完成后的结果
-                responses.forEach(
-                    (data, index) => {
-                        if (!data || data.byteLength < 5) return;
-                        const buffer = Buffer.from(data);
-                        let intArray = buffer.readInt32LE(0);
-                        let len = intArray;
-                        if (data.byteLength !== 4 + len * 16) {
-                            return;
-                        }
-                        if (len < 2) {
-                            return;
-                        }
-                        let curvedata=[]
-                        for (let i = 0; i < len*4; i++) {
-                            // 循环体代码
-                            curvedata.push(buffer.readFloatLE(4+i*4))
-                        }
-
-                        // 将数据转换为 CSV 格式
-                        const blob1 = new Blob([curveconvertToCSV(curvedata, len)], {type: 'text/csv;charset=utf-8;'});
-
-                        const writableStream = fs.createWriteStream(path.resolve(getWorkDirectory(), 'data/curves', `${tid[index]}.csv`));
-                        blob1.arrayBuffer().then(buffer => {
-                            writableStream.write(Buffer.from(buffer));
-                            writableStream.end();
-                            console.log('File saved successfully!');
-                        });
-
+                if (i + 100 < end) {
+                    end = i + 100
+                }
+                let req1=[]
+                req.slice(i,end).forEach((r)=>{
+                    if (r < 1) {
+                        return
                     }
-                );
-            })
+                    req1.push(getHttpClient()({
+                        url: 'pdata/his/curve',
+                        method: "get",
+                        params: {
+                            'pdid': r,
+                        },
+                        timeout: 20000,
+                        responseType: "arraybuffer"
+                    }));
+                })
+                await Promise.all(req1).then(responses => {
+                    // 处理所有请求完成后的结果
+                    responses.forEach(
+                        (data, index) => {
+                            if (!data || data.byteLength < 5) return;
+                            const buffer = Buffer.from(data);
+                            let intArray = buffer.readInt32LE(0);
+                            let len = intArray;
+                            if (data.byteLength !== 4 + len * 16) {
+                                return;
+                            }
+                            if (len < 2) {
+                                return;
+                            }
+                            let curvedata = []
+                            for (let i = 0; i < len * 4; i++) {
+                                // 循环体代码
+                                curvedata.push(buffer.readFloatLE(4 + i * 4))
+                            }
+
+                            // 将数据转换为 CSV 格式
+                            const blob1 = new Blob([curveconvertToCSV(curvedata, len)], {type: 'text/csv;charset=utf-8;'});
+
+                            const writableStream = fs.createWriteStream(path.resolve(getWorkDirectory(), 'data/curves', `${tid[index]}.csv`));
+                            blob1.arrayBuffer().then(buffer => {
+                                writableStream.write(Buffer.from(buffer));
+                                writableStream.end();
+                                // console.log('File saved successfully!');
+                            });
+
+                        }
+                    );
+                })
+            }
+
 
             // saveCurrentController('config')
         }
@@ -97,7 +121,7 @@ function convertToCSV(arr) {
     const csvHeader = keys.join(separator);
     const csvRows = arr.map(row => {
         return keys.map(key => {
-            if (key==="code_desc"||key==="result"){
+            if (key === "code_desc" || key === "result") {
                 return `"${row[key]}"`;
             }
             return row[key];
