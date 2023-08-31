@@ -6,6 +6,8 @@ const {createmainWindow, reloadWindows} = require("./src/windows/createWindow");
 const {killProcessesByName} = require("./src/manager");
 const {setdefaultToken} = require("./shared/config");
 const {setcurrentController, getcurrentController, getWorkDirectory} = require("./shared/data/baseConfig");
+
+const devicesConfig = require("./shared/data/devicesConfig");
 const httpServer = require('./http/http-server')
 // const path = require('path')
 //
@@ -14,7 +16,7 @@ const httpServer = require('./http/http-server')
 //         electron: require(`'${path.join(__dirname, 'node_modules', '.bin', 'electron')}'`)
 // });
 // }
-const { session } = require('electron');
+const {session} = require('electron');
 
 
 app.on('ready', function () {
@@ -50,6 +52,38 @@ app.on('ready', function () {
             console.error('Error opening folder:', err);
         });
     })
+
+
+    // 模式 3：主进程到渲染器进程
+    ipcMain.on('addDeviceBackend', (event, device) => {
+        event.returnValue = devicesConfig.addOrEditDeviceBackend(device)
+    })
+    // 模式 3：主进程到渲染器进程
+    ipcMain.on('copyDeviceBackend', (event, device, copyId) => {
+        event.returnValue = devicesConfig.copyDeviceBackend(device, copyId)
+    })
+    // 模式 3：主进程到渲染器进程
+    ipcMain.on('delDeviceBackend', (event, deviceId) => {
+        event.returnValue = devicesConfig.delDeviceBackend(deviceId)
+    })
+    // 模式 3：主进程到渲染器进程
+    ipcMain.on('syncDevicesBackend', (event, devices) => {
+        event.returnValue = devicesConfig.syncDevicesBackend(devices)
+    })
+    // 模式 3：主进程到渲染器进程
+    ipcMain.on('getDevicesBackend', (event) => {
+        event.returnValue = devicesConfig.getDevicesBackend()
+    })
+
+    // 模式 3：主进程到渲染器进程
+    ipcMain.on('editDeviceBackend', (event, device) => {
+        shell.openPath(getWorkDirectory()).then(() => {
+            console.log('Folder opened successfully');
+        }).catch(err => {
+            console.error('Error opening folder:', err);
+        });
+    })
+
     createmainWindow()
 });
 

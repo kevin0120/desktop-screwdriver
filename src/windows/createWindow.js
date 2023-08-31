@@ -266,6 +266,16 @@ const MenuTemplate2 = Menu.buildFromTemplate([
                     // icon:path.join(app.getAppPath(), 'resources', 'icon.ico')
                 },
                 {
+                    click: () => {
+                        mainWindow.loadURL("http://127.0.0.1:30003/manage").then(
+                            mainWindow.setTitle('                                                          用户及设备管理'),
+                            mainWindow.setMenu(MenuTemplate1),
+                        )
+                    },
+                    label: '返回设备主页2',
+                    // icon:path.join(app.getAppPath(), 'resources', 'icon.ico')
+                },
+                {
                     type: 'separator'
                 },
                 {
@@ -373,7 +383,7 @@ function createmainWindow() {
     mainWindow.setPosition(screenWidth.size.width / 2 - mainWindow.getBounds().width, mainWindow.getBounds().y)
     // childWindow = createchildWindow(mainWindow);
 
-    // mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
 
 
     mainWindow.setMenu(MenuTemplate1)

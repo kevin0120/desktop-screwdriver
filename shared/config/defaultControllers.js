@@ -60,6 +60,7 @@ const gstatus = {
 
 
 module.exports.defaultBYDConfigs = {
+    id : 1,
     dev: {
         cfg_base_info: {
             device_name: "Line1-0.9",
