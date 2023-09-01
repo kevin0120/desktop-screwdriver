@@ -19,8 +19,31 @@ function getCurrentId(name) {
     }
 }
 
+let uiMap = {
+    lang: "zhCn",
+    angle: "°",
+    torque: "N.m",
+    angle_speed: "rpm",
+    UI: "{\"chart_tab\":1}"
+}
 
 function settingHandleHttp(app) {
+    app.post('/api/dev/ui/map/set', (req, res) => {
+        uiMap[req.body.key] = req.body.val
+        res.send({
+            status: 0,
+            description: "",
+            data: "ok"
+        });
+    });
+    app.get('/api/dev/ui/map', (req, res) => {
+
+        res.send({
+            status: 0,
+            description: "",
+            data: uiMap[req.query.key]
+        });
+    });
     app.get('/api/dev/cfg/base/info', (req, res) => {
         res.send({
             status: 0,

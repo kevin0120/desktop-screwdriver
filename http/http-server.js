@@ -65,6 +65,16 @@ function createServer() {
 
 const server = createServer();
 settingHandleHttp(server)
+
+server.use(function (req, res) {
+    res.send({
+        status: 0,
+        description: "",
+        data: []
+    });
+});
+
+
 const httpServer=server.listen(30003, () => {
     // createWebSocketServer(server);
     console.log('hello electron!')

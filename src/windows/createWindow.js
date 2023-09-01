@@ -48,25 +48,25 @@ const MenuTemplate1 = Menu.buildFromTemplate([
             {
                 type: 'separator'
             },
-            {
-                click: () => {
-                    if (!isAlive(childWindow)) {
-                        childWindow = createchildWindow(mainWindow);
-                        childWindow.show();
-                    }
-
-                },
-                label: '打开远程设备',
-            },
-            {
-                click: () => {
-                    if (isAlive(childWindow)) {
-                        childWindow.close();
-                    }
-
-                },
-                label: '关闭远程设备',
-            }
+            // {
+            //     click: () => {
+            //         if (!isAlive(childWindow)) {
+            //             childWindow = createchildWindow(mainWindow);
+            //             childWindow.show();
+            //         }
+            //
+            //     },
+            //     label: '打开远程设备',
+            // },
+            // {
+            //     click: () => {
+            //         if (isAlive(childWindow)) {
+            //             childWindow.close();
+            //         }
+            //
+            //     },
+            //     label: '关闭远程设备',
+            // }
         ]
     },
 ])
@@ -285,6 +285,13 @@ const MenuTemplate2 = Menu.buildFromTemplate([
                     },
                     label: '返回设备主页',
                     // icon:path.join(app.getAppPath(), 'resources', 'icon.ico')
+                },
+                {
+                    label: "刷新",
+                    click: () => {
+                        mainWindow.loadURL("http://127.0.0.1:30003/").then(
+                        );
+                    },
                 },
                 {
                     type: 'separator'
