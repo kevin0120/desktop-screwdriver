@@ -38,6 +38,12 @@ const MenuTemplate1 = Menu.buildFromTemplate([
                 },
             },
             {
+                label: "开发者工具",
+                click: () => {
+                    mainWindow.webContents.openDevTools(); // 打开开发者工具
+                },
+            },
+            {
                 label: "刷新",
                 click: () => {
                     mainWindow.loadURL("http://127.0.0.1:30003/manage").then(
@@ -48,25 +54,6 @@ const MenuTemplate1 = Menu.buildFromTemplate([
             {
                 type: 'separator'
             },
-            // {
-            //     click: () => {
-            //         if (!isAlive(childWindow)) {
-            //             childWindow = createchildWindow(mainWindow);
-            //             childWindow.show();
-            //         }
-            //
-            //     },
-            //     label: '打开远程设备',
-            // },
-            // {
-            //     click: () => {
-            //         if (isAlive(childWindow)) {
-            //             childWindow.close();
-            //         }
-            //
-            //     },
-            //     label: '关闭远程设备',
-            // }
         ]
     },
 ])
@@ -287,6 +274,12 @@ const MenuTemplate2 = Menu.buildFromTemplate([
                     // icon:path.join(app.getAppPath(), 'resources', 'icon.ico')
                 },
                 {
+                    label: "开发者工具",
+                    click: () => {
+                        mainWindow.webContents.openDevTools(); // 打开开发者工具
+                    },
+                },
+                {
                     label: "刷新",
                     click: () => {
                         mainWindow.loadURL("http://127.0.0.1:30003/").then(
@@ -401,9 +394,6 @@ function createmainWindow() {
     setDialogWindow(mainWindow)
     mainWindow.setPosition(screenWidth.size.width / 2 - mainWindow.getBounds().width, mainWindow.getBounds().y)
     // childWindow = createchildWindow(mainWindow);
-
-    mainWindow.webContents.openDevTools()
-
 
     mainWindow.setMenu(MenuTemplate1)
     mainWindow.loadURL("http://127.0.0.1:30003/manage").then(() => {

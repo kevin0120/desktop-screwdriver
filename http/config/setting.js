@@ -580,6 +580,11 @@ function settingHandleWs(wss) {
     wss.on('connection', (ws, req) => {
         console.log('WebSocket connected', req.url);
         if (!getcurrentController()) {
+            setInterval(() => {
+                ws.send(JSON.stringify({
+                    heartbit: new Date().getTime()
+                }))
+            }, 200)
             return
         }
         let config = fetchCurrentController().config
