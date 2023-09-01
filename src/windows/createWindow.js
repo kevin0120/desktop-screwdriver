@@ -1,7 +1,8 @@
-const {app, BrowserWindow, Menu, screen} = require('electron')
+const {app, BrowserWindow, Menu, screen, shell} = require('electron')
 const path = require('path')
+const {getHomeDirectory} = require("../../shared/data/baseConfig");
 const {setDialogWindow, showDialog} = require("./dialog/dialog");
-const {getcurrentController} = require("../../shared/data/baseConfig");
+const {getcurrentController, clearcurrentController} = require("../../shared/data/baseConfig");
 const {setdefaultToken} = require("../../shared/config");
 let mainWindow
 let childWindow
@@ -13,15 +14,34 @@ function isAlive(window) {
     return true
 }
 
+
+function editdWindows() {
+    mainWindow.loadURL("http://127.0.0.1:30003").then(() => {
+            mainWindow.setMenu(MenuTemplate2);
+        }
+    );
+}
+
+
 const MenuTemplate1 = Menu.buildFromTemplate([
     {
         label: "设备管理",
         submenu: [
             {
-                label: "离线编辑",
+                label: "打开工作目录",
                 click: () => {
-                    mainWindow.loadURL("http://127.0.0.1:30003").then(
-                        mainWindow.setMenu(MenuTemplate2)
+                    shell.openPath(getHomeDirectory()).then(() => {
+                        console.log('Folder opened successfully');
+                    }).catch(err => {
+                        console.error('Error opening folder:', err);
+                    });
+                },
+            },
+            {
+                label: "刷新",
+                click: () => {
+                    mainWindow.loadURL("http://127.0.0.1:30003/manage").then(
+                        mainWindow.setMenu(MenuTemplate1)
                     );
                 },
             },
@@ -135,8 +155,8 @@ const MenuTemplate2 = Menu.buildFromTemplate([
             {
                 click: (menuItem, browserWindow, event) => {
                     // 处理菜单项的点击事件
-                    let func1=MenuTemplate2.getMenuItemById('本地>>>远程').submenu.items.filter((item)=>item.checked).map((item)=>item.label);
-                    showDialog(func1,"本地>>>远程")
+                    let func1 = MenuTemplate2.getMenuItemById('本地>>>远程').submenu.items.filter((item) => item.checked).map((item) => item.label);
+                    showDialog(func1, "本地>>>远程")
                 },
                 // click: () => showDialog("updateAllConfigs"),
                 label: '开始更新',
@@ -220,8 +240,8 @@ const MenuTemplate2 = Menu.buildFromTemplate([
             {
                 click: (menuItem, browserWindow, event) => {
                     // 处理菜单项的点击事件
-                    let func1=MenuTemplate2.getMenuItemById('远程>>>本地').submenu.items.filter((item)=>item.checked).map((item)=>item.label);
-                    showDialog(func1,"远程>>>本地")
+                    let func1 = MenuTemplate2.getMenuItemById('远程>>>本地').submenu.items.filter((item) => item.checked).map((item) => item.label);
+                    showDialog(func1, "远程>>>本地")
                 },
                 label: '开始同步',
             }
@@ -257,22 +277,13 @@ const MenuTemplate2 = Menu.buildFromTemplate([
             [
                 {
                     click: () => {
-                        mainWindow.loadFile(path.resolve(__dirname, './hellodevice.html')).then(
-                            mainWindow.setTitle('                                                          用户及设备管理'),
-                            mainWindow.setMenu(MenuTemplate1),
+                        mainWindow.loadURL("http://127.0.0.1:30003/manage").then(() => {
+                                clearcurrentController();
+                                mainWindow.setMenu(MenuTemplate1)
+                            }
                         )
                     },
                     label: '返回设备主页',
-                    // icon:path.join(app.getAppPath(), 'resources', 'icon.ico')
-                },
-                {
-                    click: () => {
-                        mainWindow.loadURL("http://127.0.0.1:30003/manage").then(
-                            mainWindow.setTitle('                                                          用户及设备管理'),
-                            mainWindow.setMenu(MenuTemplate1),
-                        )
-                    },
-                    label: '返回设备主页2',
                     // icon:path.join(app.getAppPath(), 'resources', 'icon.ico')
                 },
                 {
@@ -302,7 +313,7 @@ const MenuTemplate2 = Menu.buildFromTemplate([
 ])
 
 function createchildWindow(mainWindow) {
-    setdefaultToken(`http://${getcurrentController().ip}`)
+    setdefaultToken(`http://${getcurrentController().ipAddress}`)
     // 获取主显示器的屏幕大小
     childWindow = new BrowserWindow({
         icon: path.join(app.getAppPath(), 'resources/leetx.jpg'),
@@ -321,7 +332,7 @@ function createchildWindow(mainWindow) {
                 {
                     label: '刷新',
                     accelerator: 'CmdOrCtrl+F5',
-                    click: () => childWindow.loadURL(`http://${getcurrentController().ip}`),
+                    click: () => childWindow.loadURL(`http://${getcurrentController().ipAddress}`),
                 }
             ]
         }
@@ -332,7 +343,7 @@ function createchildWindow(mainWindow) {
 
     childWindow.setMenu(childMenuTemplate)
     // 加载第个页面
-    childWindow.loadURL(`http://${getcurrentController().ip}`);
+    childWindow.loadURL(`http://${getcurrentController().ipAddress}`);
     mainWindow.removeAllListeners('move');
     mainWindow.removeAllListeners('resize');
     // 监听窗口移动事件
@@ -354,7 +365,7 @@ function createchildWindow(mainWindow) {
 
     // 当页面加载完成后，执行刷新操作
     childWindow.webContents.on('did-finish-load', () => {
-        childWindow.setTitle(`                                       在线远程设备${getcurrentController().device_id}@${getcurrentController().device_name}@${getcurrentController().ip}`);
+        childWindow.setTitle(`                                       在线远程设备${getcurrentController().deviceId}@${getcurrentController().controllerName}@${getcurrentController().ipAddress}`);
     });
 
     // 当页面加载完成后，执行刷新操作
@@ -366,6 +377,7 @@ function createchildWindow(mainWindow) {
 }
 
 function createmainWindow() {
+    getHomeDirectory()
     // 获取主显示器的屏幕大小
     let screenWidth = screen.getPrimaryDisplay();
     // Create the browser windows.
@@ -387,12 +399,22 @@ function createmainWindow() {
 
 
     mainWindow.setMenu(MenuTemplate1)
-    mainWindow.loadFile(path.resolve(__dirname, './hellodevice.html'));
+    mainWindow.loadURL("http://127.0.0.1:30003/manage").then(() => {
+            mainWindow.setMenu(MenuTemplate1);
+            clearcurrentController()
+        }
+    )
     // 当页面加载完成后，执行刷新操作
     mainWindow.webContents.on('did-finish-load', () => {
-        setdefaultToken("http://127.0.0.1")
-        mainWindow.setTitle(`                                  离线本地设备${getcurrentController().device_id}@${getcurrentController().device_name}@${getcurrentController().ip}`);
+        setdefaultToken("http://127.0.0.1");
+        if (getcurrentController()) {
+            mainWindow.setTitle(`                                  离线本地设备${getcurrentController().deviceId}@${getcurrentController().controllerName}@${getcurrentController().ipAddress}`)
+        } else {
+            mainWindow.setTitle('                                                              设备管理');
+        }
     });
+
+    return mainWindow
 }
 
 function reloadWindows() {
@@ -407,5 +429,5 @@ function reloadWindows() {
 }
 
 
-module.exports = {createmainWindow, reloadWindows};
+module.exports = {createmainWindow, reloadWindows, editdWindows};
 

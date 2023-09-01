@@ -1,11 +1,11 @@
 // Modules to control application life and create native browser windows
-const {app, BrowserWindow, ipcMain, shell} = require('electron')
+const {app, BrowserWindow, ipcMain} = require('electron')
 // run this as early in the main process as possible
 if (require('electron-squirrel-startup')) app.quit();
-const {createmainWindow, reloadWindows} = require("./src/windows/createWindow");
+const {createmainWindow, reloadWindows,editdWindows} = require("./src/windows/createWindow");
 const {killProcessesByName} = require("./src/manager");
 const {setdefaultToken} = require("./shared/config");
-const {setcurrentController, getcurrentController, getWorkDirectory} = require("./shared/data/baseConfig");
+const {getcurrentController,editDeviceBackend} = require("./shared/data/baseConfig");
 
 const devicesConfig = require("./shared/data/devicesConfig");
 const httpServer = require('./http/http-server')
@@ -17,7 +17,6 @@ const httpServer = require('./http/http-server')
 // });
 // }
 const {session} = require('electron');
-
 
 app.on('ready', function () {
     // 获取默认会话
@@ -31,27 +30,18 @@ app.on('ready', function () {
     // initBackend()
     // getWorkDirectory()
     // 模式 1：渲染器进程到主进程（单向）
-    ipcMain.on('setCurrentController', (event, ip) => {
-        setcurrentController({
-            device_name: ip.controllerName,
-            device_id: parseInt(ip.deviceId),
-            ip: ip.ipAddress,
-        })
-        reloadWindows()
-    })
+    // ipcMain.on('setCurrentController', (event, ip) => {
+    //     setcurrentController({
+    //         device_name: ip.controllerName,
+    //         device_id: parseInt(ip.deviceId),
+    //         ip: ip.ipAddress,
+    //     })
+    //     reloadWindows()
+    // })
     // 模式 3：主进程到渲染器进程
-    ipcMain.on('getController', (event) => {
-        event.returnValue = getcurrentController()
-    })
-
-    // 模式 3：主进程到渲染器进程
-    ipcMain.on('openWorkingDisk', (event) => {
-        shell.openPath(getWorkDirectory()).then(() => {
-            console.log('Folder opened successfully');
-        }).catch(err => {
-            console.error('Error opening folder:', err);
-        });
-    })
+    // ipcMain.on('getController', (event) => {
+    //     event.returnValue = getcurrentController()
+    // })
 
 
     // 模式 3：主进程到渲染器进程
@@ -77,11 +67,9 @@ app.on('ready', function () {
 
     // 模式 3：主进程到渲染器进程
     ipcMain.on('editDeviceBackend', (event, device) => {
-        shell.openPath(getWorkDirectory()).then(() => {
-            console.log('Folder opened successfully');
-        }).catch(err => {
-            console.error('Error opening folder:', err);
-        });
+        editDeviceBackend(device)
+        reloadWindows()
+        editdWindows()
     })
 
     createmainWindow()

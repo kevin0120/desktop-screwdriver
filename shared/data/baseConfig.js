@@ -4,29 +4,46 @@ const fs = require('fs');
 const {app} = require('electron')
 const defaultBYD = require('../config/defaultControllers')
 
-let currentController = {
-    device_name: "Line1-0.9",
-    device_id: 9,
-    ip: "192.168.20.145",
+let currentController
+let CurrentController = {
+    config: {},
+    profiles: {},
+    users: {}
+}
+
+function clearcurrentController() {
+    currentController=null
 }
 
 function getcurrentController() {
     return currentController
 }
 
-function setcurrentController(c) {
-    currentController = c
+function editDeviceBackend(device) {
+    currentController = device
     CurrentController = {
         config: {},
         profiles: {},
         users: {}
     }
     CurrentController = fetchCurrentController()
-    CurrentController.config.dev.cfg_base_info.device_name = currentController.device_name
-    CurrentController.config.dev.cfg_base_info.device_id = currentController.device_id
-    CurrentController.config.dev.cfg_net_op.ip = currentController.ip
     saveCurrentController()
 }
+
+//
+// function setcurrentController(c) {
+//     currentController = c
+//     CurrentController = {
+//         config: {},
+//         profiles: {},
+//         users: {}
+//     }
+//     CurrentController = fetchCurrentController()
+//     CurrentController.config.dev.cfg_base_info.device_name = currentController.device_name
+//     CurrentController.config.dev.cfg_base_info.device_id = currentController.device_id
+//     CurrentController.config.dev.cfg_net_op.ip = currentController.ip
+//     saveCurrentController()
+// }
 
 const appPath = app.isPackaged ? path.dirname(app.getPath('exe')) : app.getAppPath();
 
@@ -34,7 +51,7 @@ function getWorkDirectory() {
     switch (process.platform) {
         case 'linux':
         case 'win32':
-            const dir = path.resolve(appPath, 'data', `${currentController.device_id}@${currentController.device_name}@${currentController.ip}`)
+            const dir = path.resolve(appPath, 'data', `${currentController.ID}`)
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir, {recursive: true});
             }
@@ -45,10 +62,17 @@ function getWorkDirectory() {
     }
 }
 
-let CurrentController = {
-    config: {},
-    profiles: {},
-    users: {}
+
+function getHomeDirectory() {
+    switch (process.platform) {
+        case 'linux':
+        case 'win32':
+            const dir = path.resolve(appPath, 'data')
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, {recursive: true});
+            }
+            return dir;
+    }
 }
 
 
@@ -137,6 +161,8 @@ function saveCurrentController(type) {
 
 module.exports.fetchCurrentController = fetchCurrentController;
 module.exports.saveCurrentController = saveCurrentController;
-module.exports.setcurrentController = setcurrentController;
 module.exports.getcurrentController = getcurrentController;
 module.exports.getWorkDirectory = getWorkDirectory;
+module.exports.getHomeDirectory = getHomeDirectory;
+module.exports.editDeviceBackend = editDeviceBackend;
+module.exports.clearcurrentController = clearcurrentController;

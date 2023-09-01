@@ -32,10 +32,10 @@ window.electronAPI = {
     // setTitle: (title) => ipcRenderer.send('set-title', title),
     // openFile: () => ipcRenderer.invoke('dialog:openFile'),
     // handleCounter: (callback) => ipcRenderer.on('update-counter', callback),
-    openWorkingDisk: () => ipcRenderer.send('openWorkingDisk'),
-    setCurrentController: (ip) => ipcRenderer.send('setCurrentController', ip),
-    getController: () => ipcRenderer.sendSync('getController'),
-
+    // openWorkingDisk: () => ipcRenderer.send('openWorkingDisk'),
+    // setCurrentController: (ip) => ipcRenderer.send('setCurrentController', ip),
+    // getController: () => ipcRenderer.sendSync('getController'),
+    //
 
     addDeviceBackend: (device) => ipcRenderer.sendSync('addDeviceBackend', device),
     copyDeviceBackend: (device, copyId) => ipcRenderer.sendSync('copyDeviceBackend', device, copyId),

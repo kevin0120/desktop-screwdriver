@@ -154,11 +154,20 @@ function settingHandleHttp(app) {
 
     // 工艺列表
     app.get('/api/pf/cur/lst', (req, res) => {
-        res.send({
-            status: 0,
-            description: "",
-            data: Object.values(fetchCurrentController().profiles.psets)
-        });
+        if (getcurrentController()) {
+            res.send({
+                status: 0,
+                description: "",
+                data: Object.values(fetchCurrentController().profiles.psets)
+            });
+        } else {
+            res.send({
+                status: 0,
+                description: "",
+                data: []
+            });
+        }
+
     });
     // 工艺详情
     app.get('/api/pf/cur/pset', (req, res) => {
@@ -443,7 +452,7 @@ function settingHandleHttp(app) {
             });
             return
         }
-        fs.createReadStream(p,'utf-8')
+        fs.createReadStream(p, 'utf-8')
             .pipe(csv())
             .on('data', (row) => {
                 // 对每一行数据进行查询判断
@@ -547,6 +556,9 @@ function settingHandleWs(wss) {
     // 监听 WebSocket 连接事件
     wss.on('connection', (ws, req) => {
         console.log('WebSocket connected', req.url);
+        if (!getcurrentController()) {
+            return
+        }
         let config = fetchCurrentController().config
         switch (req.url) {
             case '/websocket/gstatus':
@@ -576,7 +588,7 @@ function settingHandleWs(wss) {
 function getHttpClient() {
 
     let client = axios.create({
-        baseURL: `http://${getcurrentController().ip}/api`,
+        baseURL: `http://${getcurrentController().ipAddress}/api`,
         timeout: 2000,// 请求超时时间
         headers: {
             'Content-Type': 'application/json', // 设置请求头
