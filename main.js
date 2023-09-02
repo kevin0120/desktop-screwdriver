@@ -2,10 +2,12 @@
 const {app, BrowserWindow, ipcMain} = require('electron')
 // run this as early in the main process as possible
 if (require('electron-squirrel-startup')) app.quit();
-const {createmainWindow, reloadWindows,editdWindows} = require("./src/windows/createWindow");
+const {createmainWindow, reloadWindows, editdWindows} = require("./src/windows/createWindow");
 const {killProcessesByName} = require("./src/manager");
 const {setdefaultToken} = require("./shared/config");
-const {getcurrentController,editDeviceBackend} = require("./shared/data/baseConfig");
+const {editDeviceBackend} = require("./shared/data/baseConfig");
+
+const upd = require("./udp/udp");
 
 const devicesConfig = require("./shared/data/devicesConfig");
 const httpServer = require('./http/http-server')
@@ -64,6 +66,14 @@ app.on('ready', function () {
     ipcMain.on('getDevicesBackend', (event) => {
         event.returnValue = devicesConfig.getDevicesBackend()
     })
+
+    // 模式 3：主进程到渲染器进程
+    ipcMain.on('scanDeviceBackend', (event) => {
+        upd.broadcastUdp((devices) => {
+            event.returnValue = devices
+        })
+    })
+
 
     // 模式 3：主进程到渲染器进程
     ipcMain.on('editDeviceBackend', (event, device) => {

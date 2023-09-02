@@ -43,4 +43,6 @@ window.electronAPI = {
     syncDevicesBackend: (devices) => ipcRenderer.sendSync('syncDevicesBackend', devices),
     getDevicesBackend: () => ipcRenderer.sendSync('getDevicesBackend'),
     editDeviceBackend: (device) => ipcRenderer.send('editDeviceBackend',device),
+
+    scanDeviceBackend: () => ipcRenderer.sendSync('scanDeviceBackend'),
 }
