@@ -3,7 +3,7 @@ const WebSocket = require('ws');
 const path = require('path')
 const {app} = require('electron')
 const {settingHandleHttp,settingHandleWs} = require('./config/setting')
-
+const config = require('../shared/config')
 
 
 function createServer() {
@@ -75,7 +75,7 @@ server.use(function (req, res) {
 });
 
 
-const httpServer=server.listen(30003, () => {
+const httpServer=server.listen(config.configs.httpPort, () => {
     // createWebSocketServer(server);
     console.log('hello electron!')
 });

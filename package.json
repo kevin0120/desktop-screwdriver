@@ -24,7 +24,7 @@
     }
   },
   "scripts": {
-    "start": "electron ./main.js --inspect",
+    "start": "cross-env NODE_ENV=development electron ./main.js --inspect",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },

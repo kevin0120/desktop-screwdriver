@@ -1,6 +1,6 @@
 const dgram = require('dgram');
 const os = require('os');
-
+const config = require('../shared/config')
 // 获取局域网的广播地址
 function getBroadcastAddress() {
     const interfaces = os.networkInterfaces();
@@ -77,12 +77,12 @@ function broadcastAndWaitResponses(broadcastPort, message, callback) {
     setTimeout(() => {
         server.close();
         callback(responses,devices);
-    }, 1000);
+    }, config.configs.udpScanTime);
 }
 
 // 示例使用
-const broadcastPort = 5556;
-const message = 'leetx2023';
+const broadcastPort = config.configs.udpScanPort;
+const message = config.configs.udpScanKey;
 
 
 function broadcastUdp(callback){
