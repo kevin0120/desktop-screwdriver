@@ -16,7 +16,7 @@ function isAlive(window) {
 
 
 function editdWindows() {
-    mainWindow.loadURL("http://127.0.0.1:30003").then(() => {
+    mainWindow.loadURL("http://127.0.0.1:30003/setup/setbase").then(() => {
             mainWindow.setMenu(MenuTemplate2);
         }
     );
@@ -282,7 +282,7 @@ const MenuTemplate2 = Menu.buildFromTemplate([
                 {
                     label: "刷新",
                     click: () => {
-                        mainWindow.loadURL("http://127.0.0.1:30003/").then(
+                        mainWindow.loadURL("http://127.0.0.1:30003/setup/setbase").then(
                         );
                     },
                 },

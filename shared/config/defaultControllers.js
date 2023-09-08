@@ -63,7 +63,7 @@ module.exports.defaultBYDConfigs = {
     id : 1,
     dev: {
         cfg_base_info: {
-            device_name: "Line1-0.9",
+            device_name: "Line1-0.99999",
             device_id: 9,
             device_time: "2023-8-1 9:57:53",
             max_speed: 20.5,
