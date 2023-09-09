@@ -62,8 +62,8 @@ offLineCookie = {
         DEV_CONTROL: 4,
         RECORDS: 4,
         JOB: 4,
-        SELPSET: 4,
-        SELJOB: 4
+        SELPSET: 1,
+        SELJOB: 1
     },
     TOKEN: defaultToken.TOKEN
 }
