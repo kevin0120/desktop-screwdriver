@@ -475,26 +475,37 @@ function settingHandleHttp(app) {
             });
             return
         }
-        fs.createReadStream(p, 'utf-8')
-            .pipe(csv())
-            .on('data', (row) => {
-                // 对每一行数据进行查询判断
-                if (isMatch(row, req.body)) {
-                    row.result = JSON.parse(row.result)
-                    his.push(row)
-                }
-            })
-            .on('end', () => {
-                console.log('查询结束');
-                if (his.length > req.body.numcurve) {
-                    his = his.slice(0, req.body.numcurve)
-                }
+        const stream = fs.createReadStream(p, 'utf-8')
+            .pipe(csv());
+        stream.on('data', (row) => {
+            // 对每一行数据进行查询判断
+            if (isMatch(row, req.body)) {
+                row.result = JSON.parse(row.result)
+                his.push(row)
+            }
+            if (his.length > req.body.numcurve) {
+                // 达到指定行数后停止读取
+                stream.pause();
+                console.log('select pause!');
+                his = his.slice(0, req.body.numcurve)
                 res.send({
                     status: 0,
                     description: "",
                     data: his
                 });
+            }
+        });
+        stream.on('error', (err) => {
+            console.error(err);
+        });
+        stream.on('end', () => {
+            console.log('select end!');
+            res.send({
+                status: 0,
+                description: "",
+                data: his
             });
+        });
 
     });
 
