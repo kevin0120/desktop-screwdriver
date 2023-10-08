@@ -593,7 +593,8 @@ function settingHandleWs(wss) {
         if (!getcurrentController()) {
             setInterval(() => {
                 ws.send(JSON.stringify({
-                    heartbit: new Date().getTime()
+                    heartbit: new Date().getTime(),
+                    offline:0,
                 }))
             }, 200)
             return
@@ -614,7 +615,10 @@ function settingHandleWs(wss) {
                     config.ws.psetsrc = config.dev.cfg_ctrl_src.pset
                     config.ws.pset = 0
                     config.ws.toolsrc = config.dev.cfg_ctrl_src.tool_run
-
+                    config.ws.ac_run = false
+                    config.ws.busy = false
+                    config.ws.ac_run = false
+                    config.ws.offline = 0
                     ws.send(JSON.stringify(config.ws))
                 }, 200)
                 break;

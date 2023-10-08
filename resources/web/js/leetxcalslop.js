@@ -4197,6 +4197,8 @@ var _deallocate = Module["_deallocate"] = createExportWrapper("deallocate");
 /** @type {function(...*):?} */
 var _calculate_k = Module["_calculate_k"] = createExportWrapper("calculate_k");
 /** @type {function(...*):?} */
+var _calculate_k_max = Module["_calculate_k_max"] = createExportWrapper("calculate_k_max");
+/** @type {function(...*):?} */
 var ___errno_location = createExportWrapper("__errno_location");
 /** @type {function(...*):?} */
 var _fflush = Module["_fflush"] = createExportWrapper("fflush");
