@@ -317,7 +317,7 @@ function createchildWindow(mainWindow) {
     // 获取主显示器的屏幕大小
     childWindow = new BrowserWindow({
         icon: path.join(app.getAppPath(), 'resources/leetx.jpg'),
-        width: 600,
+        width: 800,
         height: 1280,
         parent: mainWindow,
         modal: false,
@@ -383,7 +383,7 @@ function createmainWindow() {
     // Create the browser windows.
     mainWindow = new BrowserWindow({
         icon: path.join(app.getAppPath(), 'resources/icon.png'),
-        width: 600,
+        width: 800,
         height: 1280,
         webPreferences: {
             nodeIntegration: true,
