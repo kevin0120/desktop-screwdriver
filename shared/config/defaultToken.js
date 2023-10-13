@@ -84,11 +84,26 @@ function setdefaultToken(url) {
         name: 'Access-Token',
         value: JSON.stringify(url === "http://127.0.0.1" ? offLineCookie : onLineCookie)
     }
+
+    const cookie2 = {
+        url: url,
+        name: 'Electron-Token',
+        value: JSON.stringify({
+            "Electron":true
+    })
+    }
     session.defaultSession.cookies.set(cookie)
         .then(() => {
             // success
         }, (error) => {
             console.error(error)
+        })
+
+    session.defaultSession.cookies.set(cookie2)
+        .then(() => {
+            // success
+        }, (error1) => {
+            console.error(error1)
         })
 };
 
