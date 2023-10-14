@@ -617,6 +617,7 @@ function settingHandleWs(wss) {
                     config.ws.toolsrc = config.dev.cfg_ctrl_src.tool_run
                     config.ws.ac_run = false
                     config.ws.busy = false
+                    config.ws.tool_busy = false
                     config.ws.ac_run = false
                     config.ws.offline = 0
                     ws.send(JSON.stringify(config.ws))
