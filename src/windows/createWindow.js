@@ -323,7 +323,7 @@ function createchildWindow(mainWindow) {
         modal: false,
         show: false
     });
-    childWindow.webContents.openDevTools()
+    // childWindow.webContents.openDevTools()
     // 创建子窗口菜单模
     const childMenuTemplate = Menu.buildFromTemplate([
         {
