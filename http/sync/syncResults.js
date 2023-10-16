@@ -19,15 +19,25 @@ async function resultsUploadApi() {
                     r.result = JSON.stringify(r.result)
                 }
             )
-            // 将数据转换为 CSV 格式
-            const blob = new Blob([convertToCSV(result.data)], {type: 'text/csv;charset=utf-8;'});
-
-            const writableStream = fs.createWriteStream(path.resolve(getWorkDirectory(), 'data', 'result.csv'));
-            blob.arrayBuffer().then(buffer => {
-                writableStream.write(Buffer.from(buffer));
-                writableStream.end();
-                console.log('File saved successfully!');
+            const fs = require('fs');
+            const Papa = require('papaparse');
+            // 将 JSON 对象转换为 CSV 数据
+            const csv = Papa.unparse(result.data, {
+                quotes: true  // 保持结构体字符串形式
             });
+
+
+            // 将 CSV 数据保存到文件中
+            await  fs.writeFileSync(path.resolve(getWorkDirectory(), 'data', 'result.csv'), csv);
+            // 将数据转换为 CSV 格式
+            // const blob = new Blob([convertToCSV(result.data)], {type: 'text/csv;charset=utf-8;'});
+            //
+            // const writableStream = fs.createWriteStream(path.resolve(getWorkDirectory(), 'data', 'result.csv'));
+            // blob.arrayBuffer().then(buffer => {
+            //     writableStream.write(Buffer.from(buffer));
+            //     writableStream.end();
+            //     console.log('File saved successfully!');
+            // });
 
             let req = []
             let tid = []
@@ -54,8 +64,8 @@ async function resultsUploadApi() {
                 if (i + 100 < end) {
                     end = i + 100
                 }
-                let req1=[]
-                req.slice(i,end).forEach((r)=>{
+                let req1 = []
+                req.slice(i, end).forEach((r) => {
                     if (r < 1) {
                         return
                     }
@@ -111,23 +121,6 @@ async function resultsUploadApi() {
     } catch (e) {
         return {status: 404}
     }
-}
-
-
-function convertToCSV(arr) {
-    const separator = ",";
-    const keys = Object.keys(arr[0]);
-    const values = Object.values(arr[0]).join(',') + '\n';
-    const csvHeader = keys.join(separator);
-    const csvRows = arr.map(row => {
-        return keys.map(key => {
-            if (key === "code_desc" || key === "result") {
-                return `"${row[key]}"`;
-            }
-            return row[key];
-        }).join(separator);
-    });
-    return csvHeader + "\n" + csvRows.join("\n");
 }
 
 function curveconvertToCSV(curvedata, len) {
