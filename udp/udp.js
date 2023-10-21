@@ -9,17 +9,21 @@ function getBroadcastAddress() {
         const networkInterface = interfaces[interfaceName];
         for (const info of networkInterface) {
             if (info.family === 'IPv4' && !info.internal && info.netmask==='255.255.255.0') {
-                // 判断是否为私有地址
-                if (
-                    info.address.startsWith('10.') ||
-                    info.address.startsWith('172.') ||
-                    info.address.startsWith('192.168.')
-                ) {
-                    const parts = info.address.split('.');
-                    parts[3] = '255'; // 设置广播地址最后一位为255
-                    // return parts.join('.');
-                    ips.push(parts.join('.'))
-                }
+                // // 判断是否为私有地址
+                // if (
+                //     info.address.startsWith('10.') ||
+                //     info.address.startsWith('172.') ||
+                //     info.address.startsWith('192.168.')
+                // ) {
+                //     const parts = info.address.split('.');
+                //     parts[3] = '255'; // 设置广播地址最后一位为255
+                //     // return parts.join('.');
+                //     ips.push(parts.join('.'))
+                // }
+                const parts = info.address.split('.');
+                parts[3] = '255'; // 设置广播地址最后一位为255
+                // return parts.join('.');
+                ips.push(parts.join('.'))
             }
         }
     }
