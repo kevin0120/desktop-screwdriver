@@ -24,8 +24,8 @@
           "name": "@electron-forge/maker-deb",
           "config": {
             "options": {
-              "maintainer": "Joe Bloggs",
-              "homepage": "https://example.com"
+              "maintainer": "kevin@leetx",
+              "homepage": "https://github.com/kevin0120/desktop-screwdriver.git"
             }
           }
         }
