@@ -1,7 +1,7 @@
 {
   "name": "desktop_screwdriver",
   "version": "1.0.0",
-  "author": "Kevin",
+  "author": "Kevin.Yang",
   "license": "CC0-1.0",
   "description": "Hello Electron application",
   "main": "main.js",
@@ -16,7 +16,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "authors": "kevin@leetx",
+            "authors": "Kevin.Yang@leetx",
             "description": "leetx离线配置软件"
           }
         },
@@ -24,7 +24,7 @@
           "name": "@electron-forge/maker-deb",
           "config": {
             "options": {
-              "maintainer": "kevin@leetx",
+              "maintainer": "Kevin.Yang@leetx",
               "homepage": "https://github.com/kevin0120/desktop-screwdriver.git"
             }
           }
