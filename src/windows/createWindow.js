@@ -314,11 +314,10 @@ const MenuTemplate2 = Menu.buildFromTemplate([
 
 function createchildWindow(mainWindow) {
     setdefaultToken(`http://${getcurrentController().ipAddress}`)
-    // 获取主显示器的屏幕大小
     childWindow = new BrowserWindow({
         icon: path.join(app.getAppPath(), 'resources/leetx.jpg'),
-        width: 800,
-        height: 1280,
+        width: 1280,
+        height: 800,
         parent: mainWindow,
         modal: false,
         show: false
@@ -338,8 +337,8 @@ function createchildWindow(mainWindow) {
         }
     ])
 
-    childWindow.setPosition(mainWindow.getBounds().width + mainWindow.getBounds().x - 15, mainWindow.getBounds().y)
-    childWindow.setSize(mainWindow.getBounds().width, mainWindow.getBounds().height, true)
+    childWindow.setPosition(Math.round(mainWindow.getBounds().width + mainWindow.getBounds().x - 15), Math.round(mainWindow.getBounds().y))
+    childWindow.setSize(Math.round(mainWindow.getBounds().width), Math.round(mainWindow.getBounds().height), true)
 
     childWindow.setMenu(childMenuTemplate)
     // 加载第个页面
@@ -351,17 +350,17 @@ function createchildWindow(mainWindow) {
         if (childWindow.isDestroyed()) {
             return
         }
-        childWindow.setPosition(mainWindow.getBounds().width + mainWindow.getBounds().x - 15, mainWindow.getBounds().y)
+        childWindow.setPosition(Math.round(mainWindow.getBounds().width + mainWindow.getBounds().x - 15), Math.round(mainWindow.getBounds().y))
     });
     // 监听窗口移动事件
     mainWindow.on('resize', () => {
         if (childWindow.isDestroyed()) {
             return
         }
-        childWindow.setSize(mainWindow.getBounds().width, mainWindow.getBounds().height, true)
+        childWindow.setSize(Math.round(mainWindow.getBounds().width), Math.round(mainWindow.getBounds().height), true)
     });
     // childWindow.webContents.openDevTools()
-    childWindow.setPosition(mainWindow.getBounds().width + mainWindow.getBounds().x - 15, mainWindow.getBounds().y)
+    childWindow.setPosition(Math.round(mainWindow.getBounds().width + mainWindow.getBounds().x - 15), Math.round(mainWindow.getBounds().y))
 
     // 当页面加载完成后，执行刷新操作
     childWindow.webContents.on('did-finish-load', () => {
@@ -383,8 +382,8 @@ function createmainWindow() {
     // Create the browser windows.
     mainWindow = new BrowserWindow({
         icon: path.join(app.getAppPath(), 'resources/icon.png'),
-        width: 800,
-        height: 1280,
+        width: Math.round(screenWidth.size.height/1.6),
+        height: Math.round(screenWidth.size.height),
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -392,7 +391,7 @@ function createmainWindow() {
         }
     })
     setDialogWindow(mainWindow)
-    mainWindow.setPosition(screenWidth.size.width / 2 - mainWindow.getBounds().width, mainWindow.getBounds().y)
+    mainWindow.setPosition(Math.round(screenWidth.size.width / 2 - mainWindow.getBounds().width), Math.round(mainWindow.getBounds().y))
     // childWindow = createchildWindow(mainWindow);
 
     mainWindow.setMenu(MenuTemplate1)
